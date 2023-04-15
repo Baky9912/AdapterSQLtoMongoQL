@@ -6,3 +6,6 @@ bp_tim_51	BjAE7QAgnIOvOcBG
 "Air B'n'B
 
 Evidencija domacina, njihovih apartmana, posetilaca, rezervacija i naplate (boravka i dodatnih usluga poput dorucka, ciscenja, taksi)"
+
++ Marko Kocic RN 99/22
++ Milutin Baclija RN 19/21
