@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     4/16/2023 12:31:53 AM                        */
+/* Created on:     4/16/2023 1:02:59 AM                         */
 /*==============================================================*/
 
 
@@ -13,8 +13,6 @@ drop table if exists LOKACIJA;
 drop table if exists MESTO;
 
 drop table if exists NAGRADE_LOJALNOSTI;
-
-drop table if exists NASELJE;
 
 drop table if exists OSTVARENA_USLUGA;
 
@@ -81,13 +79,11 @@ create table KORISNIK
 /*==============================================================*/
 create table LOKACIJA
 (
-   ZEMLJA_ID            int not null,
-   MESTO_ID             int not null,
-   NASELJE_ID           int not null,
    LOKACIJA_ID          int not null,
+   MESTO_ID             int not null,
    ADRESA               varchar(400) not null,
    POSTANSKI_BROJ       varchar(100),
-   primary key (ZEMLJA_ID, MESTO_ID, NASELJE_ID, LOKACIJA_ID)
+   primary key (LOKACIJA_ID)
 );
 
 /*==============================================================*/
@@ -95,10 +91,10 @@ create table LOKACIJA
 /*==============================================================*/
 create table MESTO
 (
-   ZEMLJA_ID            int not null,
    MESTO_ID             int not null,
+   ZEMLJA_ID            int not null,
    IME                  varchar(100) not null,
-   primary key (ZEMLJA_ID, MESTO_ID)
+   primary key (MESTO_ID)
 );
 
 /*==============================================================*/
@@ -109,19 +105,6 @@ create table NAGRADE_LOJALNOSTI
    DOGADJAJ             varchar(100) not null,
    POENI_LOJALNOSTI     int not null,
    primary key (DOGADJAJ)
-);
-
-/*==============================================================*/
-/* Table: NASELJE                                               */
-/*==============================================================*/
-create table NASELJE
-(
-   ZEMLJA_ID            int not null,
-   MESTO_ID             int not null,
-   NASELJE_ID           int not null,
-   IME                  varchar(100) not null,
-   OPIS                 varchar(1000),
-   primary key (ZEMLJA_ID, MESTO_ID, NASELJE_ID)
 );
 
 /*==============================================================*/
@@ -262,9 +245,6 @@ create table SMESTAJ
 (
    SMESTAJ_ID           int not null,
    KORISNIK_ID          int,
-   ZEMLJA_ID            int not null,
-   MESTO_ID             int not null,
-   NASELJE_ID           int not null,
    LOKACIJA_ID          int not null,
    KVADRATURA           int not null,
    BROJ_SOBA            int not null,
@@ -334,14 +314,11 @@ alter table BAN add constraint FK_BANOVANI_KORISNIK foreign key (KORISNIK_ID)
 alter table KORISNIK add constraint FK_PAKET_KORISNIKA foreign key (PAKET_LOJALNOSTI_ID)
       references PAKET_LOJALNOSTI (PAKET_LOJALNOSTI_ID) on delete restrict on update cascade;
 
-alter table LOKACIJA add constraint FK_NALAZI_U_NASELJU foreign key (ZEMLJA_ID, MESTO_ID, NASELJE_ID)
-      references NASELJE (ZEMLJA_ID, MESTO_ID, NASELJE_ID) on delete restrict on update cascade;
+alter table LOKACIJA add constraint FK_RELATIONSHIP_23 foreign key (MESTO_ID)
+      references MESTO (MESTO_ID) on delete restrict on update cascade;
 
 alter table MESTO add constraint FK_NALAZI_U_ZEMLJI foreign key (ZEMLJA_ID)
       references ZEMLJA (ZEMLJA_ID) on delete restrict on update cascade;
-
-alter table NASELJE add constraint FK_NALAZI_U_MESTU foreign key (ZEMLJA_ID, MESTO_ID)
-      references MESTO (ZEMLJA_ID, MESTO_ID) on delete restrict on update cascade;
 
 alter table OSTVARENA_USLUGA add constraint FK_OSTVARENA_U_TOKU_REZERVACIJE foreign key (REZERVACIJA_ID)
       references REZERVACIJA (REZERVACIJA_ID) on delete restrict on update cascade;
@@ -385,8 +362,8 @@ alter table REZERVACIJA add constraint FK_GOST foreign key (KORISNIK_ID)
 alter table REZERVACIJA add constraint FK_SMESTAJ foreign key (SMESTAJ_ID)
       references SMESTAJ (SMESTAJ_ID) on delete restrict on update cascade;
 
-alter table SMESTAJ add constraint FK_SE_NALAZI foreign key (ZEMLJA_ID, MESTO_ID, NASELJE_ID, LOKACIJA_ID)
-      references LOKACIJA (ZEMLJA_ID, MESTO_ID, NASELJE_ID, LOKACIJA_ID) on delete restrict on update cascade;
+alter table SMESTAJ add constraint FK_SE_NALAZI foreign key (LOKACIJA_ID)
+      references LOKACIJA (LOKACIJA_ID) on delete restrict on update cascade;
 
 alter table SMESTAJ add constraint FK_VLASNIK foreign key (KORISNIK_ID)
       references KORISNIK (KORISNIK_ID) on delete set null on update cascade;
