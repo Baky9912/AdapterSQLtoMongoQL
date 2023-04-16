@@ -10,4 +10,4 @@ Evidencija domacina, njihovih apartmana, posetilaca, rezervacija i naplate (bora
 + Marko Kocic RN 99/22
 + Milutin Baclija RN 19/21
 
-Hteo sam promenim NULL default (ne mandatory) vezu izmedju smestaja i korisnika, ali baza pravi probleme. U CDM i PDM je postavljeno uredu, a u bazi je samo ispostovano pravilo koja ona ne forsira.
+Hteo sam promenim NULL default (ne mandatory) vezu izmedju smestaja i korisnika, ali baza pravi probleme. U CDM i PDM je postavljeno u redu, a u bazi je samo ispostovano pravilo koja ona ne forsira.
