@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import raf.bp.model.Clause;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLExpression;
 import raf.bp.model.SQL.SQLQuery;
@@ -16,6 +15,32 @@ import raf.bp.model.expression.*;
 public class SQLParser {
     String[] _l1Keywords = {"select", "from", "where", "group_by", "order_by", "limit", "rownum"};
     private List<String> l1Keywords = new ArrayList<>(Arrays.asList(_l1Keywords));
+
+    public List<String> getKeywords(){
+        return l1Keywords;
+    }
+
+    public class NoArgumentsException extends RuntimeException{
+        public NoArgumentsException(String errMsg){
+            super(errMsg);
+        }
+    }
+    public class ArgumentsBeforeKeywordException extends RuntimeException{
+        public ArgumentsBeforeKeywordException(String errMsg){
+            super(errMsg);
+        }
+    }
+    public class BadBracketsException extends RuntimeException{
+        public BadBracketsException(String errMsg){
+            super(errMsg);
+        }
+    }
+    public class ParserException extends RuntimeException{
+        public ParserException(String errMsg){
+            super(errMsg);
+        }
+    }
+
     // postoje arg keywords kao between, in, itd...
     //  "inner_join", "outer_join","left_join", "right_join", "join", "having" - ovo su argumenti za from
     int max_level = 10;
@@ -30,8 +55,7 @@ public class SQLParser {
     }};
 
 
-    public SQLParser(){
-    }
+    public SQLParser(){}
 
     public String[] lex(String query){
         String myquery = query;
@@ -53,9 +77,9 @@ public class SQLParser {
     public boolean validateBrackets(String[] tokens){
         int level=0;
         for(String token : tokens){
-            if(token=="(")
+            if(token.equals("("))
                 level++;
-            else if(token==")")
+            else if(token.equals(")"))
                 level--;
             else continue;
 
@@ -92,11 +116,11 @@ public class SQLParser {
         System.out.println("AFTER LEX");
         printTokens(tokens);
         if(!validateBrackets(tokens)){
-            return new SymbolExpression("WRONG_EXPR");
+            throw new BadBracketsException("Brackets don't match");
         }
         ComplexExpression expr = makeExpression(tokens);
         System.out.println("AFTER MAKE EXPR");
-        System.out.println(expr.toDebugString());
+        System.out.println(expr.toString());
         return expr;
     }
 
@@ -107,33 +131,13 @@ public class SQLParser {
         System.out.println();
     }
 
-    // public Map<String, List<String>> groupByL1Keyword(String[] tokens){
-    //     // mozda validate posle lex i pre ovog
-    //     Map<String, List<String>> l1ToArgs = new HashMap<>();
-    //     String l1Keyword = null;
-    //     ArrayList<String> args = new ArrayList<>();
-
-    //     for(String token : tokens){
-    //         if(l1Keyword.contains(token)){
-    //             if(l1Keyword!=null){
-    //                 l1ToArgs.put(l1Keyword, args);
-    //                 args.clear();
-    //             }
-    //             l1Keyword = token;
-    //         }
-    //         else
-    //             args.add(l1Keyword);
-    //     }
-    //     return l1ToArgs;
-    // }
-
     public SQLQuery parseQuery(String query){
         Expression expr = makeExpression(query);
         if(expr instanceof ComplexExpression){
             return parseComplexExpressionUtil((ComplexExpression)expr, null);
         }
         else{
-            return null;
+            throw new ParserException("Preparsing error");
         }
     }
 
@@ -143,8 +147,7 @@ public class SQLParser {
         String keyword = fakeKeyword;
         List<SQLExpression> sqlExpressions = new ArrayList<SQLExpression>();
         for(Expression e : ce.getExpressions()){
-            if(e instanceof ComplexExpression){
-                ComplexExpression inner_ce = (ComplexExpression)e;
+            if(e instanceof ComplexExpression inner_ce){
                 if(inner_ce.isNestedQuery()){
                     SQLQuery innerQuery = parseComplexExpressionUtil(inner_ce, null);
                     sqlExpressions.add(innerQuery);
@@ -153,25 +156,24 @@ public class SQLParser {
                     SQLQuery innerQuery = parseComplexExpressionUtil(inner_ce, "fakekw");
                     List<SQLClause> innerClauses = innerQuery.getClauses();
                     if(innerClauses.size()>1) {
-                        return null;
+                        throw new ArgumentsBeforeKeywordException("Arguments before keywords in nested query");
                     }
                     List<SQLExpression> innerExpressions = innerClauses.get(0).getSqlExpressions();
                     sqlExpressions.add(new SQLToken("("));
-                    for(SQLExpression sqlExpr : innerExpressions){
-                        sqlExpressions.add(sqlExpr);
-                    }
+                    sqlExpressions.addAll(innerExpressions);
                     sqlExpressions.add(new SQLToken(")"));
                 }
             }
-            else if(e instanceof SymbolExpression){
-                SymbolExpression se = (SymbolExpression)e;
+            else if(e instanceof SymbolExpression se){
                 if(l1Keywords.contains(se.getWord())){
                     if(keyword==null){
                         if(sqlExpressions.size() > 0){
-                            return null;
+                            throw new ArgumentsBeforeKeywordException("Arguments before keyword");
                         }
                     }
                     else{
+                        if(sqlExpressions.size()==0)
+                            throw new NoArgumentsException("Keyword " + keyword + " has no arguments");
                         clauses.add(new SQLClause(keyword, sqlExpressions));
                     }
                     keyword = se.getWord();
@@ -183,9 +185,12 @@ public class SQLParser {
                 }
             }
         }
+        if(keyword!=null && sqlExpressions.size()==0){
+            throw new NoArgumentsException("Keyword " + keyword + " has no arguments");
+        }
         if(sqlExpressions.size()>0){
             if(keyword==null){
-                return new SQLQuery(null);
+                throw new ArgumentsBeforeKeywordException("Arguments before keyword");
             }
             clauses.add(new SQLClause(keyword, sqlExpressions));
         }
@@ -193,18 +198,29 @@ public class SQLParser {
     }
 
     static public void main(String[] args){
-        String q1 = "SELECT avg(salary), department_id from hr.employees group by department_id";
+        // TESTS
+        String q1 = "SELECT       avg(salary),          department_id from hr.employees group by department_id";
         String q2 = "select department_name, department_id, location_id from hr.departments where department_id in\n" 
 	+ "(select department_id from hr.employees group by department_id having max(salary) > 10000)";
+        String q3 = "SELECT avg(salary) FROM WHERE";
+        String q4 = "a SELECT avg(salary) FROM x WHERE";
+        String q5 = "SELECT avg((salary) FROM x WHERE";
+        String q6 = "SELECT avg(salary)) FROM x WHERE";
+        String q7 = "select department_name, department_id, location_id from hr.departments where department_id in\n" 
+	+ "(ooo select department_id from hr.employees group by department_id having max(salary) > 10000)";
+
+        List<String> queries = new ArrayList<>(Arrays.asList(new String[]{q1, q2, q3, q4, q5, q6, q7}));
         
         SQLParser p = new SQLParser();
         
-        p.makeExpression(q1);
-        p.makeExpression(q2);
-
-        SQLQuery parsedQuery = p.parseQuery(q1);
-        SQLQuery.printAnyQuery(parsedQuery);
-        parsedQuery = p.parseQuery(q2);
-        SQLQuery.printAnyQuery(parsedQuery);
+        for(String query : queries){
+            try{
+                SQLQuery parsedQuery = p.parseQuery(query);
+                SQLQuery.printAnyQuery(parsedQuery);
+            }
+            catch (RuntimeException e){
+                System.out.println(e.toString());
+            }
+        }
     }
 }

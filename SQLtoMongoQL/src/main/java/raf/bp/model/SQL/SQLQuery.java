@@ -50,7 +50,7 @@ public class SQLQuery extends SQLExpression{
 
     public static void printAnyQuery(SQLQuery q){
         if(q==null){
-            System.out.println("Ne moze da se parsira");
+            System.out.println("Query can't be parsed");
         }
         else{
             System.out.println("QUERY");
