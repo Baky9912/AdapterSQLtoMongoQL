@@ -14,6 +14,20 @@ public class ComplexExpression extends Expression {
         this.expressions = expressions;
     }
 
+    public boolean isNestedQuery(){
+        Expression expr = this;
+        ComplexExpression ce;
+        while(expr instanceof ComplexExpression){
+            ce = (ComplexExpression)expr;
+            expr = ce.expressions.get(0);
+        }
+        if(!(expr instanceof SymbolExpression)){
+            return false;
+        }
+        SymbolExpression se = (SymbolExpression)expr;
+        return se.word.equals("select");
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

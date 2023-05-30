@@ -29,7 +29,7 @@ public class SQLParser {
 
         String myquery = query;
         myquery = myquery.toLowerCase();
-        myquery = myquery.replace(",", " ");  // field1, field2, -> field1 field2
+        myquery = myquery.replace(",", " , ");
         myquery = myquery.replace("(", " ( ");
         myquery = myquery.replace(")", " ) ");
         myquery = myquery.replaceAll("\\s+", " ");
