@@ -1,4 +1,6 @@
 package raf.bp.database;
 
-public class Database {
+public interface Database {
+
+    void run();
 }
