@@ -15,6 +15,7 @@ public class ComplexExpression extends Expression {
     }
 
     public boolean isNestedQuery(){
+        // da li pocinje sa (select ili (((((select
         Expression expr = this;
         ComplexExpression ce;
         while(expr instanceof ComplexExpression){
