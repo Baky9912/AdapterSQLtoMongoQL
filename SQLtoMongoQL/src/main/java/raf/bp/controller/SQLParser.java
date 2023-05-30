@@ -1,13 +1,21 @@
 package raf.bp.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import raf.bp.model.Clause;
+import raf.bp.model.SQL.SQLClause;
+import raf.bp.model.SQL.SQLExpression;
+import raf.bp.model.SQL.SQLQuery;
+import raf.bp.model.SQL.SQLToken;
 import raf.bp.model.expression.*;
 
 public class SQLParser {
-    String[] l1_keywords = {"select", "from", "where", "group_by", "order_by", "limit", "rownum"};
+    String[] _l1Keywords = {"select", "from", "where", "group_by", "order_by", "limit", "rownum"};
+    private List<String> l1Keywords = new ArrayList<>(Arrays.asList(_l1Keywords));
     // postoje arg keywords kao between, in, itd...
     //  "inner_join", "outer_join","left_join", "right_join", "join", "having" - ovo su argumenti za from
     int max_level = 10;
@@ -99,24 +107,77 @@ public class SQLParser {
         System.out.println();
     }
 
-    public Map<String, List<String>> groupByL1Keyword(String[] tokens){
-        // mozda validate posle lex i pre ovog
-        Map<String, List<String>> l1ToArgs = new HashMap<>();
-        String l1Keyword = null;
-        ArrayList<String> args = new ArrayList<>();
+    // public Map<String, List<String>> groupByL1Keyword(String[] tokens){
+    //     // mozda validate posle lex i pre ovog
+    //     Map<String, List<String>> l1ToArgs = new HashMap<>();
+    //     String l1Keyword = null;
+    //     ArrayList<String> args = new ArrayList<>();
 
-        for(String token : tokens){
-            if(l1Keyword.contains(token)){
-                if(l1Keyword!=null){
-                    l1ToArgs.put(l1Keyword, args);
-                    args.clear();
+    //     for(String token : tokens){
+    //         if(l1Keyword.contains(token)){
+    //             if(l1Keyword!=null){
+    //                 l1ToArgs.put(l1Keyword, args);
+    //                 args.clear();
+    //             }
+    //             l1Keyword = token;
+    //         }
+    //         else
+    //             args.add(l1Keyword);
+    //     }
+    //     return l1ToArgs;
+    // }
+
+    public SQLQuery parseComplpexExpression(ComplexExpression ce){
+        return parseComplexExpressionUtil(ce, null);
+    }
+
+    public SQLQuery parseComplexExpressionUtil(ComplexExpression ce, String fakeKeyword){
+        List<SQLClause> clauses = new ArrayList<SQLClause>();
+        //SQLClause clause = new SQLClause();
+        String keyword = fakeKeyword;
+        List<SQLExpression> sqlExpressions = new ArrayList<SQLExpression>();
+        for(Expression e : ce.getExpressions()){
+            if(e instanceof ComplexExpression){
+                ComplexExpression inner_ce = (ComplexExpression)e;
+                if(ce.isNestedQuery()){
+                    SQLQuery innerQuery = parseComplexExpressionUtil(inner_ce, null);
+                    sqlExpressions.add(innerQuery);
                 }
-                l1Keyword = token;
+                else{
+                    SQLQuery innerQuery = parseComplexExpressionUtil(inner_ce, "fakekw");
+                    List<SQLClause> innerClauses = innerQuery.getClauses();
+                    if(innerClauses.size()>1) {
+                        return new SQLQuery(null);
+                    }
+                    List<SQLExpression> innerExpressions = innerClauses.get(0).getSqlExpressions();
+                    sqlExpressions.add(new SQLToken("("));
+                    for(SQLExpression sqlExpr : innerExpressions){
+                        sqlExpressions.add(sqlExpr);
+                    }
+                    sqlExpressions.add(new SQLToken(")"));
+                }
             }
-            else
-                args.add(l1Keyword);
+            else if(e instanceof SymbolExpression){
+                SymbolExpression se = (SymbolExpression)e;
+                if(l1Keywords.contains(se.getWord())){
+                    if(keyword==null){
+                        if(sqlExpressions.size() > 0){
+                            return new SQLQuery(null);
+                        }
+                    }
+                    else{
+                        clauses.add(new SQLClause(keyword, sqlExpressions));
+                    }
+                    keyword = se.getWord();
+                    sqlExpressions = new ArrayList<SQLExpression>();
+                }
+                else{
+                    SQLToken token = new SQLToken(se.getWord());
+                    sqlExpressions.add(token);
+                }
+            }
         }
-        return l1ToArgs;
+        return new SQLQuery(clauses);
     }
 
     static public void main(String[] args){

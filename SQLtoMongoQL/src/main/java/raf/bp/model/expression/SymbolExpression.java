@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SymbolExpression extends Expression{
-    public String word;
+    private String word;
     public SymbolExpression(String word){
         this.word = word;
     }
