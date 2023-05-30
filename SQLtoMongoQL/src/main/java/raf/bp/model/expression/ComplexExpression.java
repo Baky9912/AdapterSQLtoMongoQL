@@ -22,6 +22,7 @@ public class ComplexExpression extends Expression {
     @Override
     public boolean isNestedQuery(){
         // da li pocinje sa (select, (((((select isl
+
         Expression expr = this;
         ComplexExpression ce;
         while(expr instanceof ComplexExpression){
@@ -45,4 +46,22 @@ public class ComplexExpression extends Expression {
         sb.append(") ");
         return sb.toString();
     }
+
+    public String toDebugString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("( ");
+        for(Expression expr : expressions){
+            if(expr instanceof SymbolExpression){
+                sb.append("[SymbolExpression]");
+            }
+            else{
+                sb.append("[ComplexExpression]");
+            }
+            sb.append(" ").append(expr.toString()).append("\n");
+        }
+        sb.append(") ");
+        return sb.toString();
+    }
+
+    
 }

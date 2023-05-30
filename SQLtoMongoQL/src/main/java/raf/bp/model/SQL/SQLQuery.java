@@ -14,4 +14,49 @@ public class SQLQuery extends SQLExpression{
     }
     public SQLQuery(){}
 
+    private void tabOut(int depth){
+        for(int i=0; i<depth; ++i){
+            System.out.print("\t");
+        }
+    }
+
+    public void printQuery(int depth){
+        tabOut(depth);
+        System.out.println("(");
+        for(SQLClause clause : clauses){
+            tabOut(depth);
+            System.out.print(clause.getKeyword().toUpperCase());
+            System.out.print(" ");
+            SQLExpression last=null;
+            for(SQLExpression expr : clause.getSqlExpressions()){
+                if(expr instanceof SQLQuery){
+                    SQLQuery sq = (SQLQuery)expr;
+                    System.out.println();
+                    sq.printQuery(depth+1);
+                }
+                else if(expr instanceof SQLToken){
+                    SQLToken token = (SQLToken)expr;
+                    System.out.print(token.getWord());
+                    System.out.print(" ");
+                }
+                last = expr;
+            }
+            if(last!=null && !(last instanceof SQLQuery))
+                System.out.println();
+        }
+        tabOut(depth);
+        System.out.println(")");
+    }
+
+    public static void printAnyQuery(SQLQuery q){
+        if(q==null){
+            System.out.println("Ne moze da se parsira");
+        }
+        else{
+            System.out.println("QUERY");
+            System.out.println("-----------------------------");
+            q.printQuery(0);
+            System.out.println("-----------------------------");
+        }
+    }
 }

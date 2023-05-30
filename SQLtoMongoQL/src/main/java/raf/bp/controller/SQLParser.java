@@ -72,9 +72,9 @@ public class SQLParser {
         }
         int level = 0;
         for(String token : tokens){
-            if(token=="(")
+            if(token.equals("("))
                 level++;
-            else if(token==")"){
+            else if(token.equals(")")){
                 ComplexExpression madeExpr = exprByLevel[level];
                 exprByLevel[level] = new ComplexExpression();
                 exprByLevel[level-1].getExpressions().add(madeExpr);
@@ -94,9 +94,9 @@ public class SQLParser {
         if(!validateBrackets(tokens)){
             return new SymbolExpression("WRONG_EXPR");
         }
-        Expression expr = makeExpression(tokens);
+        ComplexExpression expr = makeExpression(tokens);
         System.out.println("AFTER MAKE EXPR");
-        System.out.println(expr);
+        System.out.println(expr.toDebugString());
         return expr;
     }
 
@@ -127,8 +127,14 @@ public class SQLParser {
     //     return l1ToArgs;
     // }
 
-    public SQLQuery parseComplpexExpression(ComplexExpression ce){
-        return parseComplexExpressionUtil(ce, null);
+    public SQLQuery parseQuery(String query){
+        Expression expr = makeExpression(query);
+        if(expr instanceof ComplexExpression){
+            return parseComplexExpressionUtil((ComplexExpression)expr, null);
+        }
+        else{
+            return null;
+        }
     }
 
     public SQLQuery parseComplexExpressionUtil(ComplexExpression ce, String fakeKeyword){
@@ -139,7 +145,7 @@ public class SQLParser {
         for(Expression e : ce.getExpressions()){
             if(e instanceof ComplexExpression){
                 ComplexExpression inner_ce = (ComplexExpression)e;
-                if(ce.isNestedQuery()){
+                if(inner_ce.isNestedQuery()){
                     SQLQuery innerQuery = parseComplexExpressionUtil(inner_ce, null);
                     sqlExpressions.add(innerQuery);
                 }
@@ -147,7 +153,7 @@ public class SQLParser {
                     SQLQuery innerQuery = parseComplexExpressionUtil(inner_ce, "fakekw");
                     List<SQLClause> innerClauses = innerQuery.getClauses();
                     if(innerClauses.size()>1) {
-                        return new SQLQuery(null);
+                        return null;
                     }
                     List<SQLExpression> innerExpressions = innerClauses.get(0).getSqlExpressions();
                     sqlExpressions.add(new SQLToken("("));
@@ -162,7 +168,7 @@ public class SQLParser {
                 if(l1Keywords.contains(se.getWord())){
                     if(keyword==null){
                         if(sqlExpressions.size() > 0){
-                            return new SQLQuery(null);
+                            return null;
                         }
                     }
                     else{
@@ -177,6 +183,12 @@ public class SQLParser {
                 }
             }
         }
+        if(sqlExpressions.size()>0){
+            if(keyword==null){
+                return new SQLQuery(null);
+            }
+            clauses.add(new SQLClause(keyword, sqlExpressions));
+        }
         return new SQLQuery(clauses);
     }
 
@@ -189,5 +201,10 @@ public class SQLParser {
         
         p.makeExpression(q1);
         p.makeExpression(q2);
+
+        SQLQuery parsedQuery = p.parseQuery(q1);
+        SQLQuery.printAnyQuery(parsedQuery);
+        parsedQuery = p.parseQuery(q2);
+        SQLQuery.printAnyQuery(parsedQuery);
     }
 }
