@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class ComplexExpression extends Expression {
 
-    public List<Expression> expressions;
+    private List<Expression> expressions;
     public ComplexExpression(){
         this.expressions = new ArrayList<>();
     }
