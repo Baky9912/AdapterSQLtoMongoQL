@@ -3,6 +3,11 @@ package raf.bp.model.expression;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ComplexExpression extends Expression {
 
     public List<Expression> expressions;
@@ -16,7 +21,7 @@ public class ComplexExpression extends Expression {
 
     @Override
     public boolean isNestedQuery(){
-        // da li pocinje sa (select ili (((((select
+        // da li pocinje sa (select, (((((select isl
         Expression expr = this;
         ComplexExpression ce;
         while(expr instanceof ComplexExpression){
@@ -27,7 +32,7 @@ public class ComplexExpression extends Expression {
             return false;
         }
         SymbolExpression se = (SymbolExpression)expr;
-        return se.word.equals("select");
+        return se.getWord().equals("select");
     }
 
     @Override

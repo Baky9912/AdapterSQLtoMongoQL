@@ -1,5 +1,10 @@
 package raf.bp.model.expression;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class SymbolExpression extends Expression{
     public String word;
     public SymbolExpression(String word){

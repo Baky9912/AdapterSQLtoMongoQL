@@ -26,14 +26,12 @@ public class SQLParser {
     }
 
     public String[] lex(String query){
-
         String myquery = query;
         myquery = myquery.toLowerCase();
         myquery = myquery.replace(",", " , ");
         myquery = myquery.replace("(", " ( ");
         myquery = myquery.replace(")", " ) ");
         myquery = myquery.replaceAll("\\s+", " ");
-        //query.replaceAll(",[^ ]", " ");  // ,a u , a
         System.out.println(myquery);
         for(Map.Entry<String, String> entry : suffix.entrySet()){
             String old_pattern = entry.getKey() + " " + entry.getValue();
@@ -71,11 +69,11 @@ public class SQLParser {
             else if(token==")"){
                 ComplexExpression madeExpr = exprByLevel[level];
                 exprByLevel[level] = new ComplexExpression();
-                exprByLevel[level-1].expressions.add(madeExpr);
+                exprByLevel[level-1].getExpressions().add(madeExpr);
                 level--;
             }
             else{
-                exprByLevel[level].expressions.add(new SymbolExpression(token));
+                exprByLevel[level].getExpressions().add(new SymbolExpression(token));
             }
         }
         return exprByLevel[0];
