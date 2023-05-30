@@ -14,6 +14,7 @@ public class ComplexExpression extends Expression {
         this.expressions = expressions;
     }
 
+    @Override
     public boolean isNestedQuery(){
         // da li pocinje sa (select ili (((((select
         Expression expr = this;

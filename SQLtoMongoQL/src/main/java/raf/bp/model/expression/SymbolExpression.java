@@ -7,6 +7,11 @@ public class SymbolExpression extends Expression{
     }
 
     @Override
+    public boolean isNestedQuery(){
+        return false;
+    }
+
+    @Override
     public String toString() {
         return word;
     }
