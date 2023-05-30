@@ -42,13 +42,20 @@ public class MainFrame extends JFrame {
         runButton.setMaximumSize(new Dimension(100, 40));
         runButton.setSize(50, 20);
 
-        this.add(sp, BorderLayout.NORTH);
-        this.add(runButton, BorderLayout.CENTER);
-
         jTable = new JTable();
         jTable.setPreferredScrollableViewportSize(new Dimension(500, 400));
         jTable.setFillsViewportHeight(true);
-        this.add(new JScrollPane(jTable), BorderLayout.SOUTH);
+
+        JPanel panel = new JPanel();
+        BorderLayout borderLayout1 = new BorderLayout(10, 10);
+        panel.setLayout(borderLayout1);
+
+        panel.add(sp, BorderLayout.CENTER);
+        panel.add(runButton, BorderLayout.SOUTH);
+
+        JSplitPane splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, panel, new JScrollPane(jTable));
+
+        this.add(splitPane2, BorderLayout.CENTER);
 
         this.pack();
         this.setLocationRelativeTo(null);
