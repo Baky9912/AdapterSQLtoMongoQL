@@ -28,5 +28,6 @@ public class MongoDB implements Database {
             System.out.println(d.toJson());
         }
 
+        mongoClient.close();
     }
 }
