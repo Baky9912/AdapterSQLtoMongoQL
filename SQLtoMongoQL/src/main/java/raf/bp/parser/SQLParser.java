@@ -1,4 +1,4 @@
-package raf.bp.controller;
+package raf.bp.parser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,7 +10,9 @@ import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLExpression;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.SQL.SQLToken;
-import raf.bp.model.expression.*;
+import raf.bp.parser.expression.ComplexExpression;
+import raf.bp.parser.expression.Expression;
+import raf.bp.parser.expression.SymbolExpression;
 
 public class SQLParser {
     String[] _l1Keywords = {"select", "from", "where", "group_by", "order_by", "limit", "rownum"};

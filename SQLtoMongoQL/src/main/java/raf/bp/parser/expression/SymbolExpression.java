@@ -1,4 +1,4 @@
-package raf.bp.model.expression;
+package raf.bp.parser.expression;
 
 import lombok.Getter;
 import lombok.Setter;
