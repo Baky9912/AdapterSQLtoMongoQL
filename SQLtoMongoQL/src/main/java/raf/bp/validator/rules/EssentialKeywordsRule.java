@@ -4,13 +4,13 @@ import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLExpression;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.parser.SQLParser;
-import raf.bp.validator.Rule;
+import raf.bp.validator.SQLValidatorRule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class EssentialKeywordsRule implements Rule {
+public class EssentialKeywordsRule implements SQLValidatorRule {
 
     public class MissingEssentialKeywordException extends RuntimeException {
         public MissingEssentialKeywordException(String message) {

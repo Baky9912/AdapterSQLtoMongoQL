@@ -14,16 +14,16 @@ public class SQLValidator {
 
     public static boolean validate(SQLQuery query) {
 
-        Rule essentialKeywordRule = new EssentialKeywordsRule();
+        SQLValidatorRule essentialKeywordRule = new EssentialKeywordsRule();
 
 //        System.out.println(essentialKeywordRule.check(query));
         return essentialKeywordRule.check(query);
     }
 
     public static void testAllRules() {
-        Rule[] rules = {new EssentialKeywordsRule(), new NoAggregationInWhereRule()};
+        SQLValidatorRule[] rules = {new EssentialKeywordsRule(), new NoAggregationInWhereRule()};
 
-        for (Rule rule : rules) {
+        for (SQLValidatorRule rule : rules) {
             rule.performTests();
         }
     }

@@ -5,13 +5,13 @@ import raf.bp.model.SQL.SQLExpression;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.SQL.SQLToken;
 import raf.bp.parser.SQLParser;
-import raf.bp.validator.Rule;
+import raf.bp.validator.SQLValidatorRule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class NoAggregationInWhereRule implements Rule {
+public class NoAggregationInWhereRule implements SQLValidatorRule {
 
     @Override
     public boolean check(SQLQuery query) {
