@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class SQLLexer {
     public class BadBracketsException extends RuntimeException{
@@ -14,6 +15,12 @@ public class SQLLexer {
 
     public class BadQuotesException extends RuntimeException{
         public BadQuotesException(String errMsg){
+            super(errMsg);
+        }
+    }
+
+    public class LTEorGTESpacedException extends RuntimeException{
+        public LTEorGTESpacedException(String errMsg){
             super(errMsg);
         }
     }
@@ -63,12 +70,20 @@ public class SQLLexer {
         return strs.toArray(new String[strs.size()]);
     }
 
+    public boolean validateLessMoreEqual(String query){
+        // Can't be separated by whitespace, breaks lexing later
+        return !Pattern.compile("<\\s+=").matcher(query).find() && !Pattern.compile(">\\s+=").matcher(query).find();
+    }
+
     public String[] lex(String query){
         if(!validateBrackets(query)){
             throw new BadBracketsException("Brackets missmatch");
         }
         if(!validateQuotes(query)){
             throw new BadQuotesException("Quotes missmatch");
+        }
+        if(!validateLessMoreEqual(query)){
+            throw new LTEorGTESpacedException("<= or >= written with space");
         }
         List<String> allTokens = new ArrayList<>();
         String[] brokenQuery = splitForTokenizing(query);
@@ -91,11 +106,14 @@ public class SQLLexer {
         }
         String myquery = query;
         myquery = myquery.toLowerCase();
-        String[] tokensToBeSeparated = {",", "(", ")", "*", "=", ">", "<", "+", "-", "/", "[", "]"};
+        String[] tokensToBeSeparated = {",", "(", ")", "*","<=",">=","=", ">", "<", "+", "-", "/", "[", "]"};
+        // bug <= gets spaced < = 
         for(String token : tokensToBeSeparated){
             myquery = myquery.replace(token, " " + token + " ");
         }
         myquery = myquery.replaceAll("\\s+", " ");
+        myquery = myquery.replace("< =", "<=");
+        myquery = myquery.replace("> =", ">=");
         System.out.println(myquery);
         for(Map.Entry<String, String> entry : suffix.entrySet()){
             String old_pattern = entry.getKey() + " " + entry.getValue();

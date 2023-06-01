@@ -181,7 +181,12 @@ public class SQLParser {
         String q9 = "select department_name, department_id, location_id from hr.departments where department_id in\n" 
 	+ "(select department_id from hr.employees group by department_id having max(salary) > 10000) and department_name like \" HelLo world  \t\"and true";
 
-        List<String> queries = new ArrayList<>(Arrays.asList(new String[]{q1, q2, q3, q4, q5, q6, q7, q8, q9}));
+        String q10 = "select last_name as prezime from employees where salary = sum(salary)";
+        String q11 = "select a where >= [\"He llllooooooo\", 3] <= x < a = b >= b >= from x";
+        String q12 = "select a where > = <   = < a = b >= b > = from x";
+        String q13 = ">= x <=   ";
+        //List<String> queries = new ArrayList<>(Arrays.asList(new String[]{q1, q2, q3, q4, q5, q6, q7, q8, q9}));
+        List<String> queries = new ArrayList<>(Arrays.asList(new String[]{q10, q11, q12, q13}));
         
         SQLParser p = new SQLParser();
         
