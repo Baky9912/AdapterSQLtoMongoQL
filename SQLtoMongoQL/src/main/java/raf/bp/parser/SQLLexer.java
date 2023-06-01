@@ -91,7 +91,7 @@ public class SQLLexer {
         }
         String myquery = query;
         myquery = myquery.toLowerCase();
-        String[] tokensToBeSeparated = {",", "(", ")", "*", "=", ">", "<", "+", "-", "/"};
+        String[] tokensToBeSeparated = {",", "(", ")", "*", "=", ">", "<", "+", "-", "/", "[", "]"};
         for(String token : tokensToBeSeparated){
             myquery = myquery.replace(token, " " + token + " ");
         }

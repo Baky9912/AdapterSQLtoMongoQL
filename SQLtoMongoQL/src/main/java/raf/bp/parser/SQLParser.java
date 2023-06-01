@@ -179,7 +179,7 @@ public class SQLParser {
         String q8 = "select department_name, department_id, location_id from hr.departments where department_id in\n" 
 	+ "(select department_id from hr.employees group by department_id having max(salary) > 10000) and department_name like \" hello world  \t\"";
         String q9 = "select department_name, department_id, location_id from hr.departments where department_id in\n" 
-	+ "(select department_id from hr.employees group by department_id having max(salary) > 10000) and department_name like \" hello world  \t\"and true";
+	+ "(select department_id from hr.employees group by department_id having max(salary) > 10000) and department_name like \" HelLo world  \t\"and true";
 
         List<String> queries = new ArrayList<>(Arrays.asList(new String[]{q1, q2, q3, q4, q5, q6, q7, q8, q9}));
         
