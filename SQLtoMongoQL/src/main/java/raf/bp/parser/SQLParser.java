@@ -15,9 +15,6 @@ import raf.bp.parser.expression.Expression;
 import raf.bp.parser.expression.SymbolExpression;
 
 public class SQLParser {
-    String[] _l1Keywords = {"select", "from", "where", "group_by", "order_by", "limit", "rownum"};
-    private List<String> l1Keywords = new ArrayList<>(Arrays.asList(_l1Keywords));
-
     public List<String> getKeywords(){
         return l1Keywords;
     }
@@ -32,49 +29,21 @@ public class SQLParser {
             super(errMsg);
         }
     }
-    public class BadBracketsException extends RuntimeException{
-        public BadBracketsException(String errMsg){
-            super(errMsg);
-        }
-    }
+
     public class ParserException extends RuntimeException{
         public ParserException(String errMsg){
             super(errMsg);
         }
     }
 
-    // postoje arg keywords kao between, in, itd...
-    //  "inner_join", "outer_join","left_join", "right_join", "join", "having" - ovo su argumenti za from
-    int max_level = 10;
-
-    Map<String, String> suffix = new HashMap<String, String>() {{
-        put("inner", "join");
-        put("left", "join");
-        put("right", "join");
-        put("outer", "join");
-        put("group", "by");
-        put("order", "by");
-    }};
-
+    private int max_level = 10;
+    private String[] sqlL1Keywords = {"select", "from", "where", "group_by", "order_by", "limit", "rownum"};
+    // They don't depend on other keywords ex HAVING depends on GROUP BY existing, it's not L1
+    private List<String> l1Keywords = new ArrayList<>(Arrays.asList(sqlL1Keywords));
+    private SQLLexer sqlLexer = new SQLLexer();
 
     public SQLParser(){}
 
-    public String[] lex(String query){
-        String myquery = query;
-        myquery = myquery.toLowerCase();
-        myquery = myquery.replace(",", " , ");
-        myquery = myquery.replace("(", " ( ");
-        myquery = myquery.replace(")", " ) ");
-        myquery = myquery.replaceAll("\\s+", " ");
-        System.out.println(myquery);
-        for(Map.Entry<String, String> entry : suffix.entrySet()){
-            String old_pattern = entry.getKey() + " " + entry.getValue();
-            String new_pattern = entry.getKey() + "_" + entry.getValue();
-            myquery = myquery.replace(old_pattern, new_pattern);
-        }
-        String[] tokens = myquery.split(" ");
-        return tokens;
-    }
 
     public boolean validateBrackets(String[] tokens){
         int level=0;
@@ -85,14 +54,14 @@ public class SQLParser {
                 level--;
             else continue;
 
-            if(level<0 || level>max_level)
+            if(level<0 || level>=max_level)
                 return false;
         }
         return level==0;
     }
 
     public ComplexExpression makeExpression(String[] tokens){
-        ComplexExpression[] exprByLevel = new ComplexExpression[10];
+        ComplexExpression[] exprByLevel = new ComplexExpression[max_level];
         for(int i=0; i<max_level; ++i){
             exprByLevel[i] = new ComplexExpression();
         }
@@ -114,12 +83,9 @@ public class SQLParser {
     }
 
     public Expression makeExpression(String query){
-        String[] tokens = lex(query);
+        String[] tokens = sqlLexer.lex(query);
         System.out.println("AFTER LEX");
         printTokens(tokens);
-        if(!validateBrackets(tokens)){
-            throw new BadBracketsException("Brackets don't match");
-        }
         ComplexExpression expr = makeExpression(tokens);
         System.out.println("AFTER MAKE EXPR");
         System.out.println(expr.toString());
@@ -210,8 +176,12 @@ public class SQLParser {
         String q6 = "SELECT avg(salary)) FROM x WHERE";
         String q7 = "select department_name, department_id, location_id from hr.departments where department_id in\n" 
 	+ "(ooo select department_id from hr.employees group by department_id having max(salary) > 10000)";
+        String q8 = "select department_name, department_id, location_id from hr.departments where department_id in\n" 
+	+ "(select department_id from hr.employees group by department_id having max(salary) > 10000) and department_name like \" hello world  \t\"";
+        String q9 = "select department_name, department_id, location_id from hr.departments where department_id in\n" 
+	+ "(select department_id from hr.employees group by department_id having max(salary) > 10000) and department_name like \" hello world  \t\"and true";
 
-        List<String> queries = new ArrayList<>(Arrays.asList(new String[]{q1, q2, q3, q4, q5, q6, q7}));
+        List<String> queries = new ArrayList<>(Arrays.asList(new String[]{q1, q2, q3, q4, q5, q6, q7, q8, q9}));
         
         SQLParser p = new SQLParser();
         
