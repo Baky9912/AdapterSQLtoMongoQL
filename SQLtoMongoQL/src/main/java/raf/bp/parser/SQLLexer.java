@@ -19,8 +19,8 @@ public class SQLLexer {
         }
     }
 
-    public class LTEorGTESpacedException extends RuntimeException{
-        public LTEorGTESpacedException(String errMsg){
+    public class SpacedOperatorException extends RuntimeException{
+        public SpacedOperatorException(String errMsg){
             super(errMsg);
         }
     }
@@ -70,9 +70,10 @@ public class SQLLexer {
         return strs.toArray(new String[strs.size()]);
     }
 
-    public boolean validateLessMoreEqual(String query){
+    public boolean validateNoSpacedOperators(String query){
         // Can't be separated by whitespace, breaks lexing later
-        return !Pattern.compile("<\\s+=").matcher(query).find() && !Pattern.compile(">\\s+=").matcher(query).find();
+        return !Pattern.compile("<\\s+=").matcher(query).find() && !Pattern.compile(">\\s+=").matcher(query).find()
+        && !Pattern.compile("!\\s+=").matcher(query).find();
     }
 
     public String[] lex(String query){
@@ -82,8 +83,8 @@ public class SQLLexer {
         if(!validateQuotes(query)){
             throw new BadQuotesException("Quotes missmatch");
         }
-        if(!validateLessMoreEqual(query)){
-            throw new LTEorGTESpacedException("<= or >= written with space");
+        if(!validateNoSpacedOperators(query)){
+            throw new SpacedOperatorException("Spaced operator, like <  =");
         }
         List<String> allTokens = new ArrayList<>();
         String[] brokenQuery = splitForTokenizing(query);
@@ -114,6 +115,7 @@ public class SQLLexer {
         myquery = myquery.replaceAll("\\s+", " ");
         myquery = myquery.replace("< =", "<=");
         myquery = myquery.replace("> =", ">=");
+        myquery = myquery.replace("! =", "!=");
         System.out.println(myquery);
         for(Map.Entry<String, String> entry : suffix.entrySet()){
             String old_pattern = entry.getKey() + " " + entry.getValue();
