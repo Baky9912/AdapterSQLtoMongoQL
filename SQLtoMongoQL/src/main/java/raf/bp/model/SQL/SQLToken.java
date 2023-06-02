@@ -10,4 +10,17 @@ public class SQLToken extends SQLExpression{
     public SQLToken(String word){
         this.word = word;
     }
+
+    @Override
+    public String toString() {
+        return this.word;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (!(obj instanceof SQLToken token)) return false;
+
+        return this.word.equals(token.getWord());
+    }
 }

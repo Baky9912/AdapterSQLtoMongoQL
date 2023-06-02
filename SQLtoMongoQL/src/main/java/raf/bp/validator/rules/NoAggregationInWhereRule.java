@@ -15,16 +15,8 @@ public class NoAggregationInWhereRule extends SQLValidatorRule {
 
     @Override
     public boolean check(SQLQuery query) {
-        ArrayList<String> aggregateFunctions = new ArrayList<>(List.of((new String[] {"count", "sum", "avg", "min", "max"})));
 
-        ArrayList<SQLQuery> queries = new ArrayList<>();
-        queries.add(query);
-        /* first we find all sql queries in the query */
-        for (SQLClause clause : query.getClauses()) {
-            for (SQLExpression ex : clause.getSqlExpressions()) {
-                if (ex instanceof SQLQuery) queries.add((SQLQuery) ex);
-            }
-        }
+        ArrayList<SQLQuery> queries = getAllQueries(query);
 
         /* then we search through every query for keyword 'where' and then we check if there are any aggregate functions */
         for (SQLQuery q : queries) {
