@@ -88,8 +88,8 @@ public class ConditionSQLParser {
         // doesnt support booleans, no reason to, can be added as 0 operand operator
 
         // DEAL WITH BRACKETS
-        for(CSQLType t : convertables) System.out.println(t.toSQLString());
-        System.out.println("----------------------------------------");
+        // for(CSQLType t : convertables) System.out.println(t.toSQLString());
+        // System.out.println("----------------------------------------");
 
         int n = convertables.size();
         int level=0;
@@ -155,8 +155,8 @@ public class ConditionSQLParser {
                     }
                 }
 
-                Integer sz =  convertables.size();
-                System.out.println(Arrays.toString(layer) + " sz = " + sz);
+                // Integer sz =  convertables.size();
+                // System.out.println(Arrays.toString(layer) + " sz = " + sz);
             }
         }
         if(convertables.size()>1){
