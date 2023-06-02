@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class NoAggregationInWhereRule implements SQLValidatorRule {
+public class NoAggregationInWhereRule extends SQLValidatorRule {
 
     @Override
     public boolean check(SQLQuery query) {
@@ -32,6 +32,7 @@ public class NoAggregationInWhereRule implements SQLValidatorRule {
                 if (!clause.getKeyword().equals("where")) continue;
 
                 for (SQLExpression ex : clause.getSqlExpressions()) {
+                    if (ex instanceof SQLQuery) continue;
                     SQLToken token = (SQLToken) ex;
                     System.out.println("***************************************************");
                     System.out.println(token.getWord());
@@ -46,8 +47,8 @@ public class NoAggregationInWhereRule implements SQLValidatorRule {
     }
 
     @Override
-    public void performTests() {
-        ArrayList<String> queries = new ArrayList<>(List.of((new String[]{
+    public void setTests() {
+        this.testingQueries = new ArrayList<>(List.of((new String[]{
                 "SELECT       avg(salary),          department_id from hr.employees group by department_id", // true
                 "SELECT first_name From employees where first_name='asdf' ", // true
                 "select last_name as prezime from employees where salary = max(salary)", // false
@@ -55,30 +56,11 @@ public class NoAggregationInWhereRule implements SQLValidatorRule {
                 "select last_name as prezime from employees where salary = avg(salary)", // false
                 "select last_name as prezime from employees where salary = min(salary)", // false
                 "select last_name as prezime from employees where salary = sum(salary)", // false
+                "select last_name as prezime from employees where salary = (select average(salary) from employees group by employee_id)", // true
+                "select last_name as prezime from employees where salary = (select average(salary) from employees where max(salary) group by employee_id)", // false
+                "select last_name as prezime from employees where salary =max(salary) and salary in (select average(salary) from employees group by employee_id)", // false
         })));
 
-        ArrayList<Boolean> expected = new ArrayList<>(Arrays.asList(true, true, false, false, false, false, false));
-        ArrayList<Boolean> results = new ArrayList<>();
-
-        SQLParser p = new SQLParser();
-        for(String query : queries){
-            try{
-                SQLQuery parsedQuery = p.parseQuery(query);
-                results.add(check(parsedQuery));
-            }
-            catch (RuntimeException e){
-                System.out.println(e.toString());
-            }
-        }
-
-        System.out.println((this.getClass()));
-        System.out.println(results);
-        System.out.println(expected);
-        if (results.equals(expected)) {
-            System.out.println("All tests passed");
-        }
-        else {
-            System.out.println("Some tests failed");
-        }
+        this.expectedResults = new ArrayList<>(Arrays.asList(true, true, false, false, false, false, false, true, false, false));
     }
 }
