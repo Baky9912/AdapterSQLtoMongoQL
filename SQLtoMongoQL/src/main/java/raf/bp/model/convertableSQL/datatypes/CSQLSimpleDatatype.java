@@ -1,5 +1,7 @@
 package raf.bp.model.convertableSQL.datatypes;
 
+import java.io.ObjectInputStream.GetField;
+
 import lombok.Getter;
 import raf.bp.model.convertableSQL.CSQLDatatype;
 
@@ -59,8 +61,7 @@ public class CSQLSimpleDatatype extends CSQLDatatype{
 
     @Override
     public String toSQLString() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'toSQLString'");
+        return "[" + subtype.toString() + "] " + value;
     }
 
     @Override
@@ -68,5 +69,6 @@ public class CSQLSimpleDatatype extends CSQLDatatype{
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'convertToMongo'");
     }
+
 
 }
