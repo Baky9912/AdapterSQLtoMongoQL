@@ -11,6 +11,7 @@ public class CSQLSimpleDatatype extends CSQLDatatype{
     private String value;
     private Subtype subtype;
     // subtype will be used in translation
+    // TODO remove bracket for simpledata or add special character Subtype
     
     public CSQLSimpleDatatype(String value){
         this.value = value;
@@ -20,7 +21,8 @@ public class CSQLSimpleDatatype extends CSQLDatatype{
     public enum Subtype {
         STRING("String"),
         NUMBER("Number"),
-        FIELD("Field");
+        FIELD("Field"),
+        SPECIAL("Special");
 
         private Subtype(String subtype){
             this.subtype = subtype;
@@ -30,6 +32,10 @@ public class CSQLSimpleDatatype extends CSQLDatatype{
             return subtype;
         }
     };
+
+    public boolean isSpecial(){
+        return value.equals("(") || value.equals(")") || value.equals(",");
+    }
 
     public boolean isField(){
         return !isString() && !isNumber();
@@ -50,6 +56,8 @@ public class CSQLSimpleDatatype extends CSQLDatatype{
     }
 
     public Subtype findSubtype(){
+        if(isSpecial())
+            return Subtype.SPECIAL;
         if(isNumber())
             return Subtype.NUMBER;
         if(isString())
