@@ -7,11 +7,14 @@ import raf.bp.model.SQL.SQLToken;
 import raf.bp.parser.SQLParser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class SQLValidatorRule {
 
     protected ArrayList<String> testingQueries = new ArrayList<>();
     protected ArrayList<Boolean> expectedResults = new ArrayList<>();
+    protected ArrayList<String> aggregateFunctions = new ArrayList<>(List.of((new String[] {"count", "sum", "avg", "min", "max"})));
+    protected ArrayList<String> skipableTokens = new ArrayList<>(List.of(new String[]{"(", ")", ","}));
 
     public abstract boolean check(SQLQuery query);
     public abstract void setTests();
@@ -41,8 +44,13 @@ public abstract class SQLValidatorRule {
         }
     }
 
+    /*
+     * finds all nested queries
+     * returns the query submitted as part of the array
+     */
     public ArrayList<SQLQuery> getAllQueries(SQLQuery query) {
         ArrayList<SQLQuery> result = new ArrayList<>();
+        result.add(query);
 
         for (SQLClause clause : query.getClauses()) {
             for (SQLExpression ex : clause.getSqlExpressions()) {
