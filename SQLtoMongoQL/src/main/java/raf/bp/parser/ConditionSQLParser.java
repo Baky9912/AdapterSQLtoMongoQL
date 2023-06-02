@@ -39,13 +39,17 @@ public class ConditionSQLParser {
         }
         // make CSQL types, watch for array
         CSQLArray array = null;
+        boolean expectingComma = false;
         for(SQLToken token : tokens){
             if(token.getWord().equals("[")){
                 array = new CSQLArray();
+                continue;
             }
             if(token.getWord().equals("]")){
                 convertables.add(array);
                 array = null;
+                expectingComma = false;
+                continue;
             }
             // CSQLSimpleDatatype simpleDatatype = new CSQLSimpleDatatype(token.getWord());
             CSQLType entry = null;
@@ -58,12 +62,22 @@ public class ConditionSQLParser {
                 }
             }
             else{
+                System.out.println(token.getWord());
                 entry = new CSQLSimpleDatatype(token.getWord());
             }
 
             if(array!=null){
                 if(entry instanceof CSQLSimpleDatatype simpleData){
-                    array.getEntries().add(simpleData);
+                    if(expectingComma){
+                        if(!simpleData.getValue().equals(",")){
+                            throw new RuntimeException("Bad array formatting");
+                        }
+                        expectingComma = false;
+                    } 
+                    else{
+                        array.getEntries().add(simpleData);
+                        expectingComma = true;
+                    }
                 }
                 else{
                     throw new RuntimeException("Operator in array");
@@ -177,7 +191,7 @@ public class ConditionSQLParser {
         ConditionSQLParser cqp = new ConditionSQLParser();
         SQLParser p = new SQLParser();
         //String q1 = "select a from b where not a<=5";
-        String q1 = "select a from b where not (( a<=5 or b>3) and c=(2+2*9)/2)";
+        String q1 = "select a from b where not (( a<=5 or b>3) and c=(2+2*9)/2) and (a in [\"hello   world\", 2, 4.534])";
         SQLClause clause = p.parseQuery(q1).getClauses().get(2);
         CSQLOperator.preOrderPrint(cqp.parse(clause), 0);
 
