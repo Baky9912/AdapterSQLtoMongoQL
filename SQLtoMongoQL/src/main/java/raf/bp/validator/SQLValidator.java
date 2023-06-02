@@ -2,6 +2,7 @@ package raf.bp.validator;
 
 import raf.bp.parser.SQLParser;
 import raf.bp.model.SQL.SQLQuery;
+import raf.bp.validator.rules.ArrayDepthRule;
 import raf.bp.validator.rules.EssentialKeywordsRule;
 import raf.bp.validator.rules.NoAggregationInWhereRule;
 
@@ -21,9 +22,10 @@ public class SQLValidator {
     }
 
     public static void testAllRules() {
-        SQLValidatorRule[] rules = {new EssentialKeywordsRule(), new NoAggregationInWhereRule()};
+        SQLValidatorRule[] rules = {new EssentialKeywordsRule(), new NoAggregationInWhereRule(), new ArrayDepthRule()};
 
         for (SQLValidatorRule rule : rules) {
+            rule.setTests();
             rule.performTests();
         }
     }
