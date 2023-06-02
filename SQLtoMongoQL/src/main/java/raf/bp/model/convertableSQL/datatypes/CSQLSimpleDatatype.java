@@ -11,6 +11,7 @@ public class CSQLSimpleDatatype extends CSQLDatatype{
     private String value;
     private Subtype subtype;
     // subtype will be used in translation
+    // TODO remove bracket for simpledata or add special character Subtype
     
     public CSQLSimpleDatatype(String value){
         this.value = value;

@@ -75,13 +75,50 @@ public class ConditionSQLParser {
         }
         return convertables;
     }
-
     public CSQLOperator parse(SQLClause clause){
         if(!clause.getKeyword().equals("where")){
             throw new RuntimeException("parsing condition for non-where keyword");
         }
-        // simplify until they are all one, if not operator (logica but don't check) throw exception
         List<CSQLType> convertables = makeConvertables(clause);
+        return parseUtil(convertables);
+    }
+
+    public CSQLOperator parseUtil(List<CSQLType> convertables){
+        // simplify until they are all one, if not operator (logica but don't check) throw exception
+        // doesnt support booleans, no reason to, can be added as 0 operand operator
+
+        // DEAL WITH BRACKETS
+        for(CSQLType t : convertables) System.out.println(t.toSQLString());
+        System.out.println("----------------------------------------");
+
+        int n = convertables.size();
+        int level=0;
+        int startBracket=-1;
+        for(int i=n-1; i>=0; --i){
+            if(convertables.get(i) instanceof CSQLSimpleDatatype data && data.getValue()==")"){
+                if(level==0) startBracket = i;
+                level++;
+            }
+            if(convertables.get(i) instanceof CSQLSimpleDatatype data && data.getValue()=="("){
+                level--;
+                if(level==0){
+                    if(startBracket==-1) throw new RuntimeException("Bracket missmatch in condition");
+                    // List<CSQLType> nestedQuery = convertables.subList(i+1, startBracket);
+                    // sublist is destructive?
+
+                    List<CSQLType> nestedQuery = new ArrayList<>();
+                    for(int j=i+1; j<startBracket; ++j) nestedQuery.add(convertables.get(j));
+                    CSQLOperator op = parseUtil(nestedQuery);
+                    for(int j=startBracket; j>=i; --j) convertables.remove(j);
+                    convertables.add(i, op);
+                    startBracket=-1;
+                }
+                else if(level<0) throw new RuntimeException("Bracket missmatch in condition");
+            }
+        }
+
+
+        // MAKE OPERATION BINARY TREE
         for(String[] layer : CSQLOperator.priority){
             Set<String> mlayer = new HashSet<>(Arrays.asList(layer));
             boolean changed = true;
@@ -103,7 +140,7 @@ public class ConditionSQLParser {
                     }
                     else if(curr instanceof CSQLBinaryOperator binOp 
                     && mlayer.contains(binOp.getOperator()) && !binOp.attachedToOperands()){
-                        if(convertables.size()>=i+1){
+                        if(convertables.size()<=i+1){
                             throw new RuntimeException("wrongly ordered condition");
                         }
                         CSQLType next = convertables.get(i+1);
@@ -140,7 +177,7 @@ public class ConditionSQLParser {
         ConditionSQLParser cqp = new ConditionSQLParser();
         SQLParser p = new SQLParser();
         //String q1 = "select a from b where not a<=5";
-        String q1 = "select a from b where not a<=5 or b>3 and c=2";
+        String q1 = "select a from b where not (( a<=5 or b>3) and c=(2+2*9)/2)";
         SQLClause clause = p.parseQuery(q1).getClauses().get(2);
         CSQLOperator.preOrderPrint(cqp.parse(clause), 0);
 
