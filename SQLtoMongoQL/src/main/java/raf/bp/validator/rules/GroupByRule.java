@@ -10,8 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GroupByRule extends SQLValidatorRule {
+
+    public class GroupByException extends RuntimeException {
+        public GroupByException(String message) {
+            super(message);
+        }
+    }
+
     @Override
-    public boolean check(SQLQuery query) {
+    public boolean check(SQLQuery query) throws GroupByException {
         ArrayList<SQLQuery> queries = getAllQueries(query);
 
         for (SQLQuery q : queries) {
@@ -45,10 +52,13 @@ public class GroupByRule extends SQLValidatorRule {
                         SQLToken token = (SQLToken) ex;
                         outsideAgg.remove(token);
 
-                        if (insideAgg.contains(token)) return false;
+                        if (insideAgg.contains(token)) {
+                            throw new GroupByException("Group by contains a field that's inside aggregate function. Please remove following field(s) from your group by: " + insideAgg);
+                        }
                     }
 
-                    if (outsideAgg.size() > 0) return false;
+                    if (outsideAgg.size() > 0)
+                        throw new GroupByException("Aggregate functions in select detected. Please include " + outsideAgg + " field(s) in your group by.");
                 }
 
 

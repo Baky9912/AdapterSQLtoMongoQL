@@ -5,9 +5,13 @@ import lombok.Setter;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import raf.bp.app.AppCore;
+import raf.bp.controller.action.RunAction;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 @Getter
 @Setter
@@ -41,6 +45,8 @@ public class MainFrame extends JFrame {
         runButton = new JButton("Run");
         runButton.setMaximumSize(new Dimension(100, 40));
         runButton.setSize(50, 20);
+
+        runButton.addActionListener(new RunAction());
 
         jTable = new JTable();
         jTable.setPreferredScrollableViewportSize(new Dimension(500, 400));

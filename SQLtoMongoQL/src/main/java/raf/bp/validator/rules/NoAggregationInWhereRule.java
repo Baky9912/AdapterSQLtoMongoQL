@@ -13,6 +13,11 @@ import java.util.List;
 
 public class NoAggregationInWhereRule extends SQLValidatorRule {
 
+    public class AggregationInWhereException extends RuntimeException {
+        public AggregationInWhereException(String message) {
+            super(message);
+        }
+    }
     @Override
     public boolean check(SQLQuery query) {
 
@@ -26,11 +31,9 @@ public class NoAggregationInWhereRule extends SQLValidatorRule {
                 for (SQLExpression ex : clause.getSqlExpressions()) {
                     if (ex instanceof SQLQuery) continue;
                     SQLToken token = (SQLToken) ex;
-                    System.out.println("***************************************************");
-                    System.out.println(token.getWord());
-                    System.out.println("***************************************************");
 
-                    if (aggregateFunctions.contains(token.getWord())) return false;
+                    if (aggregateFunctions.contains(token.getWord()))
+                        throw new AggregationInWhereException("Aggregate functions can't be in WHERE. Please remove " + token.getWord());
                 }
             }
         }

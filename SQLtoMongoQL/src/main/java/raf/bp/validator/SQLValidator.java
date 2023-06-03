@@ -10,23 +10,27 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SQLValidator {
+    private SQLValidatorRule[] rules = {
+            new EssentialKeywordsRule(),
+            new NoAggregationInWhereRule(),
+            new ArrayDepthRule(),
+            new GroupByRule(),
+            new JoinContainsConditionRule(),
+            new KeywordsInOrderRule()};
 
-    public static boolean validate(SQLQuery query) {
+    public boolean validate(SQLQuery query) {
 
-        SQLValidatorRule essentialKeywordRule = new EssentialKeywordsRule();
+        for (SQLValidatorRule rule : rules ) {
 
-//        System.out.println(essentialKeywordRule.check(query));
-        return essentialKeywordRule.check(query);
+            if (!rule.check(query)) return false;
+
+        }
+
+        return true;
+
     }
 
-    public static void testAllRules() {
-        SQLValidatorRule[] rules = {
-                new EssentialKeywordsRule(),
-                new NoAggregationInWhereRule(),
-                new ArrayDepthRule(),
-                new GroupByRule(),
-                new JoinContainsConditionRule(),
-                new KeywordsInOrderRule()};
+    public void testAllRules() {
 
         for (SQLValidatorRule rule : rules) {
             rule.setTests();
@@ -34,7 +38,7 @@ public class SQLValidator {
         }
     }
 
-    public static void main(String[] args) {
+    public void main(String[] args) {
        testAllRules();
 
     }

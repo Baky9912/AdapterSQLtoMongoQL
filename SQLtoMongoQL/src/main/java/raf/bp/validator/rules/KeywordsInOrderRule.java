@@ -11,20 +11,27 @@ import java.util.Arrays;
 import java.util.List;
 
 public class KeywordsInOrderRule extends SQLValidatorRule {
+    public class KeywordsNotInOrderException extends RuntimeException {
+        public KeywordsNotInOrderException(String message) {
+            super(message);
+        }
+    }
     @Override
     public boolean check(SQLQuery query) {
         ArrayList<SQLQuery> queries = getAllQueries(query);
 
         for (SQLQuery q : queries) {
 
-            if (!q.getClauses().get(0).getKeyword().equals("select")) return false;
+            if (!q.getClauses().get(0).getKeyword().equals("select"))
+                throw new KeywordsNotInOrderException("Missing select at the beginning of the query.");
 
             int lastPointer = -2, currentPointer = -1;
             for (SQLClause clause : q.getClauses()) {
 
                 currentPointer = keywordsInOrder.indexOf(clause.getKeyword());
 
-                if (currentPointer < lastPointer) return false;
+                if (currentPointer < lastPointer)
+                    throw new KeywordsNotInOrderException("Keywords not in order. Please swap " + clause.getKeyword() + " with the previous keyword.");
 
                 lastPointer = currentPointer;
 
@@ -50,7 +57,7 @@ public class KeywordsInOrderRule extends SQLValidatorRule {
                 "SELECT column1, column2 FROM table1 JOIN (SELECT column3, column4 FROM table2) AS subquery ON table1.column = subquery.column3"
                 ));
 
-        this.expectedResults = new ArrayList<>(List.of(true, true, true, false, false, false, true, true, true, true));
+        this.expectedResults = new ArrayList<>(List.of(true, true, true, false, false, false, false, true, true, true, true));
 
     }
 }

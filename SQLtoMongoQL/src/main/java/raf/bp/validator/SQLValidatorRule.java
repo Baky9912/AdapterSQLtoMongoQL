@@ -32,6 +32,7 @@ public abstract class SQLValidatorRule {
             }
             catch (RuntimeException e){
                 System.out.println(e.toString());
+                results.add(false);
             }
         }
 

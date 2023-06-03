@@ -11,6 +11,12 @@ import java.util.List;
 
 public class JoinContainsConditionRule extends SQLValidatorRule {
 
+    public class InvalidJoinException extends RuntimeException {
+        public InvalidJoinException(String message) {
+            super(message);
+        }
+    }
+
     @Override
     public boolean check(SQLQuery query) {
 
@@ -54,13 +60,11 @@ public class JoinContainsConditionRule extends SQLValidatorRule {
             }
             if (lastWasJoin) {
                 validTableNames.add(token.getWord());
-                System.out.println("VALID TABLE NAMES:");
-                System.out.println(validTableNames);
             }
             if (lastWasOn) {
                 String tempTableName = token.getWord().split("\\.")[0];
-                System.out.println("Comparing " + tempTableName);
-                if (!validTableNames.contains(tempTableName)) return false;
+                if (!validTableNames.contains(tempTableName)) throw new InvalidJoinException("Table " + tempTableName +
+                        " couldn't be found. Please select one of the following tables " + validTableNames);
             }
 
         }
@@ -83,12 +87,13 @@ public class JoinContainsConditionRule extends SQLValidatorRule {
             else if (token.getWord().equals("using")) counter--;
             else if (token.getWord().equals("on")) counter--;
 
-            if (counter < 0) return false;
+            if (counter < 0) throw new InvalidJoinException("Invalid join!\nAfter every join you need to have 'on' or 'using' with a condition.");
 
         }
 
-        return counter == 0;
-
+        if (counter != 0)
+            throw new InvalidJoinException("Invalid join!\nAfter every join you need to have 'on' or 'using' with a condition.");
+        else return true;
     }
 
     @Override

@@ -19,7 +19,16 @@ public class EssentialKeywordsRule extends SQLValidatorRule {
     }
 
     @Override
-    public boolean check(SQLQuery query) throws MissingEssentialKeywordException {
+    public boolean check(SQLQuery query) {
+        if (!_check(query)) {
+            throw new MissingEssentialKeywordException("There is an essential keyword missing. Essential keywords include 'select' and 'from'");
+        }
+
+        return true;
+
+    }
+
+    public boolean _check(SQLQuery query) {
 
        boolean select = false, from = false;
 
