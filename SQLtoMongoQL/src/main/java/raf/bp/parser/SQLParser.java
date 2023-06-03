@@ -121,7 +121,7 @@ public class SQLParser {
                     sqlExpressions.add(innerQuery);
                 }
                 else{
-                    SQLQuery innerQuery = parseComplexExpressionUtil(inner_ce, "fakekw");
+                    SQLQuery innerQuery = parseComplexExpressionUtil(inner_ce, "START_NESTED");
                     List<SQLClause> innerClauses = innerQuery.getClauses();
                     if(innerClauses.size()>1) {
                         throw new ArgumentsBeforeKeywordException("Arguments before keywords in nested query");
