@@ -14,7 +14,9 @@ public class CSQLArray extends CSQLDatatype {
 
     public CSQLArray(){
         entries = new ArrayList<>();
+        setSubtype(Subtype.ARRAY);
     }
+
     public CSQLArray(Collection<SQLToken> tokens){
         entries = new ArrayList<>();
         for(SQLToken token : tokens){

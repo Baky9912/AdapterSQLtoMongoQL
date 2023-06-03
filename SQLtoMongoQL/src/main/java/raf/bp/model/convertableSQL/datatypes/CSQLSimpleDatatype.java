@@ -3,34 +3,20 @@ package raf.bp.model.convertableSQL.datatypes;
 import java.io.ObjectInputStream.GetField;
 
 import lombok.Getter;
+import lombok.Setter;
 import raf.bp.model.convertableSQL.CSQLDatatype;
 
+@Setter
 @Getter
 public class CSQLSimpleDatatype extends CSQLDatatype{
     // one token converts to one Simple Datatype
     private String value;
-    private Subtype subtype;
     // subtype will be used in translation
     
     public CSQLSimpleDatatype(String value){
         this.value = value;
-        this.subtype = findSubtype();
+        setSubtype(findSubtype());
     }
-
-    public enum Subtype {
-        STRING("String"),
-        NUMBER("Number"),
-        FIELD("Field"),
-        SPECIAL("Special");
-
-        private Subtype(String subtype){
-            this.subtype = subtype;
-        }
-        private String subtype;
-        public String getSubtype(){
-            return subtype;
-        }
-    };
 
     public boolean isSpecial(){
         return value.equals("(") || value.equals(")") || value.equals(",");
@@ -68,6 +54,6 @@ public class CSQLSimpleDatatype extends CSQLDatatype{
 
     @Override
     public String toSQLString() {
-        return "[" + subtype.toString() + "] " + value;
+        return "[" + getSubtype().toString() + "] " + value;
     }
 }
