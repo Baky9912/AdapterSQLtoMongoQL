@@ -14,4 +14,13 @@ public class SQLClause {
         this.keyword = keyword;
         this.sqlExpressions = sqlExpressions;
     }
+
+    @Override
+    public String toString() {
+        String result = keyword;
+        result += sqlExpressions.toString();
+
+        return result;
+
+    }
 }

@@ -45,6 +45,19 @@ public abstract class SQLValidatorRule {
     }
 
     /*
+    * finds and returns SQLClause from SQLQuery that matches the String keyword
+    * otherwise returns null
+    */
+    public SQLClause findClauseByKeyword(SQLQuery query, String keyword) {
+
+        for (SQLClause clause : query.getClauses()) {
+            if (clause.getKeyword().equals(keyword)) return clause;
+        }
+
+        return null;
+    }
+
+    /*
      * finds all nested queries
      * returns the query submitted as part of the array
      */
