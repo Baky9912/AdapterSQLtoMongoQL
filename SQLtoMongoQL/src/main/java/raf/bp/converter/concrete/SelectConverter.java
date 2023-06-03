@@ -1,11 +1,11 @@
 package raf.bp.converter.concrete;
 
-import raf.bp.converter.Converter;
+import raf.bp.converter.ClauseConverter;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLExpression;
 import raf.bp.model.SQL.SQLToken;
 
-public class SelectConverter extends Converter {
+public class SelectConverter extends ClauseConverter {
 
 
     @Override

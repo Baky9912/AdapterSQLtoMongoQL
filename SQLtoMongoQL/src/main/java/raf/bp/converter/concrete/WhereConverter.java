@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
 
-import raf.bp.converter.ClauseConverter;
+import raf.bp.converter.ClauseConverterManager;
 import raf.bp.model.convertableSQL.CSQLDatatype;
 import raf.bp.model.convertableSQL.CSQLOperator;
 import raf.bp.model.convertableSQL.CSQLType;
@@ -19,7 +19,7 @@ import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
 import raf.bp.model.convertableSQL.operator.CSQLBinaryOperator;
 import raf.bp.model.convertableSQL.operator.CSQLUnaryOperator;
 
-public class WhereConverter extends ClauseConverter{
+public class WhereConverter extends ClauseConverterManager{
     private static Map<String, String> sqlToMongoOp = new HashMap<>() {{
         put("*", "$multiply");
         put("/", "$divide");
@@ -88,9 +88,19 @@ public class WhereConverter extends ClauseConverter{
     }
 
     public String joinOp(String op, String lArg, String rArg){
-        // check how many operands and if they are arr or element operands
-        // TODO
-        return "";
+        // { field: { $gt: value } }
+        // { $and: [ { <expression1> }, { <expression2> } , ... , { <expressionN> } ] }
+        StringBuilder sb = new StringBuilder();
+        sb.append("{").append(op).append(": ");
+        if(argArray.contains(op)) sb.append("[");
+        sb.append(lArg);
+        if(rArg!=null){
+            sb.append(", ").append(rArg);
+        }
+        if(argArray.contains(op)) sb.append("]");
+        sb.append("}");
+
+        return sb.toString();
     }
 
     public String convertDatatype(CSQLDatatype datatype){
@@ -100,7 +110,7 @@ public class WhereConverter extends ClauseConverter{
             return convertArray((CSQLArray)datatype);
         }
         else if(subtype == Subtype.FIELD){
-            return convertField((CSQLSimpleDatatype)datatype);
+            return convertField((CSQLSimpleDatatype)datatype, false);
         }
         else if(subtype == Subtype.NUMBER){
             return convertNumber((CSQLSimpleDatatype)datatype);
@@ -125,8 +135,10 @@ public class WhereConverter extends ClauseConverter{
         return sb.toString();
     }
 
-    public String convertField(CSQLSimpleDatatype field){
-        return "$" + field.getValue();
+    public String convertField(CSQLSimpleDatatype field, boolean lvalue){
+        if(lvalue)
+            return "$" + field.getValue();
+        return field.getValue();
     }
 
     public String convertNumber(CSQLSimpleDatatype number){

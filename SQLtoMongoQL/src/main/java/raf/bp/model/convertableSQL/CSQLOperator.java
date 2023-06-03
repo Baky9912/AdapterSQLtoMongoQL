@@ -1,6 +1,7 @@
 package raf.bp.model.convertableSQL;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
@@ -29,6 +30,9 @@ abstract public class CSQLOperator extends CSQLType {
         operators.addAll(CSQLUnaryOperator.operators);
         operators.addAll(CSQLBinaryOperator.operators);
     }
+
+    public static List<String> comparassion = new ArrayList<>(
+        Arrays.asList(new String[]{"<", ">", "<=", ">=", "!=", "="}));
 
     abstract public boolean attachedToOperands();
     // operations and operands should make a binary tree
