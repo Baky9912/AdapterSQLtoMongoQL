@@ -11,7 +11,6 @@ public class CSQLSimpleDatatype extends CSQLDatatype{
     private String value;
     private Subtype subtype;
     // subtype will be used in translation
-    // TODO remove bracket for simpledata or add special character Subtype
     
     public CSQLSimpleDatatype(String value){
         this.value = value;
@@ -71,12 +70,4 @@ public class CSQLSimpleDatatype extends CSQLDatatype{
     public String toSQLString() {
         return "[" + subtype.toString() + "] " + value;
     }
-
-    @Override
-    public String convertToMongo() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'convertToMongo'");
-    }
-
-
 }

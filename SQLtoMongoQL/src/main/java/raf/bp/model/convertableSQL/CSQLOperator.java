@@ -21,9 +21,10 @@ abstract public class CSQLOperator extends CSQLType {
         priority.add(new String[]{"*", "/", "%"});
         priority.add(new String[]{"+", "-", "&", "^", "|"}); // bit operations
         priority.add(new String[]{"<", ">", "<=", ">=", "!=", "="});
+        priority.add(new String[]{"in"});  // not same orcale and mssql
         priority.add(new String[]{"not"});
         priority.add(new String[]{"and"});
-        priority.add(new String[]{"all", "any", "between", "in", "like", "or", "some"});  // most unsupported
+        priority.add(new String[]{"all", "any", "between", "like", "or", "some"});  // most unsupported
 
         operators.addAll(CSQLUnaryOperator.operators);
         operators.addAll(CSQLBinaryOperator.operators);

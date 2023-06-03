@@ -21,17 +21,4 @@ public class CSQLUnaryOperator extends CSQLOperator {
     public boolean attachedToOperands(){
         return getLeftOperand()!=null;
     }
-    
-    // @Override
-    // public String toSQLString() {
-    //     // TODO Auto-generated method stub
-    //     throw new UnsupportedOperationException("Unimplemented method 'toSQLString'");
-    // }
-
-    @Override
-    public String convertToMongo() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'convertToMongo'");
-    }
-    
 }

@@ -19,7 +19,7 @@ public class ClauseConverter extends Converter {
         switch (clause.getKeyword()) {
             case "select" -> { return (new SelectConverter()).convert(clause); }
             case "group_by" -> { return (new GroupByConverter()).convert(clause); }
-
+            case "where" -> {return (new ClauseConverter()).convert(clause); }
         }
 
         return null;

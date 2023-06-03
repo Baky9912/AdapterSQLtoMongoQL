@@ -33,9 +33,4 @@ public class CSQLArray extends CSQLDatatype {
         sb.append("]");
         return sb.toString();
     }
-    @Override
-    public String convertToMongo() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'convertToMongo'");
-    }
 }
