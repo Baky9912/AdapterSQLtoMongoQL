@@ -188,7 +188,8 @@ public class ConditionSQLParser {
         ConditionSQLParser cqp = new ConditionSQLParser();
         SQLParser p = new SQLParser();
         //String q1 = "select a from b where not a<=5";
-        String q1 = "select a from b where not (( a<=5 or b>3) and c=((( (2) ))+2*9)/2) and (a in [\"hello   world\", 2, 4.534])";
+        //String q1 = "select a from b where not (( a<=5 or b>3) and c=((( (2) ))+2*9)/2) and (a in [\"hello   world\", 2, 4.534])";
+        String q1 = "select a from b where salary>(10000/((4+2)-1)) and salary<1000000000";
         SQLClause clause = p.parseQuery(q1).getClauses().get(2);
         CSQLOperator.preOrderPrint(cqp.parse(clause), 0);
     }

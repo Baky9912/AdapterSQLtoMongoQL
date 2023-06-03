@@ -31,6 +31,9 @@ abstract public class CSQLOperator extends CSQLType {
         operators.addAll(CSQLBinaryOperator.operators);
     }
 
+    public static List<String> arithemticOp = new ArrayList<>(
+        Arrays.asList(new String[]{"*", "/", "%", "+", "-", "&", "^", "|"}));
+
     public static List<String> numberComparison = new ArrayList<>(
         Arrays.asList(new String[]{"<", ">", "<=", ">=", "!=", "="}));
 
