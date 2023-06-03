@@ -37,7 +37,7 @@ public class JoinContainsConditionRule extends SQLValidatorRule {
 
             if (token.getWord().equals("=")) continue;
 
-            if (token.getWord().equals("join")) {
+            if (differentJoins.contains(token.getWord())) {
                 lastWasJoin = true;
                 lastWasOn = false;
                 continue;

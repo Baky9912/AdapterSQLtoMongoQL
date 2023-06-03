@@ -15,6 +15,8 @@ public abstract class SQLValidatorRule {
     protected ArrayList<Boolean> expectedResults = new ArrayList<>();
     protected ArrayList<String> aggregateFunctions = new ArrayList<>(List.of((new String[] {"count", "sum", "avg", "min", "max"})));
     protected ArrayList<String> skipableTokens = new ArrayList<>(List.of(new String[]{"(", ")", ","}));
+    protected ArrayList<String> keywordsInOrder = new ArrayList<>(List.of(new String[] {"select", "from", "join", "where", "group_by", "order_by", "limit"}));
+    protected ArrayList<String> differentJoins = new ArrayList<>(List.of(new String[] {"inner_join", "outer_join", "left_join", "right_join", "join", "cross_join"}));
 
     public abstract boolean check(SQLQuery query);
     public abstract void setTests();

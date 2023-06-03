@@ -25,7 +25,8 @@ public class SQLValidator {
                 new NoAggregationInWhereRule(),
                 new ArrayDepthRule(),
                 new GroupByRule(),
-                new JoinContainsConditionRule()};
+                new JoinContainsConditionRule(),
+                new KeywordsInOrderRule()};
 
         for (SQLValidatorRule rule : rules) {
             rule.setTests();
