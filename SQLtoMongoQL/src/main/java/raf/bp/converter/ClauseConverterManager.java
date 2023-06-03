@@ -2,6 +2,7 @@ package raf.bp.converter;
 
 import raf.bp.converter.concrete.GroupByConverter;
 import raf.bp.converter.concrete.SelectConverter;
+import raf.bp.converter.concrete.WhereConverter;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.parser.SQLParser;
@@ -19,7 +20,7 @@ public class ClauseConverterManager extends ClauseConverter {
         switch (clause.getKeyword()) {
             case "select" -> { return (new SelectConverter()).convert(clause); }
             case "group_by" -> { return (new GroupByConverter()).convert(clause); }
-            case "where" -> {return (new ClauseConverterManager()).convert(clause); }
+            case "where" -> {return (new WhereConverter()).convert(clause); }
         }
 
         return null;
@@ -33,7 +34,8 @@ public class ClauseConverterManager extends ClauseConverter {
                 "select * from employees group by salary asc",
                 "select first_name, last_name from employees group by salary desc",
                 "select * from employees group by salary asc, date_of_birth desc",
-                "select first_name, last_name from employees group by salary asc, date_of_birth desc"
+                "select first_name, last_name from employees group by salary asc, date_of_birth desc",
+                "select first_name, last_name from employees where salary = 1000 group by salary asc, date_of_birth desc"
         ));
 
         SQLParser p = new SQLParser();
