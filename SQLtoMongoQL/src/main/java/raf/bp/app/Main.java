@@ -1,12 +1,11 @@
 package raf.bp.app;
 
+import raf.bp.executor.MongoQLExecutor;
 import raf.bp.gui.MainFrame;
 
 public class Main {
     public static void main(String[] args) {
         AppCore.getInstace();
-        MainFrame.getInstance();
-
-        AppCore.getInstace().getDatabase().run();
+        MainFrame.getInstance().getJTable().setModel(AppCore.getInstace().getTableModel());
     }
 }

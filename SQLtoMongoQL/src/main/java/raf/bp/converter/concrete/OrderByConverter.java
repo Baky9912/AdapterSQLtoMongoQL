@@ -5,7 +5,7 @@ import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLExpression;
 import raf.bp.model.SQL.SQLToken;
 
-public class GroupByConverter extends ClauseConverter {
+public class OrderByConverter extends ClauseConverter {
     @Override
     public String convert(SQLClause clause) {
 

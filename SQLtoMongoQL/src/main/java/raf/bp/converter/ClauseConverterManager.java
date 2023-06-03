@@ -1,12 +1,11 @@
 package raf.bp.converter;
 
-import raf.bp.converter.concrete.GroupByConverter;
+import raf.bp.converter.concrete.OrderByConverter;
 import raf.bp.converter.concrete.SelectConverter;
 import raf.bp.converter.concrete.WhereConverter;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.parser.SQLParser;
-import raf.bp.validator.SQLValidator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,7 @@ public class ClauseConverterManager extends ClauseConverter {
 
         switch (clause.getKeyword()) {
             case "select" -> { return (new SelectConverter()).convert(clause); }
-            case "group_by" -> { return (new GroupByConverter()).convert(clause); }
+            case "order_by" -> { return (new OrderByConverter()).convert(clause); }
             case "where" -> {return (new WhereConverter()).convert(clause); }
         }
 
