@@ -31,8 +31,14 @@ abstract public class CSQLOperator extends CSQLType {
         operators.addAll(CSQLBinaryOperator.operators);
     }
 
-    public static List<String> comparassion = new ArrayList<>(
+    public static List<String> numberComparison = new ArrayList<>(
         Arrays.asList(new String[]{"<", ">", "<=", ">=", "!=", "="}));
+
+    public static List<String> binOpLogical = new ArrayList<>(
+        Arrays.asList(new String[]{"and", "or"}));
+    
+    public static List<String> unOpLogical = new ArrayList<>(
+        Arrays.asList(new String[]{"not"}));
 
     abstract public boolean attachedToOperands();
     // operations and operands should make a binary tree

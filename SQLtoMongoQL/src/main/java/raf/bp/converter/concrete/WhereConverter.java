@@ -20,11 +20,12 @@ import raf.bp.model.convertableSQL.operator.CSQLBinaryOperator;
 import raf.bp.model.convertableSQL.operator.CSQLUnaryOperator;
 
 public class WhereConverter extends ClauseConverterManager{
+    // TODO UNTESTED
     private static Map<String, String> sqlToMongoOp = new HashMap<>() {{
         put("*", "$multiply");
         put("/", "$divide");
         put("%", "$mod");
-        put("<", "$le");
+        put("<", "$lt");
         put(">", "$gt");
         put("<=", "$lte");
         put(">=", "$gte");
@@ -36,6 +37,21 @@ public class WhereConverter extends ClauseConverterManager{
         put("or", "$or");
         put("like", "$regex");
         put("in", "$in");
+    }};
+    
+    private static Map<String, String> mongoToSqlOp = new HashMap<>() {{
+        for (Map.Entry<String, String> entry : sqlToMongoOp.entrySet()) {
+            mongoToSqlOp.put(entry.getValue(), entry.getKey());
+        }   
+    }};
+
+    private static Map<String, String> reverseSign = new HashMap<>() {{
+        put("$lt", "$gt");
+        put("$gt", "$lt");
+        put("$lte", "$gte");
+        put("$gte", "$lte");
+        put("$ne", "$ne");
+        put("$eq", "$eq");
     }};
 
     private static Set<String> argArray = new HashSet<>(Arrays.asList("$and", "$or"));
@@ -87,20 +103,63 @@ public class WhereConverter extends ClauseConverterManager{
         return "PROBLEM!!!";  // shouldn't happen
     }
 
+    public boolean isNumber(String potentialNumber){
+        // quickfix
+        try{
+            Double.parseDouble(potentialNumber);
+            return true;
+        }
+        catch(NumberFormatException e){
+            return false;
+        }
+    }
+
     public String joinOp(String op, String lArg, String rArg){
         // { field: { $gt: value } }
         // { $and: [ { <expression1> }, { <expression2> } , ... , { <expressionN> } ] }
-        StringBuilder sb = new StringBuilder();
-        sb.append("{").append(op).append(": ");
-        if(argArray.contains(op)) sb.append("[");
-        sb.append(lArg);
-        if(rArg!=null){
-            sb.append(", ").append(rArg);
+        String sqlOp = mongoToSqlOp.get(op);
+        if(op.equals("$regex")){
+            return joinRegexOp(op, lArg, rArg);
         }
-        if(argArray.contains(op)) sb.append("]");
-        sb.append("}");
+        if(op.equals("$in")){
+            return joinInOp(op, lArg, rArg);
+        }
+        if(CSQLOperator.binOpLogical.contains(sqlOp)){
+            return joinBinOpLogical(op, lArg, rArg);
+        }
+        if(CSQLOperator.unOpLogical.contains(sqlOp)){
+            return joinUnOpLogical(op, lArg);
+        }
+        if(CSQLOperator.numberComparison.contains(sqlOp)){
+            return joinArithemticOp(op, lArg, rArg);
+        }
+        throw new RuntimeException("Problem in joinOp");
+    }
 
-        return sb.toString();
+    public String joinBinOpLogical(String op, String lArg, String rArg){
+        return "{ " + op + ": [" + lArg + ", " + rArg + "]}";
+    }
+
+    public String joinUnOpLogical(String op, String arg){
+        return "{ " + op + ": " + arg + "}";
+    }
+
+    public String joinArithemticOp(String op, String lArg, String rArg){
+        if(isNumber(lArg)){
+            op = reverseSign.get(op);
+            String t = lArg;
+            lArg = rArg;
+            rArg = t;
+        }
+        return "{ " + lArg + ": { " + op + ": " + rArg + "}}";
+    }
+
+    public String joinRegexOp(String op, String str, String re){
+        return "{ " + str + " { $regex:" + convertRegex(re) + "}}";
+    }
+
+    public String joinInOp(String op, String lArg, String rArg){
+        return "{ " + lArg + " { $in:" + rArg + "}}";
     }
 
     public String convertDatatype(CSQLDatatype datatype){
