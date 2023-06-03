@@ -94,10 +94,14 @@ public class ConditionSQLParser {
             throw new RuntimeException("parsing condition for non-where keyword");
         }
         List<CSQLType> convertables = makeConvertables(clause);
-        return parseUtil(convertables);
+        CSQLType t = parseUtil(convertables);
+        if(t instanceof CSQLOperator op)
+            return op;
+        else
+            throw new RuntimeException("returning of parser not operator");
     }
 
-    public CSQLOperator parseUtil(List<CSQLType> convertables){
+    public CSQLType parseUtil(List<CSQLType> convertables){
         // simplify until they are all one, if not operator (logica but don't check) throw exception
         // doesnt support booleans, no reason to, can be added as 0 operand operator
 
@@ -122,7 +126,7 @@ public class ConditionSQLParser {
 
                     List<CSQLType> nestedQuery = new ArrayList<>();
                     for(int j=i+1; j<startBracket; ++j) nestedQuery.add(convertables.get(j));
-                    CSQLOperator op = parseUtil(nestedQuery);
+                    CSQLType op = parseUtil(nestedQuery);
                     for(int j=startBracket; j>=i; --j) convertables.remove(j);
                     convertables.add(i, op);
                     startBracket=-1;
@@ -179,21 +183,15 @@ public class ConditionSQLParser {
             }
             throw new RuntimeException("can't parse convertables to a single root node");
         }
-        if(convertables.get(0) instanceof CSQLOperator op)
-            return op;
-        else
-        {
-            throw new RuntimeException("returning of parser not operator");
-        }
+        return convertables.get(0);
     }
 
     public static void main(String[] args){
         ConditionSQLParser cqp = new ConditionSQLParser();
         SQLParser p = new SQLParser();
         //String q1 = "select a from b where not a<=5";
-        String q1 = "select a from b where not (( a<=5 or b>3) and c=(2+2*9)/2) and (a in [\"hello   world\", 2, 4.534])";
+        String q1 = "select a from b where not (( a<=5 or b>3) and c=((( (2) ))+2*9)/2) and (a in [\"hello   world\", 2, 4.534])";
         SQLClause clause = p.parseQuery(q1).getClauses().get(2);
         CSQLOperator.preOrderPrint(cqp.parse(clause), 0);
-
     }
 }

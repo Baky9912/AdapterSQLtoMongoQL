@@ -141,7 +141,10 @@ public class SQLParser {
                     }
                     else{
                         if(sqlExpressions.size()==0)
-                            throw new NoArgumentsException("Keyword " + keyword + " has no arguments");
+                            if(keyword.equals("START_NESTED"))
+                                throw new NoArgumentsException("Missing argument inside ()");
+                            else
+                                throw new NoArgumentsException("Keyword " + keyword + " has no arguments");
                         clauses.add(new SQLClause(keyword, sqlExpressions));
                     }
                     keyword = se.getWord();
@@ -154,7 +157,10 @@ public class SQLParser {
             }
         }
         if(keyword!=null && sqlExpressions.size()==0){
-            throw new NoArgumentsException("Missing argument inside ()");
+            if(keyword.equals("START_NESTED"))
+                throw new NoArgumentsException("Missing argument inside ()");
+            else
+                throw new NoArgumentsException("Keyword " + keyword + " has no arguments");
         }
         if(sqlExpressions.size()>0){
             if(keyword==null){
