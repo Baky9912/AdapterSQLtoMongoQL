@@ -39,13 +39,6 @@ public class GroupByRule extends SQLValidatorRule {
                         else outsideAgg.add(token);
                     }
 
-                    System.out.println("query:");
-                    SQLQuery.printAnyQuery(q);
-                    System.out.println("outside:");
-                    System.out.println(outsideAgg);
-                    System.out.println("inside:");
-                    System.out.println(insideAgg);
-
                 } else if (clause.getKeyword().equals("group_by")) {
 
                     for (SQLExpression ex : clause.getSqlExpressions()) {
