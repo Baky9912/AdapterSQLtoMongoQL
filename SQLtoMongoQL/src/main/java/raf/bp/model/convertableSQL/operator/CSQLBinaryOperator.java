@@ -10,7 +10,7 @@ public class CSQLBinaryOperator extends CSQLOperator{
 
     public static List<String> operators = new ArrayList<>(
         List.of(new String[]{"*", "/", "%", "+", "-", "&", "^",
-        "|", "<", ">", "<=", ">=", "!=", "=", "and", "or", " between", "like"})
+        "|", "<", ">", "<=", ">=", "!=", "=", "and", "or", " between", "like", "in"})
     );
 
     public CSQLBinaryOperator(String op, CSQLType operand1, CSQLType operand2){

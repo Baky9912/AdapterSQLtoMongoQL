@@ -99,12 +99,6 @@ public class SQLLexer {
     }
 
     public String[] lexUtil(String query){
-        if(!validateBrackets(query)){
-            throw new BadBracketsException("Brackets missmatch");
-        }
-        if(!validateQuotes(query)){
-            throw new BadQuotesException("Quotes missmatch");
-        }
         if(isString(query)){
             return new String[]{query};
         }
@@ -116,6 +110,7 @@ public class SQLLexer {
         for(String token : tokensToBeSeparated){
             myquery = myquery.replace(token, " " + token + " ");
         }
+        myquery = myquery.strip();
         myquery = myquery.replaceAll("\\s+", " ");
         myquery = myquery.replace("< =", "<=");
         myquery = myquery.replace("> =", ">=");

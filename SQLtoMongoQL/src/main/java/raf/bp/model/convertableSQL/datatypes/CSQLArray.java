@@ -12,7 +12,9 @@ import raf.bp.model.convertableSQL.CSQLDatatype;
 public class CSQLArray extends CSQLDatatype {
     private List<CSQLSimpleDatatype> entries;
 
-    public CSQLArray(){}
+    public CSQLArray(){
+        entries = new ArrayList<>();
+    }
     public CSQLArray(Collection<SQLToken> tokens){
         entries = new ArrayList<>();
         for(SQLToken token : tokens){
