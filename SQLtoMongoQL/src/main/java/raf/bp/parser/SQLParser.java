@@ -154,7 +154,7 @@ public class SQLParser {
             }
         }
         if(keyword!=null && sqlExpressions.size()==0){
-            throw new NoArgumentsException("Keyword " + keyword + " has no arguments");
+            throw new NoArgumentsException("Missing argument inside ()");
         }
         if(sqlExpressions.size()>0){
             if(keyword==null){
@@ -194,15 +194,15 @@ public class SQLParser {
         
         for(String query : queries){
 
-            SQLQuery parsedQuery = p.parseQuery(query);
-            SQLQuery.printAnyQuery(parsedQuery);
-//            try{
-//                SQLQuery parsedQuery = p.parseQuery(query);
-//                SQLQuery.printAnyQuery(parsedQuery);
-//            }
-//            catch (RuntimeException e){
-//                System.out.println(e.toString());
-//            }
+//            SQLQuery parsedQuery = p.parseQuery(query);
+//            SQLQuery.printAnyQuery(parsedQuery);
+            try{
+                SQLQuery parsedQuery = p.parseQuery(query);
+                SQLQuery.printAnyQuery(parsedQuery);
+            }
+            catch (RuntimeException e){
+                System.out.println(e.toString());
+            }
         }
     }
 }
