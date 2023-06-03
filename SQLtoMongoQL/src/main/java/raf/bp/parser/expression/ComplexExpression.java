@@ -24,9 +24,8 @@ public class ComplexExpression extends Expression {
         // da li pocinje sa (select, (((((select isl
 
         Expression expr = this;
-        ComplexExpression ce;
-        while(expr instanceof ComplexExpression){
-            ce = (ComplexExpression)expr;
+        while(expr instanceof ComplexExpression ce){
+            if(ce.expressions.size()==0) return false;
             expr = ce.expressions.get(0);
         }
         if(!(expr instanceof SymbolExpression)){
