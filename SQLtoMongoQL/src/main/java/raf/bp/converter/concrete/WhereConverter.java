@@ -100,7 +100,7 @@ public class WhereConverter extends ClauseConverter{
             return true;
         }
         catch(NumberFormatException e){
-            return reverseSign.get(potentialNumber.substring(2, 4))!=null;
+            return potentialNumber.length()>4 && reverseSign.get(potentialNumber.substring(2, 4))!=null;
         }
     }
 
@@ -223,10 +223,10 @@ public class WhereConverter extends ClauseConverter{
 
     public static void main(String[] args){
         SQLParser p = new SQLParser();
-        // String q1 = "select a from b where not (( a<=5 or b>3) and c=((( (2) ))+2*9)/2) and (a in [\"hello   world\", 2, 4.534])";
+        String q1 = "select a from b where not (( a<=5 or b>3) and c=((( (2) ))+2*9)/2) and (a in [\"hello   world\", 2, 4.534])";
         // String q1 = "select a from b where salary>(10000/((4+2)-1)) and salary<1000000000";
         // String q1 = "select a from b where salary>5000 and salary<1000000000";
-        String q1 = "select a from b where not salary>5000";
+        // String q1 = "select a from b where not salary>5000";
         SQLClause clause = p.parseQuery(q1).getClauses().get(2);
         ConditionSQLParser cqp = new ConditionSQLParser();
         CSQLOperator.preOrderPrint(cqp.parse(clause), 0);
