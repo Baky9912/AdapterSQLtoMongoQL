@@ -12,8 +12,8 @@ public class WhereExtractor extends SQLExtractor {
         assert clause.getKeyword().equals("where");
     }
 
-    public static CSQLOperator extractTopNode(SQLClause clause){
+    public CSQLOperator extractTopNode(){
         ConditionSQLParser csp = new ConditionSQLParser();
-        return csp.parse(clause);
+        return csp.parse(getClause());
     } 
 }

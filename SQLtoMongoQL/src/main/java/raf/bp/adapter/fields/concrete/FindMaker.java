@@ -22,10 +22,10 @@ import raf.bp.model.convertableSQL.operator.CSQLBinaryOperator;
 import raf.bp.model.convertableSQL.operator.CSQLUnaryOperator;
 import raf.bp.parser.ConditionSQLParser;
 import raf.bp.parser.SQLParser;
+import raf.bp.sqlextractor.concrete.WhereExtractor;
 import raf.bp.adapter.fields.FieldMaker;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
-import raf.bp.sqlextractor.concrete.WhereExtractor;
 
 public class FindMaker extends FieldMaker{
         private static Map<String, String> sqlToMongoOp = new HashMap<>() {{
@@ -221,8 +221,8 @@ public class FindMaker extends FieldMaker{
     @Override
     public String make(SQLQuery query) {
         SQLClause clause = query.getClause("where");
-        WhereExtractor whereExtractor = new WhereExtractor();
-        whereExtractor.extractTopNode(clause);
+        WhereExtractor whereExtractor = new WhereExtractor(clause);
+        whereExtractor.extractTopNode();
         ConditionSQLParser condSQLParser = new ConditionSQLParser();
         CSQLOperator root = condSQLParser.parse(clause);
         return makeMongo(root);
