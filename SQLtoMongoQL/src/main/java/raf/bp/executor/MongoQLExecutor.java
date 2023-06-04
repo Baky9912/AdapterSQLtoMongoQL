@@ -1,22 +1,22 @@
 package raf.bp.executor;
 
 import com.mongodb.*;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Projections;
-import com.mongodb.client.model.Sorts;
+import com.mongodb.MongoClient;
+import com.mongodb.client.*;
+import com.mongodb.client.model.*;
+import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import raf.bp.controller.MongoDBController;
 import raf.bp.model.TableRow;
 import raf.bp.packager.TablePackager;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.size;
 
 public class MongoQLExecutor {
 
@@ -64,13 +64,46 @@ public class MongoQLExecutor {
             result = mongoCollection.find(find);
 
         if (projection != null)
-           result.projection(projection);
+            result.projection(projection);
         if (sort != null)
             result.sort(sort);
         if (skip != 0)
             result.skip(skip);
         if (limit != 0)
             result.limit(limit);
+
+        MongoCursor<Document> cursor = result.iterator();
+        ArrayList<TableRow> rows = getRows(cursor, collection);
+        mongoClient.close();
+
+        return rows;
+    }
+    public ArrayList<TableRow> executeAggregate(String collection, Bson lookup, Bson unwind, Bson match, Bson group, Bson sort, Bson projection, int skip, int limit) {
+        MongoClient mongoClient = MongoDBController.getConnection();
+
+        MongoDatabase database = mongoClient.getDatabase("bp_tim51");
+
+        MongoCollection<Document> mongoCollection = database.getCollection(collection);
+
+        AggregateIterable<Document> result;
+        ArrayList<Bson> aggregate = new ArrayList<>();
+        Bson skipBson = new Document("$skip", skip);
+        Bson limitBson = new Document("$limit", skip);
+
+        if (lookup != null) aggregate.add(lookup);
+        if (unwind != null) aggregate.add(unwind);
+        if (match != null) aggregate.add(match);
+        if (group != null) aggregate.add(group);
+        if (sort != null) aggregate.add(sort);
+        if (projection != null) aggregate.add(projection);
+        if (skip != 0) aggregate.add(skipBson);
+        if (limit != 0) aggregate.add(limitBson);
+
+        for (Bson b : aggregate) {
+            System.out.println(b.toString());
+        }
+
+        result = mongoCollection.aggregate(aggregate);
 
         MongoCursor<Document> cursor = result.iterator();
         ArrayList<TableRow> rows = getRows(cursor, collection);
@@ -99,11 +132,39 @@ public class MongoQLExecutor {
 
         String collection = "employees";
 
-        Bson find = eq("salary", 24000);
-        Bson projection = Projections.fields(Projections.include("first_name", "last_name", "salary"), Projections.excludeId());
-        Bson sort = Sorts.descending("salary");
+//        Bson find = eq("salary", 24000);
+//        Bson projection = Projections.fields(Projections.include("first_name", "last_name", "salary"), Projections.excludeId());
+//        Bson sort = Sorts.descending("salary");
+//        ArrayList<TableRow> rows = executor.executeFind(collection, find, projection, sort, 0, 0);
 
-        ArrayList<TableRow> rows = executor.executeFind(collection, find, projection, sort, 0, 0);
+        /*
+        db.departments.aggregate([
+              {
+                $lookup: {
+                  from: "employees",
+                  localField: "department_id",
+                  foreignField: "department_id",
+                  as: "employees"
+                }
+              }, {
+                  $unwind: "$department_name"
+              },
+              {
+                $project: {
+                  department_name: 1,
+                  employee_count: { $size: "$employees" }
+                }
+              }
+            ]);
+         */
+
+        Bson lookup = Aggregates.lookup("employees", "department_id", "department_id", "employees");
+        Bson unwind = Aggregates.unwind("$department_name");
+        Bson projection = new Document("$size", "$employees");
+        Bson project = Aggregates.project(new Document("department_name", 1).append("employee_count", projection));
+
+        ArrayList<TableRow> rows = executor.executeAggregate("departments", lookup, unwind, null, null, null, project, 0, 0);
+
 
         TablePackager packager = new TablePackager();
         packager.pack(rows);
