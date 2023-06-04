@@ -7,8 +7,12 @@ import raf.bp.sqlextractor.SQLExtractor;
 
 // no abstract for Extractors, avoiding problems with return Object
 public class WhereExtractor extends SQLExtractor {
-    public static CSQLOperator extractTopNode(SQLClause clause){
+    public WhereExtractor(SQLClause clause) {
+        super(clause);
         assert clause.getKeyword().equals("where");
+    }
+
+    public static CSQLOperator extractTopNode(SQLClause clause){
         ConditionSQLParser csp = new ConditionSQLParser();
         return csp.parse(clause);
     } 

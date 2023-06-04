@@ -12,10 +12,14 @@ import raf.bp.sqlextractor.SQLExtractor;
 
 public class SelectExtractor extends SQLExtractor {
 
-    public static List<CSQLSimpleDatatype> extractSimpleFields(SQLClause clause){
-        assert clause.getKeyword().equals("select");
+    public SelectExtractor(SQLClause clause){
+        super(clause);
+        assert getClause().getKeyword().equals("select");
+    }
+
+    public List<CSQLSimpleDatatype> extractSimpleFields(){
         List<CSQLSimpleDatatype> fields = new ArrayList<>();
-        List<List<String>> statements = findStatements(clause);
+        List<List<String>> statements = findStatements(getClause());
         for(List<String> statement : statements){
             if(statement.size()==1){
                 CSQLSimpleDatatype field = new CSQLSimpleDatatype(statement.get(0));
@@ -25,10 +29,9 @@ public class SelectExtractor extends SQLExtractor {
         return fields;
     }
 
-    public static List<CSQLAggregateFunction> extractAggregateFunctions(SQLClause clause){
-        assert clause.getKeyword().equals("select");
+    public List<CSQLAggregateFunction> extractAggregateFunctions(){
         List<CSQLAggregateFunction> aggFuncs = new ArrayList<>();
-        List<List<String>> statements = findStatements(clause);
+        List<List<String>> statements = findStatements(getClause());
         for(List<String> statement : statements){
             if(statement.size()==4){
                 CSQLAggregateFunction aggFunc = new CSQLAggregateFunction(statement.get(0), statement.get(2));

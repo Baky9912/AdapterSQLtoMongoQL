@@ -6,9 +6,13 @@ import raf.bp.model.SQL.SQLToken;
 import raf.bp.sqlextractor.SQLExtractor;
 
 public class LimitExtractor extends SQLExtractor {
-    public static Integer extractLimit(SQLClause clause){
+    public LimitExtractor(SQLClause clause) {
+        super(clause);
         assert clause.getKeyword().equals("limit");
-        SQLExpression expr = clause.getSqlExpressions().get(0);
+    }
+
+    public Integer extractLimit(){
+        SQLExpression expr = getClause().getSqlExpressions().get(0);
         SQLToken token = (SQLToken)expr;
         return Integer.parseInt(token.getWord());
     }
