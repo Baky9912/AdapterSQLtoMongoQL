@@ -7,9 +7,12 @@ import com.mongodb.client.model.*;
 import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import raf.bp.adapter.fields.concrete.ProjectMaker;
 import raf.bp.controller.MongoDBController;
+import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.TableRow;
 import raf.bp.packager.TablePackager;
+import raf.bp.parser.SQLParser;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -160,8 +163,17 @@ public class MongoQLExecutor {
 
         Bson lookup = Aggregates.lookup("employees", "department_id", "department_id", "employees");
         Bson unwind = Aggregates.unwind("$department_name");
+        String q1 = "SELECT department_name, count(employees.employee_id) from departments join employees on departments.department_id=employees.department_id group by department_name";
+
+        SQLQuery query = (new SQLParser()).parseQuery(q1);
+        Bson project = (new ProjectMaker()).make(query);
+
         Bson projection = new Document("$size", "$employees");
-        Bson project = Aggregates.project(new Document("department_name", 1).append("employee_count", projection));
+        Bson project2 = Aggregates.project(new Document("department_name", 1).append("employee_count", projection));
+
+        System.out.println("PROJECTIONS");
+        System.out.println(project);
+        System.out.println(project2);
 
         ArrayList<TableRow> rows = executor.executeAggregate("departments", lookup, unwind, null, null, null, project, 0, 0);
 
