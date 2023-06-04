@@ -37,7 +37,7 @@ public class SQLParser {
     }
 
     private int max_level = 10;
-    private String[] sqlL1Keywords = {"select", "from", "where", "group_by", "order_by", "limit", "rownum"};
+    private String[] sqlL1Keywords = {"select", "from", "where", "group_by", "order_by", "limit", "offset"};
     // They don't depend on other keywords ex HAVING depends on GROUP BY existing, it's not L1
     private List<String> l1Keywords = new ArrayList<>(Arrays.asList(sqlL1Keywords));
     private SQLLexer sqlLexer = new SQLLexer();

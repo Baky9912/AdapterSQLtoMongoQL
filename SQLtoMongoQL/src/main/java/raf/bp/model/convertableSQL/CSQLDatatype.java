@@ -12,7 +12,8 @@ abstract public class CSQLDatatype extends CSQLType {
         NUMBER("Number"),
         FIELD("Field"),
         SPECIAL("Special"),
-        ARRAY("Array");
+        ARRAY("Array"),
+        AGGREGATE_FUNC("Aggregate function");
 
         private Subtype(String subtype){
             this.subtype = subtype;
