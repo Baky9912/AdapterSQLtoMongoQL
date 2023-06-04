@@ -2,8 +2,7 @@ package raf.bp.model;
 
 import lombok.Data;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Data
 public class TableRow {
@@ -12,7 +11,7 @@ public class TableRow {
 
 
     public TableRow() {
-        this.fields = new HashMap<>();
+        this.fields = new LinkedHashMap<>();
     }
 
     public void addField(String fieldName, Object value) {

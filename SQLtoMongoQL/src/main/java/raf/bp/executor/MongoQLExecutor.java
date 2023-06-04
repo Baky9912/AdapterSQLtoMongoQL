@@ -1,15 +1,19 @@
 package raf.bp.executor;
 
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Projections;
 import org.bson.Document;
-import raf.bp.app.AppCore;
+import org.bson.conversions.Bson;
 import raf.bp.controller.MongoDBController;
 import raf.bp.model.TableRow;
+import raf.bp.packager.TablePackager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+
+import static com.mongodb.client.model.Projections.excludeId;
 
 public class MongoQLExecutor {
 
@@ -27,6 +31,21 @@ public class MongoQLExecutor {
 
         return rows;
     }
+
+    public ArrayList<TableRow> executeFind(String collection, String select, String sort) {
+        MongoClient mongoClient = MongoDBController.getConnection();
+
+        MongoDatabase database = mongoClient.getDatabase("bp_tim51");
+        MongoCollection<Document> mongoCollection = database.getCollection(collection);
+
+        MongoCursor<Document> cursor = mongoCollection.find().projection(Document.parse(select)).sort(Document.parse(sort)).iterator();
+
+        ArrayList<TableRow> rows = getRows(cursor, collection);
+        mongoClient.close();
+
+        return rows;
+    }
+
     public ArrayList<TableRow> getRows(MongoCursor<Document> cursor, String table) {
 
         ArrayList<TableRow> rows = new ArrayList<>();
@@ -40,6 +59,17 @@ public class MongoQLExecutor {
             rows.add(tr);
         }
         return rows;
+    }
+
+    public static void main(String[] args) {
+        MongoQLExecutor executor = new MongoQLExecutor();
+
+        String collection = "employees", select = "{\"first_name\": 1, \"last_name\": 1, \"_id\": 0}", sort = "{\"salary\": 1}";
+
+        ArrayList<TableRow> rows = executor.executeFind(collection, select, sort);
+
+        TablePackager packager = new TablePackager();
+        packager.pack(rows);
     }
 
 }
