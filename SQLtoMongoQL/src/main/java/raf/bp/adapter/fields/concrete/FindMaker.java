@@ -9,6 +9,9 @@ import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
 
+import org.bson.Document;
+import org.bson.conversions.Bson;
+
 import raf.bp.converter.ClauseConverter;
 import raf.bp.converter.ClauseConverterManager;
 import raf.bp.model.SQL.SQLClause;
@@ -23,11 +26,11 @@ import raf.bp.model.convertableSQL.operator.CSQLUnaryOperator;
 import raf.bp.parser.ConditionSQLParser;
 import raf.bp.parser.SQLParser;
 import raf.bp.sqlextractor.concrete.WhereExtractor;
-import raf.bp.adapter.fields.FieldMaker;
+import raf.bp.adapter.fields.BsonFieldMaker;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
 
-public class FindMaker extends FieldMaker{
+public class FindMaker extends BsonFieldMaker{
         private static Map<String, String> sqlToMongoOp = new HashMap<>() {{
         put("*", "$multiply");
         put("/", "$divide");
@@ -219,13 +222,13 @@ public class FindMaker extends FieldMaker{
     }
 
     @Override
-    public String make(SQLQuery query) {
+    public Bson make(SQLQuery query) {
         SQLClause clause = query.getClause("where");
         WhereExtractor whereExtractor = new WhereExtractor(clause);
         whereExtractor.extractTopNode();
         ConditionSQLParser condSQLParser = new ConditionSQLParser();
         CSQLOperator root = condSQLParser.parse(clause);
-        return makeMongo(root);
+        return Document.parse(makeMongo(root));
     }
     
 }

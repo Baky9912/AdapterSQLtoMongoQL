@@ -1,14 +1,19 @@
 package raf.bp.adapter.fields.concrete;
 
-import raf.bp.adapter.fields.FieldMaker;
+
+import raf.bp.adapter.fields.BsonFieldMaker;
+import raf.bp.adapter.fields.IntFieldMaker;
+import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
+import raf.bp.sqlextractor.concrete.OffsetExtractor;
 
-public class SkipMaker extends FieldMaker{
-
+public class SkipMaker extends IntFieldMaker{
     @Override
-    public String make(SQLQuery query) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'make'");
+    public int make(SQLQuery query) {
+        SQLClause clause = query.getClause("offset");
+        if(clause==null)
+            return 0;
+        OffsetExtractor offsetExtractor = new OffsetExtractor(clause);
+        return offsetExtractor.extractOffset();
     }
-    
 }

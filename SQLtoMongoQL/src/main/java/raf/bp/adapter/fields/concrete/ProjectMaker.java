@@ -1,12 +1,14 @@
 package raf.bp.adapter.fields.concrete;
 
-import raf.bp.adapter.fields.FieldMaker;
+import org.bson.conversions.Bson;
+
+import raf.bp.adapter.fields.BsonFieldMaker;
 import raf.bp.model.SQL.SQLQuery;
 
-public class ProjectMaker extends FieldMaker {
+public class ProjectMaker extends BsonFieldMaker {
 
     @Override
-    public String make(SQLQuery query) {
+    public Bson make(SQLQuery query) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'make'");
     }
