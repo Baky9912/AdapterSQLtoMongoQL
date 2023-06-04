@@ -25,7 +25,7 @@ import raf.bp.parser.SQLParser;
 import raf.bp.adapter.fields.FieldMaker;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
-import raf.bp.sqlextractor.WhereExtractor;
+import raf.bp.sqlextractor.concrete.WhereExtractor;
 
 public class FindMaker extends FieldMaker{
         private static Map<String, String> sqlToMongoOp = new HashMap<>() {{
