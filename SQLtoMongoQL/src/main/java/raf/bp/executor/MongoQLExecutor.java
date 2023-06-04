@@ -1,10 +1,12 @@
 package raf.bp.executor;
 
-import com.mongodb.MongoClient;
+import com.mongodb.*;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Sorts;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import raf.bp.controller.MongoDBController;
@@ -12,8 +14,6 @@ import raf.bp.model.TableRow;
 import raf.bp.packager.TablePackager;
 
 import java.util.ArrayList;
-
-import static com.mongodb.client.model.Projections.excludeId;
 
 public class MongoQLExecutor {
 
@@ -46,6 +46,31 @@ public class MongoQLExecutor {
         return rows;
     }
 
+    public ArrayList<TableRow> executeFind(String collection, Bson projection, Bson sort, int limit) {
+        MongoClient mongoClient = MongoDBController.getConnection();
+
+        MongoDatabase database = mongoClient.getDatabase("bp_tim51");
+
+        MongoCollection<Document> mongoCollection = database.getCollection(collection);
+
+        FindIterable<Document> result = mongoCollection.find();
+        if (projection != null) {
+           result.projection(projection);
+        }
+        if (sort != null) {
+            result.sort(sort);
+        }
+        if (limit != 0) {
+            result.limit(limit);
+        }
+
+        MongoCursor<Document> cursor = result.iterator();
+        ArrayList<TableRow> rows = getRows(cursor, collection);
+        mongoClient.close();
+
+        return rows;
+    }
+
     public ArrayList<TableRow> getRows(MongoCursor<Document> cursor, String table) {
 
         ArrayList<TableRow> rows = new ArrayList<>();
@@ -64,9 +89,12 @@ public class MongoQLExecutor {
     public static void main(String[] args) {
         MongoQLExecutor executor = new MongoQLExecutor();
 
-        String collection = "employees", select = "{\"first_name\": 1, \"last_name\": 1, \"_id\": 0}", sort = "{\"salary\": 1}";
+        String collection = "employees";
 
-        ArrayList<TableRow> rows = executor.executeFind(collection, select, sort);
+        Bson projection = Projections.fields(Projections.include("first_name", "last_name", "salary"), Projections.excludeId());
+        Bson sort = Sorts.descending("salary");
+
+        ArrayList<TableRow> rows = executor.executeFind(collection, projection, sort, 0);
 
         TablePackager packager = new TablePackager();
         packager.pack(rows);
