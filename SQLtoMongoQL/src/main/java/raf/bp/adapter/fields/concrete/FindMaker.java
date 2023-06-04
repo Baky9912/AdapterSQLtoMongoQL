@@ -1,4 +1,4 @@
-package raf.bp.converter.concrete;
+package raf.bp.adapter.fields.concrete;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,10 +22,13 @@ import raf.bp.model.convertableSQL.operator.CSQLBinaryOperator;
 import raf.bp.model.convertableSQL.operator.CSQLUnaryOperator;
 import raf.bp.parser.ConditionSQLParser;
 import raf.bp.parser.SQLParser;
+import raf.bp.adapter.fields.FieldMaker;
+import raf.bp.model.SQL.SQLClause;
+import raf.bp.model.SQL.SQLQuery;
+import raf.bp.sqlextractor.WhereExtractor;
 
-public class WhereConverter extends ClauseConverter{
-    // TODO UNTESTED
-    private static Map<String, String> sqlToMongoOp = new HashMap<>() {{
+public class FindMaker extends FieldMaker{
+        private static Map<String, String> sqlToMongoOp = new HashMap<>() {{
         put("*", "$multiply");
         put("/", "$divide");
         put("+", "$add");
@@ -216,22 +219,13 @@ public class WhereConverter extends ClauseConverter{
     }
 
     @Override
-    public String convert(SQLClause clause) {
+    public String make(SQLQuery query) {
+        SQLClause clause = query.getClause("where");
+        WhereExtractor whereExtractor = new WhereExtractor();
+        whereExtractor.extractTopNode(clause);
         ConditionSQLParser condSQLParser = new ConditionSQLParser();
         CSQLOperator root = condSQLParser.parse(clause);
         return makeMongo(root);
     }
-
-    public static void main(String[] args){
-        SQLParser p = new SQLParser();
-        String q1 = "select a from b where not (( a<=5 or b>3) and c=((( (2) ))+2*9)/2) and (a in [\"hello   world\", 2, 4.534])";
-        // String q1 = "select a from b where salary>(10000/((4+2)-1)) and salary<1000000000";
-        // String q1 = "select a from b where salary>5000 and salary<1000000000";
-        // String q1 = "select a from b where not salary>5000";
-        SQLClause clause = p.parseQuery(q1).getClauses().get(2);
-        ConditionSQLParser cqp = new ConditionSQLParser();
-        CSQLOperator.preOrderPrint(cqp.parse(clause), 0);
-        WhereConverter whereConverter = new WhereConverter();
-        System.out.println(whereConverter.convert(clause));
-    }
+    
 }

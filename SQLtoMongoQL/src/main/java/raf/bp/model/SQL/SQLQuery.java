@@ -48,6 +48,14 @@ public class SQLQuery extends SQLExpression{
         System.out.println(")");
     }
 
+    public SQLClause getClause(String keyword){
+        for(SQLClause clause : this.clauses){
+            if(clause.getKeyword().equals(keyword))
+                return clause;
+        }
+        return null;
+    }
+
     public static void printAnyQuery(SQLQuery q){
         if(q==null){
             System.out.println("Query can't be parsed");
