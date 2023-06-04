@@ -1,5 +1,6 @@
 package raf.bp.gui.table;
 
+import raf.bp.app.AppCore;
 import raf.bp.model.TableRow;
 
 import javax.swing.table.DefaultTableModel;
@@ -12,6 +13,10 @@ public class TableModel extends DefaultTableModel {
 
     private void updateModel(){
 
+        if (rows.size() == 0) {
+            AppCore.getInstace().getMessageHandler().displayOK("No records found");
+            return;
+        }
         int columnCount = rows.get(0).getFields().keySet().size();
 
         Vector columnVector = DefaultTableModel.convertToVector(rows.get(0).getFields().keySet().toArray());
