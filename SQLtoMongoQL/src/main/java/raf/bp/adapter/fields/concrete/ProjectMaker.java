@@ -6,7 +6,9 @@ import org.bson.conversions.Bson;
 
 import raf.bp.adapter.fields.MongoQLMaker;
 import raf.bp.adapter.fields.util.TranslateAggregate;
+import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
+import raf.bp.model.SQL.SQLToken;
 import raf.bp.model.convertableSQL.datatypes.CSQLAggregateFunction;
 import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
 import raf.bp.model.convertableSQL.from.CSQLFromInfo;
@@ -34,6 +36,8 @@ public class ProjectMaker extends MongoQLMaker {
         SelectExtractor selectExtractor = new SelectExtractor(query.getClause("select"));
         FromExtractor fromExtractor = new FromExtractor(query.getClause("from"));
 
+        if (isSelectStar(query.getClause("select"))) return Aggregates.project(new Document("_id", 0));
+
         CSQLFromInfo fromInfo = fromExtractor.extractFromInfo();
         CSQLFromTable mainTable = fromInfo.getMainTable();
 
@@ -42,6 +46,14 @@ public class ProjectMaker extends MongoQLMaker {
 
         Document d = new Document("_id", 0);
         for (CSQLSimpleDatatype field : simpleFields) {
+
+            if (query.getClause("group_by") != null) {
+                /* if group by exists, we need to handle fields differently */
+                d.append(field.getFieldOnly(), "$_id." + field.getFieldOnly());
+                continue;
+
+            }
+
             if (field.getTableIfExists() != null && !mainTable.getTableName().equals(field.getTableIfExists()) && !field.getTableIfExists().equals(mainTable.getAlias()))
                 /* this is a foreign field, table exists and isn't equal to main table name or it's alias */
                 /* this will put all foreign fields in the format -> field_name = $table_name.field_name */
@@ -65,6 +77,12 @@ public class ProjectMaker extends MongoQLMaker {
         }
         project = Aggregates.project(d);
         return project;
+    }
+
+    public boolean isSelectStar(SQLClause clause) {
+
+        return ((SQLToken) clause.getSqlExpressions().get(0)).getWord().equals("*");
+
     }
     
 }

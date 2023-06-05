@@ -187,9 +187,9 @@ public class MongoQLExecutor {
 //        String q1 = "SELECT department_id, department_name, count(employees.employee_id) from departments join employees on departments.department_id=employees.department_id group by department_name";
 //        String collection = "employees";
 //        String q1 = "select employees.first_name, employees.last_name, departments.department_name from employees join departments on employees.department_id = departments.department_id";
-        String q1 = "SELECT employees.first_name, last_name, salary, departments.department_name FROM employees" +
-                " JOIN departments ON employees.department_id = departments.department_id WHERE salary > 10000 ORDER BY salary desc, first_name desc";
-
+//        String q1 = "SELECT employees.first_name, last_name, salary, departments.department_name FROM employees" +
+//                " JOIN departments ON employees.department_id = departments.department_id WHERE salary > 10000 ORDER BY salary desc, first_name desc";
+        String q1 = "SELECT department_id, department_name, count(employees.employee_id) from departments join employees on departments.department_id=employees.department_id group by department_name, department_id";
         SQLQuery query = (new SQLParser()).parseQuery(q1);
         String collection = (new FromExtractor(query.getClause("from")).extractFromInfo().getMainTable().getTableName());
         ArrayList<Bson> lookup = (new LookupUnwindMaker()).make(query);
@@ -219,7 +219,21 @@ public class MongoQLExecutor {
         MongoQL mongoQL = new MongoQL(query);
         mongoQL.makeAll();
 
+        System.out.println("LOOKUPS");
+        System.out.println(lookup);
+        System.out.println(mongoQL.getLookup_unwind());
+
+        System.out.println("GROUPS");
+        System.out.println(group);
+        System.out.println(mongoQL.getGroup());
+
+        System.out.println("PROJECTS");
+        System.out.println(project3);
+        System.out.println(mongoQL.getProjection());
+
         ArrayList<TableRow> rows = executor.executeAggregate(mongoQL);
+
+//        ArrayList<TableRow> rows = executor.executeAggregate(collection, lookup, null, group, null, project3, 0, 0);
 
         TablePackager packager = new TablePackager();
         packager.pack(rows);

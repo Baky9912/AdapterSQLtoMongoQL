@@ -3,8 +3,10 @@ package raf.bp.adapter.fields.concrete;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mongodb.client.model.Accumulators;
 import org.bson.BsonDocument;
 import org.bson.BsonString;
+import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import com.mongodb.client.model.Aggregates;
@@ -22,20 +24,27 @@ public class GroupMaker extends MongoQLMaker{
 
     @Override
     public Bson make(SQLQuery query) {
-        BsonDocument id = new BsonDocument();
+
+        Document id = new Document();
         SQLClause clause = query.getClause("group_by");
         if(clause==null) return null;
+
         GroupByExtractor extractor = new GroupByExtractor(clause);
         for(String field : extractor.extractFields()){
-            id.put(field,new BsonString("$"+field));
+            id.append(field, "$" + field);
         }
+
         List<BsonField> fieldAccumulators = new ArrayList<>();
         SelectExtractor selectExtractor = new SelectExtractor(query.getClause("select"));
+
         for(CSQLAggregateFunction aggFunc : selectExtractor.extractAggregateFunctions()){
+
             String fieldname = TranslateAggregate.translateAggFuncName(aggFunc);
-            Bson mongoAgg = TranslateAggregate.makeMongoAggFunc(aggFunc);
+            Bson mongoAgg = TranslateAggregate.makeGroupAggFunc(aggFunc);
+            System.out.println("HERE " + fieldname);
             BsonField bsonField = new BsonField(fieldname, mongoAgg);
             fieldAccumulators.add(bsonField);
+
         }
         return Aggregates.group(id, fieldAccumulators);
     }
