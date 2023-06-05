@@ -15,6 +15,11 @@ public class CSQLSortField extends CSQLType {
         this.order = order;
     }
 
+    public int getSortOrder() {
+        if (order.equals("asc")) return 1;
+        else return -1;
+    }
+
     public String getType(){
         return "[SORTFIELD]";
     }
