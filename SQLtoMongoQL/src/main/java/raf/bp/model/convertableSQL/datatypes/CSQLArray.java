@@ -47,6 +47,10 @@ public class CSQLArray extends CSQLDatatype {
             tokens.add(token);
         }
         tokens.add(new SQLToken("]"));
+        System.out.println("PRINTING TOKENS FROM MAKE ARRAY");
+        for(SQLToken token : tokens){
+            System.out.println(token.getWord());
+        }
         return tokens;
     }
 }
