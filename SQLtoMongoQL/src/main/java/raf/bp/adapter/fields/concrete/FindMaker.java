@@ -134,7 +134,7 @@ public class FindMaker extends MongoQLMaker {
     }
 
     private String joinRegexOp(String op, String strSource, String re){
-        return "{ " + strSource + ": { $regex:" + convertRegex(re) + "}}";
+        return "{ \""+ strSource + "\": { $regex:" + convertRegex(re) + "}}";
     }
 
     private String joinInOp(String op, String lArg, String rArg){
