@@ -44,7 +44,7 @@ public class TranslateAggregate {
     public static Bson makeGroupAggFunc(CSQLAggregateFunction aggFunc) {
         String funcArgument = (aggFunc.getArg().equals("*")) ? "$_id" : aggFunc.getArg();
 
-        var argument = (aggFunc.getFunc().equals("count")) ? 1 : funcArgument;
+        var argument = (aggFunc.getFunc().equals("count")) ? 1 : "$" + funcArgument;
 
         return new Document("$" + aggGroupMapping.get(aggFunc.getFunc()), argument);
     }
