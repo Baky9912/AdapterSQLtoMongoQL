@@ -17,7 +17,7 @@ public class SortMaker extends MongoQLMaker {
     @Override
     public Bson make(SQLQuery query) {
         SQLClause clause = query.getClause("order_by");
-        CSQLFromTable mainTable = (new FromExtractor(query.getClause("from")).extractMainTable();
+        CSQLFromTable mainTable = (new FromExtractor(query.getClause("from"))).extractMainTable();
         if (clause == null) return null;
 
         List<CSQLSortField> sortFields = (new OrderByExtractor(clause)).extractSortFields();
