@@ -27,16 +27,25 @@ public class TranslateAggregate {
 
 
     public static String translateAggFuncName(CSQLAggregateFunction aggFunc){
-        return aggFunc.getFieldName() + "_" + aggFunc.getFunc();
+        String funcArgument = (aggFunc.getArg().equals("*")) ? "_id" : aggFunc.getFieldName();
+
+        return funcArgument + "_" + aggFunc.getFunc();
     }
 
     public static Bson makeMongoAggFunc(CSQLAggregateFunction aggFunc){
         // unsure
-        return new Document("$" + aggMapping.get(aggFunc.getFunc()), "$" + aggFunc.getTable());
+        String funcArgument = (aggFunc.getArg().equals("*")) ? "_id" : aggFunc.getFieldName();
+
+
+        return new Document("$" + aggMapping.get(aggFunc.getFunc()), "$" + funcArgument);
+//        return new Document("$" + aggMapping.get(aggFunc.getFunc()), "$" + aggFunc.getTable());
     }
 
     public static Bson makeGroupAggFunc(CSQLAggregateFunction aggFunc) {
-        var argument = (aggFunc.getFunc().equals("count")) ? 1 : aggFunc.getArg();
+        String funcArgument = (aggFunc.getArg().equals("*")) ? "$_id" : aggFunc.getArg();
+
+        var argument = (aggFunc.getFunc().equals("count")) ? 1 : funcArgument;
+
         return new Document("$" + aggGroupMapping.get(aggFunc.getFunc()), argument);
     }
 }
