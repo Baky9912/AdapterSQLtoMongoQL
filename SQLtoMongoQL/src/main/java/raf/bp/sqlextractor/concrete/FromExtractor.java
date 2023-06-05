@@ -44,9 +44,24 @@ public class FromExtractor extends SQLExtractor{
         return tableArgs;
     }
 
+    public CSQLFromTable extractMainTable() {
+
+        String tableName, alias = null;
+        ArrayList<String> wordsIndicatingMainTableIsDeclared = new ArrayList<>(List.of("outer", "cross", "inner", "left", "right", "join"));
+
+        tableName = ((SQLToken) getClause().getSqlExpressions().get(0)).getWord();
+
+        if (!wordsIndicatingMainTableIsDeclared.contains(((SQLToken) getClause().getSqlExpressions().get(1)).getWord())) {
+            alias = (((SQLToken) getClause().getSqlExpressions().get(1)).getWord());
+        }
+
+        return new CSQLFromTable(tableName, alias);
+    }
+
     public CSQLFromTable extractFromTable(List<String> args){
         // employees e on x=y
         // employees using x
+        System.out.println("EXTRACT FROM TABLE");
         System.out.println(args);
         List<String> table = new ArrayList<>();
         List<String> condition = new ArrayList<>();
@@ -87,7 +102,7 @@ public class FromExtractor extends SQLExtractor{
     public CSQLFromInfo extractFromInfo(){
         List<List<String>> tableArgs = splitPerTable();
         CSQLFromInfo csqlFromInfo = new CSQLFromInfo();
-        CSQLFromTable mainTable = extractFromTable(tableArgs.get(0));
+        CSQLFromTable mainTable = extractMainTable();
         csqlFromInfo.setMainTable(mainTable);
         int n = tableArgs.size();
         for(int i=0; i<n; ++i){

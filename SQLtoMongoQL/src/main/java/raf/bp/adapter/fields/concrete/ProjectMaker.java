@@ -41,7 +41,12 @@ public class ProjectMaker extends MongoQLMaker {
 
         Document d = new Document();
         for (CSQLSimpleDatatype field : simpleFields) {
-            if (field.getTableIfExists() != null && mainTable.getTableName().equals(field.getTableIfExists()))
+            if (field.getTableIfExists() != null && !mainTable.getTableName().equals(field.getTableIfExists()) && !field.getTableIfExists().equals(mainTable.getAlias()))
+                /* this is a foreign field, table exists and isn't equal to main table name or it's alias */
+                /* this will put all foreign fields in the format -> field_name = $table_name.field_name */
+                d.append(field.getFieldOnly(), "$" + field.getValue());
+            else if (field.getTableIfExists() != null && (mainTable.getTableName().equals(field.getTableIfExists()) || field.getTableIfExists().equals(mainTable.getAlias()) ) )
+                /* this handles all local fields that have the table declared */
                 d.append(field.getFieldOnly(), 1);
             else d.append(field.getValue(), 1);
         }

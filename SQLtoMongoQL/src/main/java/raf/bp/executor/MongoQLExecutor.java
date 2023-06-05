@@ -121,6 +121,7 @@ public class MongoQLExecutor {
             Document d = cursor.next();
 
             d.forEach(tr::addField);
+            System.out.println(tr);
             rows.add(tr);
         }
         return rows;
@@ -161,7 +162,8 @@ public class MongoQLExecutor {
 //        String q1 = "SELECT department_name, count(employees.employee_id) from departments join employees on departments.department_id=employees.department_id group by department_name";
         String collection = "employees";
 //        String q1 = "select employees.first_name, employees.last_name, departments.department_name from employees join departments on employees.department_id = departments.department_id";
-        String q1 = "SELECT employees.first_name, employees.last_name, departments.department_name FROM employees JOIN departments ON employees.department_id = departments.department_id";
+        String q1 = "SELECT employees.first_name, employees.last_name, departments.department_name FROM employees" +
+                " JOIN departments ON employees.department_id = departments.department_id";
 
         SQLQuery query = (new SQLParser()).parseQuery(q1);
         ArrayList<Bson> lookup = (new LookupUnwindMaker()).make(query);
@@ -171,7 +173,7 @@ public class MongoQLExecutor {
 //        Bson project2 = Aggregates.project(new Document("department_name", 1).append("employee_count", projection));
         Bson projection = new Document("first_name", 1).append("last_name", 1).append("departments.department_name", 1);
 //        Bson project2 = Aggregates.project(projection);
-        Bson project3 = Document.parse("{\"$project\": {\"first_name\":1, \"last_name\":1, \"departments.department_name\":1}}");
+        Bson project3 = Document.parse("{\"$project\": {\"first_name\":1, \"last_name\":1, \"department_name\":\"$departments.department_name\"}}");
 
         System.out.println("PROJECTIONS");
         System.out.println(project);
@@ -180,7 +182,7 @@ public class MongoQLExecutor {
         System.out.println(lookup);
         System.out.println(lookup2);
 
-        ArrayList<TableRow> rows = executor.executeAggregate("departments", lookup, null, null, null, project3, 0, 0);
+        ArrayList<TableRow> rows = executor.executeAggregate("employees", lookup, null, null, null, project, 0, 0);
 
 
         TablePackager packager = new TablePackager();
