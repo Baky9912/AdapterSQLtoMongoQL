@@ -5,6 +5,7 @@ import java.io.ObjectInputStream.GetField;
 import lombok.Getter;
 import lombok.Setter;
 import raf.bp.model.convertableSQL.CSQLDatatype;
+import raf.bp.model.convertableSQL.from.CSQLFromTable;
 
 @Setter
 @Getter
@@ -34,6 +35,19 @@ public class CSQLSimpleDatatype extends CSQLDatatype{
         return value.split("\\.")[0];
     }
 
+    /*
+     * This will remove the table name or alias if it matches with argument's table
+     * */
+    public String stripMainTable(CSQLFromTable mainTable) {
+        if (!value.contains(".")) return value;
+
+        String[] temp = value.split("\\.");
+
+        if (temp[0].equals(mainTable.getTableName()) || temp[0].equals(mainTable.getAlias()))
+            return temp[1];
+        else return value;
+
+    }
     public boolean isSpecial(){
         return value.equals("(") || value.equals(")") || value.equals(",");
     }
