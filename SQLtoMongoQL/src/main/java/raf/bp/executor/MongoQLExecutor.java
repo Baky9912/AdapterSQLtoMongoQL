@@ -188,7 +188,7 @@ public class MongoQLExecutor {
 //        String collection = "employees";
 //        String q1 = "select employees.first_name, employees.last_name, departments.department_name from employees join departments on employees.department_id = departments.department_id";
         String q1 = "SELECT employees.first_name, last_name, departments.department_name FROM employees" +
-                " JOIN departments ON employees.department_id = departments.department_id limit 5";
+                " JOIN departments ON employees.department_id = departments.department_id WHERE salary > 15000";
 
         SQLQuery query = (new SQLParser()).parseQuery(q1);
         String collection = (new FromExtractor(query.getClause("from")).extractFromInfo().getMainTable().getTableName());

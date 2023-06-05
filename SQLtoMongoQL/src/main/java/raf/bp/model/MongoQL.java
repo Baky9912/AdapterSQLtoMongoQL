@@ -4,10 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import raf.bp.adapter.fields.concrete.LimitMaker;
-import raf.bp.adapter.fields.concrete.LookupUnwindMaker;
-import raf.bp.adapter.fields.concrete.ProjectMaker;
-import raf.bp.adapter.fields.concrete.SkipMaker;
+import raf.bp.adapter.fields.concrete.*;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.convertableSQL.from.CSQLFromTable;
 import raf.bp.sqlextractor.concrete.FromExtractor;
@@ -30,6 +27,7 @@ public class MongoQL {
     Bson limit;
 
     LookupUnwindMaker lookupUnwindMaker = new LookupUnwindMaker();
+    MatchMaker matchMaker = new MatchMaker();
     ProjectMaker projectMaker = new ProjectMaker();
     LimitMaker limitMaker = new LimitMaker();
     SkipMaker skipMaker = new SkipMaker();
@@ -87,6 +85,7 @@ public class MongoQL {
 
     public void makeAll() {
         makeLookups();
+        makeMatch();
         makeProject();
         makeSkip();
         makeLimit();
@@ -95,11 +94,18 @@ public class MongoQL {
     public void makeLookups() {
         lookup_unwind = lookupUnwindMaker.make(sqlQuery);
     }
+    public void makeMatch() {
+        match = matchMaker.make(sqlQuery);
+    }
 
     public void makeProject() {
         projection = projectMaker.make(sqlQuery);
     }
 
-    public void makeLimit() { limit = limitMaker.make(sqlQuery); }
-    public void makeSkip() { skip = skipMaker.make(sqlQuery); }
+    public void makeLimit() {
+        limit = limitMaker.make(sqlQuery);
+    }
+    public void makeSkip() {
+        skip = skipMaker.make(sqlQuery);
+    }
 }
