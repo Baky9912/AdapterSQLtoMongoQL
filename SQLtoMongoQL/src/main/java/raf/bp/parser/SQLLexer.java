@@ -63,7 +63,7 @@ public class SQLLexer {
                 sb.append(c);
             }
         }
-        String last = sb.toString().trim();
+        String last = sb.toString().strip();
         if(last.length()>0){
             strs.add(last);
         }
