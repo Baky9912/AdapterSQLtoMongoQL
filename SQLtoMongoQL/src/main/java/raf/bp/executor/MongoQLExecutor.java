@@ -2,20 +2,23 @@ package raf.bp.executor;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.*;
-import com.mongodb.client.model.*;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import raf.bp.adapter.fields.concrete.LookupUnwindMaker;
 import raf.bp.adapter.fields.concrete.ProjectMaker;
 import raf.bp.controller.MongoDBController;
+import raf.bp.model.MongoQL;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.TableRow;
 import raf.bp.packager.TablePackager;
 import raf.bp.parser.SQLParser;
+import raf.bp.sqlextractor.concrete.FromExtractor;
 
 import java.util.ArrayList;
 
-import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Aggregates.group;
 
 public class MongoQLExecutor {
 
@@ -111,6 +114,28 @@ public class MongoQLExecutor {
         return rows;
     }
 
+    public ArrayList<TableRow> executeAggregate(MongoQL mongoQL) {
+        MongoClient mongoClient = MongoDBController.getConnection();
+
+        MongoDatabase database = mongoClient.getDatabase("bp_tim51");
+
+        MongoCollection<Document> mongoCollection = database.getCollection(mongoQL.getMainTable().getTableName());
+
+        AggregateIterable<Document> result;
+
+        for (Bson b : mongoQL.getAggregate()) {
+            System.out.println("EXECUTOR!!!!");
+            System.out.println(b.toString());
+        }
+
+        result = mongoCollection.aggregate(mongoQL.getAggregate());
+
+        MongoCursor<Document> cursor = result.iterator();
+        ArrayList<TableRow> rows = getRows(cursor, mongoQL.getMainTable().getTableName());
+        mongoClient.close();
+
+        return rows;
+    }
     public ArrayList<TableRow> getRows(MongoCursor<Document> cursor, String table) {
 
         ArrayList<TableRow> rows = new ArrayList<>();
@@ -159,21 +184,28 @@ public class MongoQLExecutor {
 
         Bson lookup2 = Aggregates.lookup("employees", "department_id", "department_id", "employees");
 //        Bson unwind = Aggregates.unwind("$department_name");
-//        String q1 = "SELECT department_name, count(employees.employee_id) from departments join employees on departments.department_id=employees.department_id group by department_name";
-        String collection = "employees";
+//        String q1 = "SELECT department_id, department_name, count(employees.employee_id) from departments join employees on departments.department_id=employees.department_id group by department_name";
+//        String collection = "employees";
 //        String q1 = "select employees.first_name, employees.last_name, departments.department_name from employees join departments on employees.department_id = departments.department_id";
-        String q1 = "SELECT employees.first_name, employees.last_name, departments.department_name FROM employees" +
-                " JOIN departments ON employees.department_id = departments.department_id";
+        String q1 = "SELECT employees.first_name, last_name, departments.department_name FROM employees" +
+                " JOIN departments ON employees.department_id = departments.department_id limit 5";
 
         SQLQuery query = (new SQLParser()).parseQuery(q1);
+        String collection = (new FromExtractor(query.getClause("from")).extractFromInfo().getMainTable().getTableName());
         ArrayList<Bson> lookup = (new LookupUnwindMaker()).make(query);
         Bson project = (new ProjectMaker()).make(query);
+
+//        Bson group = Aggregates.group(new Document("_id", new Document("department_name", "$department_name")), new BsonField("employees", "$employees"));
+        Bson group = group(
+                new Document("department_name", "$department_name").append("department_id", "$department_name"),
+                Accumulators.sum("employee_id_count", 1)
+        );
 
 //        Bson projection = new Document("$size", "$employees");
 //        Bson project2 = Aggregates.project(new Document("department_name", 1).append("employee_count", projection));
         Bson projection = new Document("first_name", 1).append("last_name", 1).append("departments.department_name", 1);
 //        Bson project2 = Aggregates.project(projection);
-        Bson project3 = Document.parse("{\"$project\": {\"first_name\":1, \"last_name\":1, \"department_name\":\"$departments.department_name\"}}");
+        Bson project3 = Document.parse("{\"$project\": {\"_id\":0, \"department_id\":\"$_id.department_id\", \"department_name\":\"$_id.department_name\", \"employee_id_count\": 1}}");
 
         System.out.println("PROJECTIONS");
         System.out.println(project);
@@ -182,8 +214,12 @@ public class MongoQLExecutor {
         System.out.println(lookup);
         System.out.println(lookup2);
 
-        ArrayList<TableRow> rows = executor.executeAggregate("employees", lookup, null, null, null, project, 0, 0);
+//        ArrayList<TableRow> rows = executor.executeAggregate(collection, lookup, null, group, null, project3, 0, 0);
 
+        MongoQL mongoQL = new MongoQL(query);
+        mongoQL.makeAll();
+
+        ArrayList<TableRow> rows = executor.executeAggregate(mongoQL);
 
         TablePackager packager = new TablePackager();
         packager.pack(rows);

@@ -39,7 +39,7 @@ public class ProjectMaker extends MongoQLMaker {
         List<CSQLSimpleDatatype> simpleFields = selectExtractor.extractSimpleFields();
         List<CSQLAggregateFunction> aggregateFunctions = selectExtractor.extractAggregateFunctions();
 
-        Document d = new Document();
+        Document d = new Document("_id", 0);
         for (CSQLSimpleDatatype field : simpleFields) {
             if (field.getTableIfExists() != null && !mainTable.getTableName().equals(field.getTableIfExists()) && !field.getTableIfExists().equals(mainTable.getAlias()))
                 /* this is a foreign field, table exists and isn't equal to main table name or it's alias */

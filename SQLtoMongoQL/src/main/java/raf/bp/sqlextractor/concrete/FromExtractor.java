@@ -95,7 +95,7 @@ public class FromExtractor extends SQLExtractor{
             localField = condition.get(0);
             foreignField = condition.get(2);
         }
-        if (alias == null) alias = tableName;
+        alias = tableName;
         return new CSQLFromTable(tableName, alias, localField, foreignField);
     }
 
