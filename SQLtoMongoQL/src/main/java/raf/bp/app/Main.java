@@ -7,6 +7,5 @@ public class Main {
     public static void main(String[] args) {
         AppCore.getInstace();
         MainFrame.getInstance().getJTable().setModel(AppCore.getInstace().getTableModel());
-//        MongoQLExecutor.main(new String[] {});
     }
 }

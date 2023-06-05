@@ -92,17 +92,6 @@ public class FindMaker extends MongoQLMaker {
         return "PROBLEM!!!";  // shouldn't happen
     }
 
-    private boolean isNumber(String potentialNumber){
-        // quickfix
-        try{
-            Double.parseDouble(potentialNumber);
-            return true;
-        }
-        catch(NumberFormatException e){
-            return potentialNumber.length()>4 && reverseSign.get(potentialNumber.substring(2, 4))!=null;
-        }
-    }
-
     private String joinOp(String op, String lArg, String rArg){
         // { field: { $gt: value } }
         // { $and: [ { <expression1> }, { <expression2> } , ... , { <expressionN> } ] }
@@ -123,7 +112,7 @@ public class FindMaker extends MongoQLMaker {
             return joinArithmeticOp(op, lArg, rArg);
         }
         if(CSQLOperator.numberComparison.contains(sqlOp)){
-            return joinNumComparasionOp(op, lArg, rArg);
+            return joinComparisonOp(op, lArg, rArg);
         }
         System.out.println(sqlOp);
         System.out.println(op);
@@ -138,18 +127,14 @@ public class FindMaker extends MongoQLMaker {
         return "{ " + op + ": [" + arg + "]}";
     }
 
-    private String joinNumComparasionOp(String op, String lArg, String rArg){
-        if(isNumber(lArg)){
-            op = reverseSign.get(op);
-            String t = lArg;
-            lArg = rArg;
-            rArg = t;
-        }
-        return "{ " + lArg + ": { " + op + ": " + rArg + "}}";
+    private String joinComparisonOp(String op, String lArg, String rArg){
+        // {$expr:{$eq:["$first_name", "Steven"]}}
+        return "{$expr: {" + op + ":[" 
+        + modifyExprArg(lArg) + "," + modifyExprArg(rArg) + "]}}";
     }
 
-    private String joinRegexOp(String op, String str, String re){
-        return "{ " + str + ": { $regex:" + convertRegex(re) + "}}";
+    private String joinRegexOp(String op, String strSource, String re){
+        return "{ " + modifyExprArg(strSource) + ": { $regex:" + convertRegex(re) + "}}";
     }
 
     private String joinInOp(String op, String lArg, String rArg){
@@ -157,7 +142,8 @@ public class FindMaker extends MongoQLMaker {
     }
 
     private String joinArithmeticOp(String op, String lArg, String rArg){
-        return "{ " + op + ": [" + lArg + ", " + rArg + "]}";
+        // TODO should accept fields!!!!
+        return "{ " + op + ": [" + modifyExprArg(lArg) + "," + modifyExprArg(rArg) + "]}";
     }
 
     private String convertDatatype(CSQLDatatype datatype){
@@ -232,13 +218,59 @@ public class FindMaker extends MongoQLMaker {
         return Document.parse(json);
     }
 
+    // trash fixes below
+
+    private String modifyExprArg(String s){
+        if(isBottomLevelArg(s)) return modifyBottomLevelArg(s);
+        else return s;
+    }
+
+    private String modifyBottomLevelArg(String s){
+        if(isRawNum(s) || isRawString(s)) return s;
+        if(isField(s)) return "\"$" + s + "\"";
+        return "PROBLEM!!!";
+    }
+
+    private boolean isVal(String potentialVal){
+        // quickfix
+        if(isRawNum(potentialVal)) return true;
+        if(isRawString(potentialVal)) return true;
+        return potentialVal.length()>4 && reverseSign.get(potentialVal.substring(2, 4))!=null;
+    }
+
+    private boolean isBottomLevelArg(String potentialVal){
+        return isField(potentialVal) || isRawNum(potentialVal) || isRawString(potentialVal);
+    }
+
+    private boolean isRawString(String s){
+        int n = s.length();
+        return s.charAt(0)=='"' && s.charAt(n-1)=='"';
+    }
+
+    private boolean isRawNum(String i){
+        try{
+            Double.parseDouble(i);
+            return true;
+        }
+        catch(NumberFormatException e){
+            return false;
+        }
+    }
+
+    private boolean isField(String potentialField){
+        // shouldnt have converted to strings!
+        if(isRawNum(potentialField) || isRawString(potentialField)) return false;
+        if(potentialField.contains("{") || potentialField.contains("}")) return false;
+        return true;
+    }    
+
     public static void main(String[] args) {
         // String q = "select first_name, last_name, salary from employees where salary > 10000 order by salary desc";
-        String q = "select first_name from employees where first_name like \"S%\"";
+        // String q = "select first_name from employees where first_name like \"S%\"";
+        String q = "select first_name, last_name from employees where first_name in (select first_name from employees where first_name=\"Steven\")";
         SQLParser p = new SQLParser();
         FindMaker fm = new FindMaker();
         Bson bson = fm.make(p.parseQuery(q));
         System.out.println(bson.toString());
     }
-    
 }

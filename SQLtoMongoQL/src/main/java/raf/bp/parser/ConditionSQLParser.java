@@ -42,16 +42,10 @@ public class ConditionSQLParser {
                 CSQLArray array = packager.pack(adaptedExecutor.execute(query));
                 if(prevExpr==null || !(prevExpr instanceof SQLToken tok) || !tok.getWord().equals("in")){
                     System.out.println("SCALAR");
-                    System.out.println();
-                    System.out.println();
-                    SQLToken tok = (SQLToken)prevExpr;
-                    System.out.println(tok.getWord());
-                    System.out.println();
-                    System.out.println();
                     if(array.getEntries().size()==0){
                         throw new RuntimeException("scalar nested query returned 0 results");
                     }
-                    String val = array.getEntries().get(0).getValue();
+                    String val = array.makeTokens().get(1).getWord();
                     tokens.add(new SQLToken(val));
                 }
                 else{
