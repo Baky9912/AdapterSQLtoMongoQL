@@ -49,19 +49,29 @@ public class ProjectMaker extends MongoQLMaker {
 
             if (query.getClause("group_by") != null) {
                 /* if group by exists, we need to handle fields differently */
-                d.append(field.getFieldOnly(), "$_id." + field.getFieldOnly());
+                if (!d.containsKey(field.getFieldOnly()))
+                    d.append(field.getFieldOnly(), "$_id." + field.getFieldOnly());
+                else if (field.getTableIfExists() == null)
+                    d.append(mainTable.getTableName() + "_" + field.getFieldOnly(), "$_id." + field.getFieldOnly());
+                else
+                    d.append(field.getTableAndField(), "$_id." + field.getFieldOnly());
                 continue;
 
             }
 
-            if (field.getTableIfExists() != null && !mainTable.getTableName().equals(field.getTableIfExists()) && !field.getTableIfExists().equals(mainTable.getAlias()))
+            if (field.getTableIfExists() != null && !mainTable.getTableName().equals(field.getTableIfExists()) && !field.getTableIfExists().equals(mainTable.getAlias())) {
                 /* this is a foreign field, table exists and isn't equal to main table name or it's alias */
                 /* this will put all foreign fields in the format -> field_name = $table_name.field_name */
-                d.append(field.getFieldOnly(), "$" + field.getValue());
-            else if (field.getTableIfExists() != null && (mainTable.getTableName().equals(field.getTableIfExists()) || field.getTableIfExists().equals(mainTable.getAlias()) ) )
+                d.append(field.getTableAndField(), "$" + field.getValue());
+            }
+
+            else if (field.getTableIfExists() != null && (mainTable.getTableName().equals(field.getTableIfExists()) || field.getTableIfExists().equals(mainTable.getAlias()) ) ) {
                 /* this handles all local fields that have the table declared */
                 d.append(field.getFieldOnly(), 1);
-            else d.append(field.getValue(), 1);
+            }
+            else {
+                d.append(field.getValue(), 1);
+            }
         }
 
         if(query.getClause("group_by") == null && !query.getClause("select").hasAggregation()){
@@ -78,6 +88,11 @@ public class ProjectMaker extends MongoQLMaker {
         project = Aggregates.project(d);
         return project;
     }
+
+//    public Document appendToDocument(Document document, CSQLSimpleDatatype field,Object value) {
+//        /* this function will avoid name conflicts while appending */
+//        if (field.getTableIfExists() == null || field.getTableIfExists().equals(mainTable.getTableName()) || field.getTableIfExists().equals(mainTable.getAlias()))
+//    }
 
     public boolean isSelectStar(SQLClause clause) {
 
