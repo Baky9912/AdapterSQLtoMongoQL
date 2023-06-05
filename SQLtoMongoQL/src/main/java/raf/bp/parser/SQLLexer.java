@@ -63,7 +63,7 @@ public class SQLLexer {
                 sb.append(c);
             }
         }
-        String last = sb.toString();
+        String last = sb.toString().strip();
         if(last.length()>0){
             strs.add(last);
         }
@@ -90,6 +90,7 @@ public class SQLLexer {
             throw new SpacedOperatorException("Spaced operator, like <  =");
         }
         List<String> allTokens = new ArrayList<>();
+        // saving string to not modify them later
         String[] brokenQuery = splitForTokenizing(query);
         for(String partQuery : brokenQuery){
             String[] tokens = lexUtil(partQuery);
@@ -110,6 +111,10 @@ public class SQLLexer {
         for(String token : tokensToBeSeparated){
             myquery = myquery.replace(token, " " + token + " ");
         }
+        myquery = myquery.replace(";", "");
+        myquery = myquery.replace("\n", " ");
+        myquery = myquery.replace("\r", " ");
+        myquery = myquery.replace("\0", " ");
         myquery = myquery.strip();
         myquery = myquery.replaceAll("\\s+", " ");
         myquery = myquery.replace("< =", "<=");
@@ -121,6 +126,7 @@ public class SQLLexer {
             String new_pattern = entry.getKey() + "_" + entry.getValue();
             myquery = myquery.replace(old_pattern, new_pattern);
         }
+        myquery = myquery.strip();
         String[] tokens = myquery.split(" ");
         return tokens;
     }

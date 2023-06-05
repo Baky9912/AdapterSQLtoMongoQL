@@ -1,5 +1,6 @@
 package raf.bp.controller.action;
 
+import raf.bp.adapter.AdapterSQLMongoQLExecutor;
 import raf.bp.app.AppCore;
 import raf.bp.converter.ClauseConverterManager;
 import raf.bp.executor.MongoQLExecutor;
@@ -26,25 +27,16 @@ public class RunAction extends AbstractAction {
         SQLParser parser = new SQLParser();
         SQLValidator validator = new SQLValidator();
         MongoQLExecutor executor = new MongoQLExecutor();
+        AdapterSQLMongoQLExecutor sqlExecutor = new AdapterSQLMongoQLExecutor(executor);
         TablePackager packager = new TablePackager();
 
 //        try {
 
 //            query = preProcessor.process(query);
             SQLQuery sqlQuery = parser.parseQuery(query);
-
-            if (validator.validate(sqlQuery)) {
-                System.out.println("validan query!");
-            } else {
-                System.out.println("query nije validan!");
-            }
-
+            validator.validate(sqlQuery);
             AppCore.getInstace().getMessageHandler().displayOK("query je validan!");
-
-            MongoQL mongoQL = new MongoQL(sqlQuery);
-            mongoQL.makeAll();
-
-            List<TableRow> rows = executor.executeAggregate(mongoQL);
+            List<TableRow> rows = sqlExecutor.execute(sqlQuery);
             packager.pack(rows);
 
 //        } catch (RuntimeException re) {
