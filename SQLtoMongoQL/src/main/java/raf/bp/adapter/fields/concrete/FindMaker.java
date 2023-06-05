@@ -215,6 +215,7 @@ public class FindMaker extends MongoQLMaker {
     @Override
     public Bson make(SQLQuery query) {
         SQLClause clause = query.getClause("where");
+        if (clause == null) return null;
         WhereExtractor whereExtractor = new WhereExtractor(clause);
         whereExtractor.extractTopNode();
         ConditionSQLParser condSQLParser = new ConditionSQLParser();

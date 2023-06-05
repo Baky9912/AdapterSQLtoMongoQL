@@ -4,11 +4,13 @@ import raf.bp.app.AppCore;
 import raf.bp.converter.ClauseConverterManager;
 import raf.bp.executor.MongoQLExecutor;
 import raf.bp.gui.MainFrame;
+import raf.bp.model.MongoQL;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.TableRow;
 import raf.bp.packager.TablePackager;
 import raf.bp.parser.SQLParser;
+import raf.bp.parser.SQLPreProcessor;
 import raf.bp.validator.SQLValidator;
 
 import javax.swing.*;
@@ -20,13 +22,15 @@ public class RunAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
 
         String query = MainFrame.getInstance().textArea.getText();
+        SQLPreProcessor preProcessor = new SQLPreProcessor();
         SQLParser parser = new SQLParser();
         SQLValidator validator = new SQLValidator();
         MongoQLExecutor executor = new MongoQLExecutor();
         TablePackager packager = new TablePackager();
-        ClauseConverterManager clauseConverterManager = new ClauseConverterManager();
 
-        try {
+//        try {
+
+            query = preProcessor.process(query);
             SQLQuery sqlQuery = parser.parseQuery(query);
 
             if (validator.validate(sqlQuery)) {
@@ -37,12 +41,15 @@ public class RunAction extends AbstractAction {
 
             AppCore.getInstace().getMessageHandler().displayOK("query je validan!");
 
-            List<TableRow> rows = executor.execute();
+            MongoQL mongoQL = new MongoQL(sqlQuery);
+            mongoQL.makeAll();
+
+            List<TableRow> rows = executor.executeAggregate(mongoQL);
             packager.pack(rows);
 
-        } catch (RuntimeException re) {
-            AppCore.getInstace().getMessageHandler().displayError(re.getMessage());
-        }
+//        } catch (RuntimeException re) {
+//            AppCore.getInstace().getMessageHandler().displayError(re.getMessage());
+//        }
 
 
 

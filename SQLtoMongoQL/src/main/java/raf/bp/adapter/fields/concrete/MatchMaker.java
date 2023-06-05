@@ -12,6 +12,8 @@ public class MatchMaker extends MongoQLMaker {
 
         Bson find = findMaker.make(query);
 
+        if (find == null) return null;
+
         Bson match = Aggregates.match(find);
 
         return match;

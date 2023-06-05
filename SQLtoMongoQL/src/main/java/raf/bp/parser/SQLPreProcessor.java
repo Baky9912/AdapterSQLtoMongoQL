@@ -34,7 +34,7 @@ public class SQLPreProcessor {
                 if (!fromTableNames.isEmpty()) {
 
                     if (fromTableNames.size() > 1) mainTable = new CSQLFromTable(fromTableNames.get(0), fromTableNames.get(1));
-                    else mainTable = new CSQLFromTable(fromTableNames.get(0), "");
+                    else mainTable = new CSQLFromTable(fromTableNames.get(0), null);
 
                     fromTableNames.clear();
                 }
@@ -48,7 +48,7 @@ public class SQLPreProcessor {
 
                     CSQLFromTable temp;
                     if (joinTableNames.size() > 1) temp = new CSQLFromTable(joinTableNames.get(0), joinTableNames.get(1));
-                    else temp = new CSQLFromTable(joinTableNames.get(0), "");
+                    else temp = new CSQLFromTable(joinTableNames.get(0), null);
 
                     joinTables.add(temp);
 
@@ -66,6 +66,15 @@ public class SQLPreProcessor {
 
         }
 
+        if (!fromTableNames.isEmpty()) {
+            if (fromTableNames.size() > 1) mainTable = new CSQLFromTable(fromTableNames.get(0), fromTableNames.get(1));
+            else mainTable = new CSQLFromTable(fromTableNames.get(0), null);
+
+            fromTableNames.clear();
+
+        }
+
+
         return replaceAliases(query, mainTable, joinTables);
     }
 
@@ -76,7 +85,7 @@ public class SQLPreProcessor {
         StringBuilder sb = new StringBuilder();
         for (String word :  query.split(" ")) {
 
-            if (word.contains(mainTable.getAlias() + ".")) {
+            if (mainTable.hasAlias() && word.contains(mainTable.getAlias() + ".")) {
                 word = word.replace(mainTable.getAlias() + ".", "");
             } else if (word.contains(mainTable.getTableName() + ".")) {
                 word = word.replace(mainTable.getTableName() + ".", "");
@@ -84,7 +93,7 @@ public class SQLPreProcessor {
 
             for (CSQLFromTable joinTable : joinTables) {
 
-                if (word.contains(joinTable.getAlias() + ".")) {
+                if (joinTable.hasAlias() && word.contains(joinTable.getAlias() + ".")) {
                     word = word.replace(joinTable.getAlias() + ".", joinTable.getTableName() + ".");
                 }
             }
@@ -114,11 +123,13 @@ public class SQLPreProcessor {
                         "JOIN Orders o ON Customers.customer_id = Orders.customer_id " +
                         "JOIN Products p ON Orders.order_id = p.product_id " +
                         "WHERE Customers.customer_id = 1 " +
-                        "ORDER BY o.order_date DESC;"
+                        "ORDER BY o.order_date DESC;",
+                "SELECT first_name, last_name, employees.department_id from employees"
 
         ));
 
         for (String query : queries) {
+            System.out.println("-----------------------------");
             System.out.println(preProcessor.process(query));
         }
 

@@ -2,6 +2,8 @@ package raf.bp.model.convertableSQL.from;
 
 import lombok.Getter;
 
+import java.util.Objects;
+
 @Getter
 public class CSQLFromTable {
     private String tableName;

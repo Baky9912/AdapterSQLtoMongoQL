@@ -88,6 +88,7 @@ public class ConditionSQLParser {
         return convertables;
     }
     public CSQLOperator parse(SQLClause clause){
+        if (clause == null) return null;
         if(!clause.getKeyword().equals("where")){
             throw new RuntimeException("parsing condition for non-where keyword");
         }

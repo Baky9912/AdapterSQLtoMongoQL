@@ -51,6 +51,7 @@ public class FromExtractor extends SQLExtractor{
 
         tableName = ((SQLToken) getClause().getSqlExpressions().get(0)).getWord();
 
+        if (getClause().getSqlExpressions().size() < 2) return new CSQLFromTable(tableName, "");
         if (!wordsIndicatingMainTableIsDeclared.contains(((SQLToken) getClause().getSqlExpressions().get(1)).getWord())) {
             alias = (((SQLToken) getClause().getSqlExpressions().get(1)).getWord());
         }
