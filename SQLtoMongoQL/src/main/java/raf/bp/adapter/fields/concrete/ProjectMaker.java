@@ -5,6 +5,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import raf.bp.adapter.fields.MongoQLMaker;
+import raf.bp.adapter.fields.util.TranslateAggregate;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.convertableSQL.datatypes.CSQLAggregateFunction;
 import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
@@ -51,14 +52,18 @@ public class ProjectMaker extends MongoQLMaker {
             else d.append(field.getValue(), 1);
         }
 
-        for (CSQLAggregateFunction agg : aggregateFunctions) {
-            Document temp = new Document("$" + aggMapping.get(agg.getFunc()), "$" + agg.getTable());
-//            Document temp = new Document("$" + aggMapping.get(agg.getFunc()), "$e");
-            d.append(agg.getFieldName() + "_" + agg.getFunc(), temp);
+        if(query.getClause("group_by") == null){
+            for (CSQLAggregateFunction agg : aggregateFunctions) {
+                d.append(TranslateAggregate.translateAggFuncName(agg), TranslateAggregate.makeMongoAggFunc(agg));
+            }
         }
-
+        else{
+            for (CSQLAggregateFunction agg : aggregateFunctions) {
+                String fieldname = TranslateAggregate.translateAggFuncName(agg);
+                d.append(fieldname, 1);
+            }
+        }
         project = Aggregates.project(d);
-
         return project;
     }
     
