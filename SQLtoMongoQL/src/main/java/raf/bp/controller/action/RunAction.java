@@ -30,7 +30,7 @@ public class RunAction extends AbstractAction {
 
 //        try {
 
-            query = preProcessor.process(query);
+//            query = preProcessor.process(query);
             SQLQuery sqlQuery = parser.parseQuery(query);
 
             if (validator.validate(sqlQuery)) {

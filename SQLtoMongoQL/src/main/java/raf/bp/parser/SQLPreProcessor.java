@@ -40,7 +40,13 @@ public class SQLPreProcessor {
                 }
                 continue;
             }
-            if (word.equalsIgnoreCase("on") || word.equalsIgnoreCase("using"))  {
+            if (word.equalsIgnoreCase("on") ||
+                    word.equalsIgnoreCase("using") ||
+                    word.equalsIgnoreCase("where") ||
+                    word.equalsIgnoreCase("order") ||
+                    word.equalsIgnoreCase("sort") ||
+                    word.equalsIgnoreCase("limit") ||
+                    word.equalsIgnoreCase("offset"))  {
                 from = false;
                 join = false;
                 onUsing = true;
@@ -82,6 +88,8 @@ public class SQLPreProcessor {
 
         System.out.println("Main Table: " + mainTable);
         System.out.println("Joined table: " + joinTables);
+
+        ArrayList<String> keywords = new ArrayList<>(List.of("select", "from", "order_by", "join", "group_by", "where", "using"));
         StringBuilder sb = new StringBuilder();
         for (String word :  query.split(" ")) {
 
@@ -102,10 +110,12 @@ public class SQLPreProcessor {
         }
 
         String resultingQuery = sb.toString();
-        resultingQuery = resultingQuery.replace(mainTable.getTableName() + " " + mainTable.getAlias(), mainTable.getTableName());
+        if (mainTable.hasAlias())
+            resultingQuery = resultingQuery.replace(mainTable.getTableName() + " " + mainTable.getAlias(), mainTable.getTableName());
 
         for (CSQLFromTable joinTable : joinTables) {
-            resultingQuery = resultingQuery.replace(joinTable.getTableName() + " " + joinTable.getAlias(), joinTable.getTableName());
+            if (joinTable.hasAlias())
+                resultingQuery = resultingQuery.replace(joinTable.getTableName() + " " + joinTable.getAlias(), joinTable.getTableName());
         }
 
         return resultingQuery;
@@ -115,16 +125,17 @@ public class SQLPreProcessor {
         SQLPreProcessor preProcessor = new SQLPreProcessor();
 
         ArrayList<String> queries = new ArrayList<>(List.of(
-                "SELECT e.first_name, last_name, employees.salary, departments.department_name, d.department_id FROM employees e " +
-                        "JOIN departments d ON employees.department_id = d.department_id " +
-                        "WHERE e.salary > 10000 ORDER BY salary desc, first_name desc",
-                "SELECT Customers.customer_id, Customers.customer_name, o.order_id, Orders.order_date, Products.product_name, p.price " +
-                        "FROM Customers c " +
-                        "JOIN Orders o ON Customers.customer_id = Orders.customer_id " +
-                        "JOIN Products p ON Orders.order_id = p.product_id " +
-                        "WHERE Customers.customer_id = 1 " +
-                        "ORDER BY o.order_date DESC;",
-                "SELECT first_name, last_name, employees.department_id from employees"
+//                "SELECT e.first_name, last_name, employees.salary, departments.department_name, d.department_id FROM employees e " +
+//                        "JOIN departments d ON employees.department_id = d.department_id " +
+//                        "WHERE e.salary > 10000 ORDER BY salary desc, first_name desc",
+//                "SELECT Customers.customer_id, Customers.customer_name, o.order_id, Orders.order_date, Products.product_name, p.price " +
+//                        "FROM Customers c " +
+//                        "JOIN Orders o ON Customers.customer_id = Orders.customer_id " +
+//                        "JOIN Products p ON Orders.order_id = p.product_id " +
+//                        "WHERE Customers.customer_id = 1 " +
+//                        "ORDER BY o.order_date DESC;",
+//                "SELECT first_name, last_name, employees.department_id from employees",
+                "select first_name, last_name, salary from employees where salary > 10000 order by salary desc"
 
         ));
 
