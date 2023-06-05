@@ -18,6 +18,17 @@ public class CSQLSimpleDatatype extends CSQLDatatype{
         setSubtype(findSubtype());
     }
 
+    public String getFieldOnly() {
+        String[] temp = value.split("\\.");
+        if (temp.length > 1) return temp[1];
+        else return value;
+    }
+
+    public String getTableIfExists() {
+        if (!value.contains(".")) return null;
+        return value.split("\\.")[0];
+    }
+
     public boolean isSpecial(){
         return value.equals("(") || value.equals(")") || value.equals(",");
     }

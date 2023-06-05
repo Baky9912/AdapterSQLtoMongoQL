@@ -1,19 +1,15 @@
 package raf.bp.adapter.fields.concrete;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BinaryOperator;
-import java.util.function.UnaryOperator;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import raf.bp.converter.ClauseConverter;
-import raf.bp.converter.ClauseConverterManager;
+import raf.bp.adapter.fields.MongoQLMaker;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.convertableSQL.CSQLDatatype;
 import raf.bp.model.convertableSQL.CSQLOperator;
@@ -21,16 +17,11 @@ import raf.bp.model.convertableSQL.CSQLType;
 import raf.bp.model.convertableSQL.CSQLDatatype.Subtype;
 import raf.bp.model.convertableSQL.datatypes.CSQLArray;
 import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
-import raf.bp.model.convertableSQL.operator.CSQLBinaryOperator;
-import raf.bp.model.convertableSQL.operator.CSQLUnaryOperator;
 import raf.bp.parser.ConditionSQLParser;
-import raf.bp.parser.SQLParser;
 import raf.bp.sqlextractor.concrete.WhereExtractor;
-import raf.bp.adapter.fields.BsonFieldMaker;
-import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
 
-public class FindMaker extends BsonFieldMaker{
+public class FindMaker extends MongoQLMaker {
         private static Map<String, String> sqlToMongoOp = new HashMap<>() {{
         put("*", "$multiply");
         put("/", "$divide");

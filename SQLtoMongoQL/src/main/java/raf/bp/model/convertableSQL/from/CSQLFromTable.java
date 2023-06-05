@@ -31,6 +31,27 @@ public class CSQLFromTable {
         this.foreignField = foreignField;
     }
 
+    public String getLocalFieldName() {
+        String[] temp = localField.split("\\.");
+        if (temp.length > 1) return temp[1];
+        else return localField;
+    }
+    public String getForeignFieldName() {
+        String[] temp = foreignField.split("\\.");
+        if (temp.length > 1) return temp[1];
+        else return foreignField;
+    }
+
+    @Override
+    public String toString() {
+        return "CSQLFromTable{" +
+                "tableName='" + tableName + '\'' +
+                ", alias='" + alias + '\'' +
+                ", localField='" + localField + '\'' +
+                ", foreignField='" + foreignField + '\'' +
+                '}';
+    }
+
     public boolean hasAlias(){
         return alias!=null;
     }

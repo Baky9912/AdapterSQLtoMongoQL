@@ -47,6 +47,7 @@ public class FromExtractor extends SQLExtractor{
     public CSQLFromTable extractFromTable(List<String> args){
         // employees e on x=y
         // employees using x
+        System.out.println(args);
         List<String> table = new ArrayList<>();
         List<String> condition = new ArrayList<>();
 
@@ -77,8 +78,9 @@ public class FromExtractor extends SQLExtractor{
         }
         else{
             localField = condition.get(0);
-            localField = condition.get(2);
+            foreignField = condition.get(2);
         }
+        if (alias == null) alias = tableName;
         return new CSQLFromTable(tableName, alias, localField, foreignField);
     }
 
@@ -88,7 +90,7 @@ public class FromExtractor extends SQLExtractor{
         CSQLFromTable mainTable = extractFromTable(tableArgs.get(0));
         csqlFromInfo.setMainTable(mainTable);
         int n = tableArgs.size();
-        for(int i=1; i<n; ++i){
+        for(int i=0; i<n; ++i){
             CSQLFromTable joinedTable = extractFromTable(tableArgs.get(i));
             csqlFromInfo.getJoinedTables().add(joinedTable);
         }
