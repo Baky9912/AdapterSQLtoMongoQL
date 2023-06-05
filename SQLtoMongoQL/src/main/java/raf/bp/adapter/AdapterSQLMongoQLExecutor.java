@@ -2,9 +2,15 @@ package raf.bp.adapter;
 
 import java.util.ArrayList;
 
+import raf.bp.app.AppCore;
 import raf.bp.executor.MongoQLExecutor;
 import raf.bp.executor.SQLExecutor;
+import raf.bp.model.MongoQL;
 import raf.bp.model.TableRow;
+import raf.bp.model.SQL.SQLClause;
+import raf.bp.model.SQL.SQLQuery;
+import raf.bp.parser.SQLParser;
+import raf.bp.validator.SQLValidator;
 
 public class AdapterSQLMongoQLExecutor extends SQLExecutor{
     private MongoQLExecutor mongoExecutor;
@@ -15,10 +21,19 @@ public class AdapterSQLMongoQLExecutor extends SQLExecutor{
 
     @Override
     public ArrayList<TableRow> execute(String query) {
-        // TODO Auto-generated method stub
+        SQLParser parser = new SQLParser();
+        SQLValidator validator = new SQLValidator();
+        SQLQuery sqlQuery = parser.parseQuery(query);
+        validator.validate(sqlQuery);
+        AppCore.getInstace().getMessageHandler().displayOK("query je validan!");
+        return execute(sqlQuery);
+    }
+    // Nisam bio siguran da li je pravilno sa String ili SQLQuery pa sam napravio oba
 
-        // return mongoExecutor.execute...(...)
-        throw new UnsupportedOperationException("Unimplemented method 'execute'");
+    @Override
+    public ArrayList<TableRow> execute(SQLQuery query) {
+        MongoQL mongoQL = new MongoQL(query);
+        return mongoExecutor.executeAggregate(mongoQL);
     }
     
 }

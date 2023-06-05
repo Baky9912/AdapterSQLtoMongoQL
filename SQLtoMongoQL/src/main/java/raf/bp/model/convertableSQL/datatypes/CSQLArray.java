@@ -35,4 +35,18 @@ public class CSQLArray extends CSQLDatatype {
         sb.append("]");
         return sb.toString();
     }
+
+    public List<SQLToken> makeTokens() {
+        List<SQLToken> tokens = new ArrayList<>();
+        tokens.add(new SQLToken("["));
+        boolean first = true;
+        for(CSQLSimpleDatatype entry : entries){
+            if(first) first=false;
+            else tokens.add(new SQLToken(","));
+            SQLToken token = new SQLToken(entry.getValue());
+            tokens.add(token);
+        }
+        tokens.add(new SQLToken("]"));
+        return tokens;
+    }
 }

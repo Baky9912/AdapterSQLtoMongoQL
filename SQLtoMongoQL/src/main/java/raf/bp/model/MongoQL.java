@@ -42,7 +42,9 @@ public class MongoQL {
         this.projection = projection;
         this.skip = skip;
         this.limit = limit;
+        makeAll();
     }
+
     public MongoQL(ArrayList<Bson> lookup_unwind, Bson match, Bson group, Bson sort, Bson projection, int skip, int limit) {
         this.lookup_unwind = lookup_unwind;
         this.match = match;
@@ -51,10 +53,12 @@ public class MongoQL {
         this.projection = projection;
         this.skip = new Document("$skip", skip);
         this.limit = new Document("$limit", limit);
+        makeAll();
     }
 
     public MongoQL(SQLQuery sqlQuery) {
         this.sqlQuery = sqlQuery;
+        makeAll();
     }
 
     public MongoQL(SQLQuery sqlQuery, int skip, int limit) {
@@ -63,6 +67,7 @@ public class MongoQL {
             this.skip = new Document("$skip", skip);
         if (limit != 0)
             this.limit = new Document("$limit", limit);
+        makeAll();
     }
 
     public ArrayList<Bson> getAggregate() {
