@@ -18,6 +18,7 @@ import raf.bp.model.convertableSQL.CSQLDatatype.Subtype;
 import raf.bp.model.convertableSQL.datatypes.CSQLArray;
 import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
 import raf.bp.parser.ConditionSQLParser;
+import raf.bp.parser.SQLParser;
 import raf.bp.sqlextractor.concrete.WhereExtractor;
 import raf.bp.model.SQL.SQLQuery;
 
@@ -221,6 +222,14 @@ public class FindMaker extends MongoQLMaker {
         ConditionSQLParser condSQLParser = new ConditionSQLParser();
         CSQLOperator root = condSQLParser.parse(clause);
         return Document.parse(makeMongo(root));
+    }
+
+    public static void main(String[] args) {
+        String q = "select first_name, last_name, salary from employees where salary > 10000 order by salary desc";
+        SQLParser p = new SQLParser();
+        FindMaker fm = new FindMaker();
+        Bson bson = fm.make(p.parseQuery(q));
+        System.out.println(bson.toString());
     }
     
 }
