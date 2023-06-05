@@ -8,8 +8,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import raf.bp.adapter.AdapterSQLMongoQLExecutor;
+import raf.bp.executor.MongoQLExecutor;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLExpression;
+import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.SQL.SQLToken;
 import raf.bp.model.convertableSQL.CSQLOperator;
 import raf.bp.model.convertableSQL.CSQLType;
@@ -17,6 +20,7 @@ import raf.bp.model.convertableSQL.datatypes.CSQLArray;
 import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
 import raf.bp.model.convertableSQL.operator.CSQLBinaryOperator;
 import raf.bp.model.convertableSQL.operator.CSQLUnaryOperator;
+import raf.bp.packager.SqlPackager;
 
 public class ConditionSQLParser {
 
@@ -26,19 +30,53 @@ public class ConditionSQLParser {
         return i;
     }
 
+    private List<SQLToken> makeTokens(SQLClause clause){
+        List<SQLToken> tokens = new ArrayList<>();
+        SQLExpression prevExpr = null;
+        for(SQLExpression sqlExpr : clause.getSqlExpressions()){
+            if(sqlExpr instanceof SQLQuery query){
+                // inserts the return of a query as SQLTokens that represent the same data
+                MongoQLExecutor executor = new MongoQLExecutor();
+                AdapterSQLMongoQLExecutor adaptedExecutor = new AdapterSQLMongoQLExecutor(executor);
+                SqlPackager packager = new SqlPackager();
+                CSQLArray array = packager.pack(adaptedExecutor.execute(query));
+                if(prevExpr==null || !(prevExpr instanceof SQLToken tok) || !tok.getWord().equals("in")){
+                    System.out.println("SCALAR");
+                    System.out.println();
+                    System.out.println();
+                    SQLToken tok = (SQLToken)prevExpr;
+                    System.out.println(tok.getWord());
+                    System.out.println();
+                    System.out.println();
+                    if(array.getEntries().size()==0){
+                        throw new RuntimeException("scalar nested query returned 0 results");
+                    }
+                    String val = array.getEntries().get(0).getValue();
+                    tokens.add(new SQLToken(val));
+                }
+                else{
+                    System.out.println("ARRAY");
+                    // its an array, the word before is a token of value "in"
+                    tokens.addAll(array.makeTokens());
+                }
+            }
+            else if(sqlExpr instanceof SQLToken token){
+                tokens.add(token);   
+            }
+            else{
+                throw new RuntimeException("can't determine sqlExpr");
+            }
+            prevExpr = sqlExpr;
+        }
+        return tokens;
+    }
+
     public List<CSQLType> makeConvertables(SQLClause clause){
         List<CSQLType> convertables = new ArrayList<>();
-        List<SQLToken> tokens = new ArrayList<>();
-        for(SQLExpression sqlExpr : clause.getSqlExpressions()){
-            SQLToken token = (SQLToken)sqlExpr;
-            // assuming SQLQuery returned tokens in its place, maybe do it here
-            // if sqlquery replace it with sqltoken / csqldatatype after executing with adapter
-            tokens.add(token);   
-        }
         // make CSQL types, watch for array
         CSQLArray array = null;
         boolean expectingComma = false;
-        for(SQLToken token : tokens){
+        for(SQLToken token : makeTokens(clause)){
             if(token.getWord().equals("[")){
                 array = new CSQLArray();
                 continue;
