@@ -64,7 +64,7 @@ public class ProjectMaker extends MongoQLMaker {
             else d.append(field.getValue(), 1);
         }
 
-        if(query.getClause("group_by") == null){
+        if(query.getClause("group_by") == null && !query.getClause("select").hasAggregation()){
             for (CSQLAggregateFunction agg : aggregateFunctions) {
                 d.append(TranslateAggregate.translateAggFuncName(agg), TranslateAggregate.makeMongoAggFunc(agg));
             }

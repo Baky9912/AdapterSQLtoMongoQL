@@ -26,24 +26,33 @@ public class GroupMaker extends MongoQLMaker{
     public Bson make(SQLQuery query) {
 
         Document id = new Document();
-        SQLClause clause = query.getClause("group_by");
-        if(clause==null) return null;
+        SQLClause groupByClause = query.getClause("group_by");
+        SQLClause selectClause = query.getClause("select");
+        if(groupByClause == null && !selectClause.hasAggregation()) return null;
 
-        GroupByExtractor extractor = new GroupByExtractor(clause);
-        for(String field : extractor.extractFields()){
-            id.append(field, "$" + field);
+        if (groupByClause != null) {
+
+            GroupByExtractor extractor = new GroupByExtractor(groupByClause);
+            for(String field : extractor.extractFields()){
+                id.append(field, "$" + field);
+            }
+
         }
 
         List<BsonField> fieldAccumulators = new ArrayList<>();
-        SelectExtractor selectExtractor = new SelectExtractor(query.getClause("select"));
+        if (selectClause.hasAggregation()) {
 
-        for(CSQLAggregateFunction aggFunc : selectExtractor.extractAggregateFunctions()){
+            SelectExtractor selectExtractor = new SelectExtractor(selectClause);
 
-            String fieldname = TranslateAggregate.translateAggFuncName(aggFunc);
-            Bson mongoAgg = TranslateAggregate.makeGroupAggFunc(aggFunc);
-            System.out.println("HERE " + fieldname);
-            BsonField bsonField = new BsonField(fieldname, mongoAgg);
-            fieldAccumulators.add(bsonField);
+            for(CSQLAggregateFunction aggFunc : selectExtractor.extractAggregateFunctions()){
+
+                String fieldname = TranslateAggregate.translateAggFuncName(aggFunc);
+                Bson mongoAgg = TranslateAggregate.makeGroupAggFunc(aggFunc);
+                System.out.println("HERE " + fieldname);
+                BsonField bsonField = new BsonField(fieldname, mongoAgg);
+                fieldAccumulators.add(bsonField);
+
+            }
 
         }
         return Aggregates.group(id, fieldAccumulators);
