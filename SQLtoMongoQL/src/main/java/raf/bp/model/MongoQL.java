@@ -28,6 +28,7 @@ public class MongoQL {
 
     LookupUnwindMaker lookupUnwindMaker = new LookupUnwindMaker();
     MatchMaker matchMaker = new MatchMaker();
+    GroupMaker groupMaker = new GroupMaker();
     SortMaker sortMaker = new SortMaker();
     ProjectMaker projectMaker = new ProjectMaker();
     LimitMaker limitMaker = new LimitMaker();
@@ -87,6 +88,7 @@ public class MongoQL {
     public void makeAll() {
         makeLookups();
         makeMatch();
+        makeGroup();
         makeSort();
         makeProject();
         makeSkip();
@@ -98,6 +100,10 @@ public class MongoQL {
     }
     public void makeMatch() {
         match = matchMaker.make(sqlQuery);
+    }
+
+    public void makeGroup() {
+        group = groupMaker.make(sqlQuery);
     }
     public void makeSort() {
         sort = sortMaker.make(sqlQuery);

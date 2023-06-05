@@ -20,7 +20,7 @@ import raf.bp.sqlextractor.concrete.SelectExtractor;
 public class GroupMaker extends MongoQLMaker{
 
     @Override
-    public Object make(SQLQuery query) {
+    public Bson make(SQLQuery query) {
         BsonDocument id = new BsonDocument();
         GroupByExtractor extractor = new GroupByExtractor(query.getClause("group_by"));
         for(String field : extractor.extractFields()){
@@ -40,7 +40,7 @@ public class GroupMaker extends MongoQLMaker{
     
     public static void main(String[] args) {
         GroupMaker gm = new GroupMaker();
-        Bson bson = (Bson)gm.make(null);
+        Bson bson = gm.make(null);
         System.out.println(bson.toString());
     }
 }
