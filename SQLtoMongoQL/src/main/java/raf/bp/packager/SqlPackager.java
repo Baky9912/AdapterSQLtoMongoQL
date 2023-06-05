@@ -17,6 +17,10 @@ public class SqlPackager {
             String strRow = null;
             if(obj instanceof Integer i)
                 strRow = i.toString();
+            else if(obj instanceof Double d)
+                strRow = d.toString();
+            else if(obj instanceof Float f)
+                strRow = f.toString();
             else if(obj instanceof String s){
                 strRow = "\"" + s + "\"";
             }
