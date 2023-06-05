@@ -72,9 +72,9 @@ public class SQLLexer {
 
     public boolean validateNoSpacedOperators(String query){
         // Can't be separated by whitespace, breaks lexing later
-        System.out.println(!Pattern.compile("<\\s+=").matcher(query).find());
-        System.out.println(!Pattern.compile(">\\s+=").matcher(query).find());
-        System.out.println(!Pattern.compile("!\\s+=").matcher(query).find());
+        // System.out.println(!Pattern.compile("<\\s+=").matcher(query).find());
+        // System.out.println(!Pattern.compile(">\\s+=").matcher(query).find());
+        // System.out.println(!Pattern.compile("!\\s+=").matcher(query).find());
         return !Pattern.compile("<\\s+=").matcher(query).find() && !Pattern.compile(">\\s+=").matcher(query).find()
         && !Pattern.compile("!\\s+=").matcher(query).find();
     }

@@ -149,7 +149,7 @@ public class FindMaker extends MongoQLMaker {
     }
 
     private String joinRegexOp(String op, String str, String re){
-        return "{ " + str + " { $regex:" + convertRegex(re) + "}}";
+        return "{ " + str + ": { $regex:" + convertRegex(re) + "}}";
     }
 
     private String joinInOp(String op, String lArg, String rArg){
@@ -207,9 +207,14 @@ public class FindMaker extends MongoQLMaker {
     }
 
     private String convertRegex(String sqlRegex){
-        String mongoRegex = "^" + sqlRegex + "$";
+        int n = sqlRegex.length();
+        String baseRegex = sqlRegex.substring(1, n-1);
+        String mongoRegex = "^" + baseRegex + "$";
         mongoRegex = mongoRegex.replace("?", ".");
         mongoRegex = mongoRegex.replace("%", ".*");
+        mongoRegex = "\"" + mongoRegex + "\"";
+        System.out.println("mongo regex");
+        System.out.println(mongoRegex);
         return mongoRegex;
     }
 
@@ -221,11 +226,15 @@ public class FindMaker extends MongoQLMaker {
         whereExtractor.extractTopNode();
         ConditionSQLParser condSQLParser = new ConditionSQLParser();
         CSQLOperator root = condSQLParser.parse(clause);
-        return Document.parse(makeMongo(root));
+        String json = makeMongo(root);
+        System.out.println("^=^+^+^+^+^+^^+^+^+^+^+^+^+^+");
+        System.out.println(json);
+        return Document.parse(json);
     }
 
     public static void main(String[] args) {
-        String q = "select first_name, last_name, salary from employees where salary > 10000 order by salary desc";
+        // String q = "select first_name, last_name, salary from employees where salary > 10000 order by salary desc";
+        String q = "select first_name from employees where first_name like \"S%\"";
         SQLParser p = new SQLParser();
         FindMaker fm = new FindMaker();
         Bson bson = fm.make(p.parseQuery(q));

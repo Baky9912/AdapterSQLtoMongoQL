@@ -12,6 +12,7 @@ import com.mongodb.client.model.BsonField;
 
 import raf.bp.adapter.fields.MongoQLMaker;
 import raf.bp.adapter.fields.util.TranslateAggregate;
+import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.convertableSQL.datatypes.CSQLAggregateFunction;
 import raf.bp.sqlextractor.concrete.GroupByExtractor;
@@ -22,7 +23,9 @@ public class GroupMaker extends MongoQLMaker{
     @Override
     public Bson make(SQLQuery query) {
         BsonDocument id = new BsonDocument();
-        GroupByExtractor extractor = new GroupByExtractor(query.getClause("group_by"));
+        SQLClause clause = query.getClause("group_by");
+        if(clause==null) return null;
+        GroupByExtractor extractor = new GroupByExtractor(clause);
         for(String field : extractor.extractFields()){
             id.put(field,new BsonString("$"+field));
         }
