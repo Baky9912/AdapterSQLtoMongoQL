@@ -66,11 +66,13 @@ public class FromExtractor extends SQLExtractor{
         System.out.println(args);
         List<String> table = new ArrayList<>();
         List<String> condition = new ArrayList<>();
-
+        String splitWord = null;
         boolean preCondition = true;
         for(String arg : args){
-            if(arg.equals("on") || arg.equals("using"))
+            if(arg.equals("on") || arg.equals("using")){
                 preCondition = false;
+                splitWord = arg;
+            }
             else if(preCondition)
                 table.add(arg);
             else
@@ -87,10 +89,10 @@ public class FromExtractor extends SQLExtractor{
             alias = table.get(1);
         }
 
-        if(condition.size()==0){}
-        else if(condition.size()==1){
-            localField = stripAlias(condition.get(0));
-            foreignField = stripAlias(condition.get(0));
+        if(splitWord==null){}
+        else if(splitWord.equals("using")){
+            localField = stripAlias(condition.get(1));
+            foreignField = stripAlias(condition.get(1));
         }
         else{
             localField = stripAlias(condition.get(0));
