@@ -19,6 +19,7 @@ public class AdapterSQLMongoQLExecutor extends SQLExecutor{
         this.mongoExecutor = mongoExecutor;
     }
 
+    /*
     @Override
     public List<TableRow> execute(String query) {
         SQLParser parser = new SQLParser();
@@ -28,6 +29,7 @@ public class AdapterSQLMongoQLExecutor extends SQLExecutor{
         AppCore.getInstance().getMessageHandler().displayOK("query je validan!");
         return execute(sqlQuery);
     }
+    */
     // Nisam bio siguran da li je pravilno sa String ili SQLQuery pa sam napravio oba
 
     @Override

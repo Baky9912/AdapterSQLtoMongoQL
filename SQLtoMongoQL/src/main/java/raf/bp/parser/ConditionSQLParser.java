@@ -3,7 +3,7 @@ package raf.bp.parser;
 import java.util.*;
 
 import raf.bp.adapter.AdapterSQLMongoQLExecutor;
-import raf.bp.executor.MongoQLExecutor;
+import raf.bp.executor.concrete.MongoQLExecutor;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLExpression;
 import raf.bp.model.SQL.SQLQuery;
@@ -30,7 +30,7 @@ public class ConditionSQLParser implements Parser<CSQLOperator, SQLClause> {
         for(SQLExpression sqlExpr : clause.getSqlExpressions()){
             if(sqlExpr instanceof SQLQuery query){
                 // inserts the return of a query as SQLTokens that represent the same data
-                MongoQLExecutor executor = new MongoQLExecutor();
+                MongoQLExecutor  executor = new MongoQLExecutor();
                 AdapterSQLMongoQLExecutor adaptedExecutor = new AdapterSQLMongoQLExecutor(executor);
                 SqlPackager packager = new SqlPackager();
                 CSQLArray array = packager.pack(adaptedExecutor.execute(query));
