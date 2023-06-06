@@ -1,4 +1,4 @@
-package raf.bp.sqlextractor.concrete;
+package raf.bp.adapter.extractor.concrete;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.convertableSQL.CSQLDatatype;
 import raf.bp.model.convertableSQL.datatypes.CSQLAggregateFunction;
 import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
-import raf.bp.sqlextractor.SQLExtractor;
+import raf.bp.adapter.extractor.SQLExtractor;
 
 public class SelectExtractor extends SQLExtractor {
 

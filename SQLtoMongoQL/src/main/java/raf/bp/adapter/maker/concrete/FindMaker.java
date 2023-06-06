@@ -1,12 +1,13 @@
-package raf.bp.converter.concrete;
+package raf.bp.adapter.maker.concrete;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
-import raf.bp.converter.ClauseConverter;
+import org.bson.Document;
+import org.bson.conversions.Bson;
+
+import raf.bp.adapter.maker.MongoQLMaker;
+import raf.bp.adapter.maker.util.FieldnameFixer;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.convertableSQL.CSQLDatatype;
 import raf.bp.model.convertableSQL.CSQLOperator;
@@ -14,10 +15,14 @@ import raf.bp.model.convertableSQL.CSQLType;
 import raf.bp.model.convertableSQL.CSQLDatatype.Subtype;
 import raf.bp.model.convertableSQL.datatypes.CSQLArray;
 import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
+import raf.bp.model.convertableSQL.from.CSQLFromInfo;
 import raf.bp.parser.ConditionSQLParser;
 import raf.bp.parser.SQLParser;
+import raf.bp.adapter.extractor.concrete.FromExtractor;
+import raf.bp.adapter.extractor.concrete.WhereExtractor;
+import raf.bp.model.SQL.SQLQuery;
 
-public class WhereConverter extends ClauseConverter{
+public class FindMaker extends MongoQLMaker {
     private static Map<String, String> sqlToMongoOp = new HashMap<>() {{
         put("*", "$multiply");
         put("/", "$divide");
@@ -53,6 +58,13 @@ public class WhereConverter extends ClauseConverter{
         put("$eq", "$eq");
     }};
 
+    private CSQLFromInfo fromInfo;
+
+    public FindMaker(SQLQuery query){
+        FromExtractor fromExtractor = new FromExtractor(query.getClause("from"));
+        fromInfo = fromExtractor.extractFromInfo();
+    }
+
     private String makeMongo(CSQLType type){
         if(type instanceof CSQLOperator operator){
             String lArg = makeMongo(operator.getLeftOperand());
@@ -75,17 +87,6 @@ public class WhereConverter extends ClauseConverter{
         return "PROBLEM!!!";  // shouldn't happen
     }
 
-    private boolean isNumber(String potentialNumber){
-        // quickfix
-        try{
-            Double.parseDouble(potentialNumber);
-            return true;
-        }
-        catch(NumberFormatException e){
-            return potentialNumber.length()>4 && reverseSign.get(potentialNumber.substring(2, 4))!=null;
-        }
-    }
-
     private String joinOp(String op, String lArg, String rArg){
         // { field: { $gt: value } }
         // { $and: [ { <expression1> }, { <expression2> } , ... , { <expressionN> } ] }
@@ -106,7 +107,7 @@ public class WhereConverter extends ClauseConverter{
             return joinArithmeticOp(op, lArg, rArg);
         }
         if(CSQLOperator.numberComparison.contains(sqlOp)){
-            return joinNumComparasionOp(op, lArg, rArg);
+            return joinComparisonOp(op, lArg, rArg);
         }
         System.out.println(sqlOp);
         System.out.println(op);
@@ -121,18 +122,14 @@ public class WhereConverter extends ClauseConverter{
         return "{ " + op + ": [" + arg + "]}";
     }
 
-    private String joinNumComparasionOp(String op, String lArg, String rArg){
-        if(isNumber(lArg)){
-            op = reverseSign.get(op);
-            String t = lArg;
-            lArg = rArg;
-            rArg = t;
-        }
-        return "{ " + lArg + ": { " + op + ": " + rArg + "}}";
+    private String joinComparisonOp(String op, String lArg, String rArg){
+        // {$expr:{$eq:["$first_name", "Steven"]}}
+        return "{$expr: {" + op + ":[" 
+        + modifyExprArg(lArg) + "," + modifyExprArg(rArg) + "]}}";
     }
 
-    private String joinRegexOp(String op, String str, String re){
-        return "{ " + str + " { $regex:" + convertRegex(re) + "}}";
+    private String joinRegexOp(String op, String strSource, String re){
+        return "{ \""+ strSource + "\": { $regex:" + convertRegex(re) + "}}";
     }
 
     private String joinInOp(String op, String lArg, String rArg){
@@ -140,7 +137,7 @@ public class WhereConverter extends ClauseConverter{
     }
 
     private String joinArithmeticOp(String op, String lArg, String rArg){
-        return "{ " + op + ": [" + lArg + ", " + rArg + "]}";
+        return "{ " + op + ": [" + modifyExprArg(lArg) + "," + modifyExprArg(rArg) + "]}";
     }
 
     private String convertDatatype(CSQLDatatype datatype){
@@ -177,8 +174,8 @@ public class WhereConverter extends ClauseConverter{
 
     private String convertField(CSQLSimpleDatatype field, boolean lvalue){
         if(lvalue)
-            return field.getValue();
-        return "$" + field.getValue();
+            return FieldnameFixer.fixRvalue(this.fromInfo, field.getValue());
+        return "$" + FieldnameFixer.fixRvalue(this.fromInfo, field.getValue());
     }
 
     private String convertNumber(CSQLSimpleDatatype number){
@@ -190,29 +187,84 @@ public class WhereConverter extends ClauseConverter{
     }
 
     private String convertRegex(String sqlRegex){
-        String mongoRegex = "^" + sqlRegex + "$";
+        int n = sqlRegex.length();
+        String baseRegex = sqlRegex.substring(1, n-1);
+        String mongoRegex = "^" + baseRegex + "$";
         mongoRegex = mongoRegex.replace("?", ".");
         mongoRegex = mongoRegex.replace("%", ".*");
+        mongoRegex = "\"" + mongoRegex + "\"";
+        System.out.println("mongo regex");
+        System.out.println(mongoRegex);
         return mongoRegex;
     }
 
     @Override
-    public String convert(SQLClause clause) {
+    public Bson make(SQLQuery query) {
+        SQLClause clause = query.getClause("where");
+        if (clause == null) return null;
+        WhereExtractor whereExtractor = new WhereExtractor(clause);
+        whereExtractor.extractTopNode();
         ConditionSQLParser condSQLParser = new ConditionSQLParser();
         CSQLOperator root = condSQLParser.parse(clause);
-        return makeMongo(root);
+        String json = makeMongo(root);
+        System.out.println("^=^+^+^+^+^+^^+^+^+^+^+^+^+^+");
+        System.out.println(json);
+        return Document.parse(json);
     }
 
-    public static void main(String[] args){
+    // trash fixes below
+
+    private String modifyExprArg(String s){
+        if(isBottomLevelArg(s)) return modifyBottomLevelArg(s);
+        else return s;
+    }
+
+    private String modifyBottomLevelArg(String s){
+        if(isRawNum(s) || isRawString(s)) return s;
+        if(isField(s)) return "\"$" + s + "\"";
+        return "PROBLEM!!!";
+    }
+
+    private boolean isVal(String potentialVal){
+        // quickfix
+        if(isRawNum(potentialVal)) return true;
+        if(isRawString(potentialVal)) return true;
+        return potentialVal.length()>4 && reverseSign.get(potentialVal.substring(2, 4))!=null;
+    }
+
+    private boolean isBottomLevelArg(String potentialVal){
+        return isField(potentialVal) || isRawNum(potentialVal) || isRawString(potentialVal);
+    }
+
+    private boolean isRawString(String s){
+        int n = s.length();
+        return s.charAt(0)=='"' && s.charAt(n-1)=='"';
+    }
+
+    private boolean isRawNum(String i){
+        try{
+            Double.parseDouble(i);
+            return true;
+        }
+        catch(NumberFormatException e){
+            return false;
+        }
+    }
+
+    private boolean isField(String potentialField){
+        // shouldnt have converted to strings!
+        if(isRawNum(potentialField) || isRawString(potentialField)) return false;
+        if(potentialField.contains("{") || potentialField.contains("}")) return false;
+        return true;
+    }    
+
+    public static void main(String[] args) {
+        // String q = "select first_name, last_name, salary from employees where salary > 10000 order by salary desc";
+        // String q = "select first_name from employees where first_name like \"S%\"";
+        String q = "select first_name, last_name from employees where first_name in (select first_name from employees where first_name=\"Steven\")";
         SQLParser p = new SQLParser();
-        String q1 = "select a from b where not (( a<=5 or b>3) and c=((( (2) ))+2*9)/2) and (a in [\"hello   world\", 2, 4.534])";
-        // String q1 = "select a from b where salary>(10000/((4+2)-1)) and salary<1000000000";
-        // String q1 = "select a from b where salary>5000 and salary<1000000000";
-        // String q1 = "select a from b where not salary>5000";
-        SQLClause clause = p.parseQuery(q1).getClauses().get(2);
-        ConditionSQLParser cqp = new ConditionSQLParser();
-        CSQLOperator.preOrderPrint(cqp.parse(clause), 0);
-        WhereConverter whereConverter = new WhereConverter();
-        System.out.println(whereConverter.convert(clause));
+        FindMaker fm = new FindMaker(p.parseQuery(q));
+        Bson bson = fm.make(p.parseQuery(q));
+        System.out.println(bson.toString());
     }
 }

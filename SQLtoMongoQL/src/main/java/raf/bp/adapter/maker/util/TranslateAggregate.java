@@ -1,4 +1,4 @@
-package raf.bp.adapter.fields.util;
+package raf.bp.adapter.maker.util;
 
 import java.util.HashMap;
 import java.util.Map;

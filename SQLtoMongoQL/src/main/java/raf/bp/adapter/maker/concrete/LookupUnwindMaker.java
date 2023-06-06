@@ -1,13 +1,13 @@
-package raf.bp.adapter.fields.concrete;
+package raf.bp.adapter.maker.concrete;
 
 import com.mongodb.client.model.Aggregates;
 import org.bson.conversions.Bson;
-import raf.bp.adapter.fields.MongoQLMaker;
+import raf.bp.adapter.maker.MongoQLMaker;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.convertableSQL.from.CSQLFromInfo;
 import raf.bp.model.convertableSQL.from.CSQLFromTable;
-import raf.bp.sqlextractor.concrete.FromExtractor;
+import raf.bp.adapter.extractor.concrete.FromExtractor;
 
 import java.util.ArrayList;
 import java.util.List;

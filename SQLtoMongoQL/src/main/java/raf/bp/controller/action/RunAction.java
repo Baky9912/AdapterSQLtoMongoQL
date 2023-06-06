@@ -32,7 +32,7 @@ public class RunAction extends AbstractAction {
 //            query = preProcessor.process(query);
             SQLQuery sqlQuery = parser.parseQuery(query);
             validator.validate(sqlQuery);
-            AppCore.getInstace().getMessageHandler().displayOK("query je validan!");
+            AppCore.getInstance().getMessageHandler().displayOK("query je validan!");
             List<TableRow> rows = sqlExecutor.execute(sqlQuery);
             packager.pack(rows);
 

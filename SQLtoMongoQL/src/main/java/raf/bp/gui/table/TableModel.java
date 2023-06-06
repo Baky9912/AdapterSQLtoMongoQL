@@ -13,7 +13,7 @@ public class TableModel extends DefaultTableModel {
     private void updateModel(){
 
         if (rows.size() == 0) {
-            AppCore.getInstace().getMessageHandler().displayOK("No records found");
+            AppCore.getInstance().getMessageHandler().displayOK("No records found");
             return;
         }
         int columnCount = rows.get(0).getFields().keySet().size();

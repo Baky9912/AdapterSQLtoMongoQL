@@ -1,12 +1,12 @@
-package raf.bp.adapter.fields.concrete;
+package raf.bp.adapter.maker.concrete;
 
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import raf.bp.adapter.fields.MongoQLMaker;
+import raf.bp.adapter.maker.MongoQLMaker;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
-import raf.bp.sqlextractor.concrete.OffsetExtractor;
+import raf.bp.adapter.extractor.concrete.OffsetExtractor;
 
 public class SkipMaker extends MongoQLMaker {
     @Override

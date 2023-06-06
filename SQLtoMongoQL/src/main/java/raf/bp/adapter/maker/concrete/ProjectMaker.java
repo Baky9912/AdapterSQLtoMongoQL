@@ -1,12 +1,12 @@
-package raf.bp.adapter.fields.concrete;
+package raf.bp.adapter.maker.concrete;
 
 import com.mongodb.client.model.Aggregates;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import raf.bp.adapter.fields.MongoQLMaker;
-import raf.bp.adapter.fields.util.TranslateAggregate;
-import raf.bp.adapter.util.FieldnameFixer;
+import raf.bp.adapter.maker.MongoQLMaker;
+import raf.bp.adapter.maker.util.TranslateAggregate;
+import raf.bp.adapter.maker.util.FieldnameFixer;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.SQL.SQLToken;
@@ -14,8 +14,8 @@ import raf.bp.model.convertableSQL.datatypes.CSQLAggregateFunction;
 import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
 import raf.bp.model.convertableSQL.from.CSQLFromInfo;
 import raf.bp.model.convertableSQL.from.CSQLFromTable;
-import raf.bp.sqlextractor.concrete.FromExtractor;
-import raf.bp.sqlextractor.concrete.SelectExtractor;
+import raf.bp.adapter.extractor.concrete.FromExtractor;
+import raf.bp.adapter.extractor.concrete.SelectExtractor;
 
 import java.util.HashMap;
 import java.util.List;

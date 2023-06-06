@@ -24,7 +24,7 @@ public class AdapterSQLMongoQLExecutor extends SQLExecutor{
         SQLValidator validator = new SQLValidator();
         SQLQuery sqlQuery = parser.parseQuery(query);
         validator.validate(sqlQuery);
-        AppCore.getInstace().getMessageHandler().displayOK("query je validan!");
+        AppCore.getInstance().getMessageHandler().displayOK("query je validan!");
         return execute(sqlQuery);
     }
     // Nisam bio siguran da li je pravilno sa String ili SQLQuery pa sam napravio oba

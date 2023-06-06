@@ -4,10 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import raf.bp.adapter.fields.concrete.*;
+import raf.bp.adapter.maker.concrete.*;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.convertableSQL.from.CSQLFromTable;
-import raf.bp.sqlextractor.concrete.FromExtractor;
+import raf.bp.adapter.extractor.concrete.FromExtractor;
 
 import java.util.ArrayList;
 

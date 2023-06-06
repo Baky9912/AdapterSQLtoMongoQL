@@ -1,4 +1,4 @@
-package raf.bp.adapter.fields;
+package raf.bp.adapter.maker;
 
 import raf.bp.model.SQL.SQLQuery;
 

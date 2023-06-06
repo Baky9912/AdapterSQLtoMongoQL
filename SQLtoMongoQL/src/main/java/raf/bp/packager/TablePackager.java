@@ -7,7 +7,7 @@ import java.util.List;
 public class TablePackager {
 
     public void pack(List<TableRow> rows) {
-        AppCore.getInstace().getTableModel().setRows(rows);
+        AppCore.getInstance().getTableModel().setRows(rows);
     }
 
 }

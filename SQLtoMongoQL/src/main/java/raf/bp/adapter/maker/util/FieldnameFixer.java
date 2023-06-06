@@ -1,4 +1,4 @@
-package raf.bp.adapter.util;
+package raf.bp.adapter.maker.util;
 
 import raf.bp.model.convertableSQL.from.CSQLFromInfo;
 import raf.bp.model.convertableSQL.from.CSQLFromTable;

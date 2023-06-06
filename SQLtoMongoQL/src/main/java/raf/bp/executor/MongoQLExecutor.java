@@ -6,15 +6,15 @@ import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import raf.bp.adapter.fields.concrete.LookupUnwindMaker;
-import raf.bp.adapter.fields.concrete.ProjectMaker;
+import raf.bp.adapter.maker.concrete.LookupUnwindMaker;
+import raf.bp.adapter.maker.concrete.ProjectMaker;
 import raf.bp.controller.MongoDBController;
 import raf.bp.model.MongoQL;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.TableRow;
 import raf.bp.packager.TablePackager;
 import raf.bp.parser.SQLParser;
-import raf.bp.sqlextractor.concrete.FromExtractor;
+import raf.bp.adapter.extractor.concrete.FromExtractor;
 
 import java.util.ArrayList;
 

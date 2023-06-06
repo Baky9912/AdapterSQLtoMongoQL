@@ -1,4 +1,4 @@
-package raf.bp.adapter.fields.concrete;
+package raf.bp.adapter.maker.concrete;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,19 +10,19 @@ import org.bson.conversions.Bson;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.BsonField;
 
-import raf.bp.adapter.fields.MongoQLMaker;
-import raf.bp.adapter.fields.util.TranslateAggregate;
-import raf.bp.adapter.util.FieldnameFixer;
+import raf.bp.adapter.maker.MongoQLMaker;
+import raf.bp.adapter.maker.util.TranslateAggregate;
+import raf.bp.adapter.maker.util.FieldnameFixer;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.convertableSQL.datatypes.CSQLAggregateFunction;
 import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
 import raf.bp.model.convertableSQL.from.CSQLFromInfo;
 import raf.bp.model.convertableSQL.sort.CSQLSortField;
-import raf.bp.sqlextractor.concrete.FromExtractor;
-import raf.bp.sqlextractor.concrete.GroupByExtractor;
-import raf.bp.sqlextractor.concrete.OrderByExtractor;
-import raf.bp.sqlextractor.concrete.SelectExtractor;
+import raf.bp.adapter.extractor.concrete.FromExtractor;
+import raf.bp.adapter.extractor.concrete.GroupByExtractor;
+import raf.bp.adapter.extractor.concrete.OrderByExtractor;
+import raf.bp.adapter.extractor.concrete.SelectExtractor;
 
 public class GroupMaker extends MongoQLMaker{
 

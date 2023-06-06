@@ -1,4 +1,4 @@
-package raf.bp.sqlextractor;
+package raf.bp.adapter.extractor;
 
 import raf.bp.model.SQL.SQLClause;
 

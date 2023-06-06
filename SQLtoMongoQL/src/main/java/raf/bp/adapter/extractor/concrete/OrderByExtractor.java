@@ -1,4 +1,4 @@
-package raf.bp.sqlextractor.concrete;
+package raf.bp.adapter.extractor.concrete;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import raf.bp.model.SQL.SQLToken;
 import raf.bp.model.convertableSQL.datatypes.CSQLAggregateFunction;
 import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
 import raf.bp.model.convertableSQL.sort.CSQLSortField;
-import raf.bp.sqlextractor.SQLExtractor;
+import raf.bp.adapter.extractor.SQLExtractor;
 
 public class OrderByExtractor extends SQLExtractor {
 
