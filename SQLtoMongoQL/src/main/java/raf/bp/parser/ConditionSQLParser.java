@@ -16,7 +16,7 @@ import raf.bp.model.convertableSQL.operator.CSQLBinaryOperator;
 import raf.bp.model.convertableSQL.operator.CSQLUnaryOperator;
 import raf.bp.packager.SqlPackager;
 
-public class ConditionSQLParser {
+public class ConditionSQLParser implements Parser<CSQLOperator, SQLClause> {
 
     public int findClosingArray(List<SQLToken> tokens, int start){
         int i;
@@ -113,6 +113,8 @@ public class ConditionSQLParser {
         }
         return convertables;
     }
+
+    @Override
     public CSQLOperator parse(SQLClause clause){
         if (clause == null) return null;
         if(!clause.getKeyword().equals("where")){
@@ -217,7 +219,7 @@ public class ConditionSQLParser {
         //String q1 = "select a from b where not a<=5";
         //String q1 = "select a from b where not (( a<=5 or b>3) and c=((( (2) ))+2*9)/2) and (a in [\"hello   world\", 2, 4.534])";
         String q1 = "select a from b where salary>(10000/((4+2)-1)) and salary<1000000000";
-        SQLClause clause = p.parseQuery(q1).getClauses().get(2);
+        SQLClause clause = p.parse(q1).getClauses().get(2);
         CSQLOperator.preOrderPrint(cqp.parse(clause), 0);
     }
 }

@@ -33,7 +33,7 @@ public class ArgumentIterator implements Iterator<String>{
         // test
         SQLParser p = new SQLParser();
         String q7 = "select department_name, department_id, location_id from hr.departments where department_id in\n";
-        SQLQuery query = p.parseQuery(q7);
+        SQLQuery query = p.parse(q7);
         ArgumentIterator argIter = new ArgumentIterator(query.getClause("select"));
         while(argIter.hasNext()){
             String x = argIter.next();
