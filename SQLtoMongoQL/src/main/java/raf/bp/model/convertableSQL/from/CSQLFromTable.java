@@ -2,7 +2,6 @@ package raf.bp.model.convertableSQL.from;
 
 import lombok.Getter;
 
-import java.util.Objects;
 
 @Getter
 public class CSQLFromTable {
@@ -16,6 +15,7 @@ public class CSQLFromTable {
         this.alias = alias;
         this.localField = null;
         this.foreignField = null;
+        fixAlias();
     }
     
     public CSQLFromTable(String tableName, String alias, String onField){
@@ -23,6 +23,7 @@ public class CSQLFromTable {
         this.alias = alias;
         this.localField = onField;
         this.foreignField = onField;
+        fixAlias();
         // maybe wrong
     }
 
@@ -31,6 +32,16 @@ public class CSQLFromTable {
         this.alias = alias;
         this.localField = localField;
         this.foreignField = foreignField;
+        fixAlias();
+    }
+
+    public void fixAlias(){
+        if(this.alias==null)
+            this.alias = this.tableName;
+    }
+
+    public boolean aliasRepresentsTable(String tableAlias){
+        return alias.equals(tableAlias) || tableName.equals(tableAlias);
     }
 
     public String getLocalFieldName() {
