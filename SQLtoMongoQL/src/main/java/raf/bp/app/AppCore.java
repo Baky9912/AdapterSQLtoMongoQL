@@ -24,7 +24,7 @@ public class AppCore {
     private static AppCore instance;
     private MessageHandler messageHandler;
     private TableModel tableModel;
-    private Parser<SQLQuery, String> parser;
+    private Parser<SQLQuery, String> sqlParser;
     private Validator validator;
     private Executor<MongoQL> mongoExecutor;
     private Executor<SQLQuery> sqlExecutor;
@@ -34,7 +34,7 @@ public class AppCore {
     private AppCore() {
         messageHandler = new MessageHandler();
         tableModel = new TableModel();
-        parser = new SQLParser();
+        sqlParser = new SQLParser();
         validator = new SQLValidator();
         mongoExecutor = new MongoQLExecutor();
         sqlExecutor = new AdapterSQLMongoQLExecutor(mongoExecutor);
