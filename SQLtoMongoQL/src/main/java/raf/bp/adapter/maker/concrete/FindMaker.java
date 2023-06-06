@@ -207,7 +207,7 @@ public class FindMaker implements Maker {
         ConditionSQLParser condSQLParser = new ConditionSQLParser();
         CSQLOperator root = condSQLParser.parse(clause);
         String json = makeMongo(root);
-        System.out.println("^=^+^+^+^+^+^^+^+^+^+^+^+^+^+");
+        // System.out.println("^=^+^+^+^+^+^^+^+^+^+^+^+^+^+");
         System.out.println(json);
         return Document.parse(json);
     }

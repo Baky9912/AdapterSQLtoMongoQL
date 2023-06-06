@@ -3,6 +3,7 @@ package raf.bp.adapter.maker.concrete;
 import com.mongodb.client.model.Aggregates;
 import org.bson.conversions.Bson;
 import raf.bp.adapter.maker.Maker;
+import raf.bp.app.AppCore;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.parser.concrete.SQLParser;
 
