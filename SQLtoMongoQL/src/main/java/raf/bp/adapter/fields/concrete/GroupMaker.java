@@ -18,6 +18,7 @@ import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.convertableSQL.datatypes.CSQLAggregateFunction;
 import raf.bp.sqlextractor.concrete.GroupByExtractor;
+import raf.bp.sqlextractor.concrete.OrderByExtractor;
 import raf.bp.sqlextractor.concrete.SelectExtractor;
 
 public class GroupMaker extends MongoQLMaker{
@@ -28,6 +29,7 @@ public class GroupMaker extends MongoQLMaker{
         Document id = new Document();
         SQLClause groupByClause = query.getClause("group_by");
         SQLClause selectClause = query.getClause("select");
+        SQLClause sortClause = query.getClause("order_by");
         if(groupByClause == null && !selectClause.hasAggregation()) return null;
 
         if (groupByClause != null) {
@@ -54,6 +56,26 @@ public class GroupMaker extends MongoQLMaker{
             }
 
         }
+
+        if (sortClause.hasAggregation()) {
+
+            OrderByExtractor orderByExtractor = new OrderByExtractor(sortClause);
+
+            System.out.println("GROUP MAKER AGG FUNCS");
+            System.out.println(orderByExtractor.extractAggregateFunctions());
+            for (CSQLAggregateFunction aggFunc : orderByExtractor.extractAggregateFunctions()) {
+                System.out.println("GROUP MAKER!!!");
+                System.out.println(aggFunc);
+
+                String fieldname = TranslateAggregate.translateAggFuncName(aggFunc);
+                Bson mongoAgg = TranslateAggregate.makeGroupAggFunc(aggFunc);
+                BsonField bsonField = new BsonField(fieldname, mongoAgg);
+                fieldAccumulators.add(bsonField);
+
+            }
+
+        }
+
         return Aggregates.group(id, fieldAccumulators);
     }
 

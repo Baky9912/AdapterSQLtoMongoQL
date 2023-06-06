@@ -8,11 +8,19 @@ import raf.bp.model.convertableSQL.CSQLDatatype;
 public class CSQLAggregateFunction extends CSQLDatatype {
     private String func;
     private String arg;
+    private String sort;
 
     public CSQLAggregateFunction(String func, String arg){
         setSubtype(Subtype.AGGREGATE_FUNC);
         this.func = func;
         this.arg = arg;
+    }
+
+    public CSQLAggregateFunction(String func, String arg, String sort){
+        setSubtype(Subtype.AGGREGATE_FUNC);
+        this.func = func;
+        this.arg = arg;
+        this.sort = sort;
     }
 
     public String getFieldName() {
@@ -28,8 +36,20 @@ public class CSQLAggregateFunction extends CSQLDatatype {
         else return "";
     }
 
+    public int getSort() {
+        if (sort == null) return 0;
+        if (sort.equals("asc")) return 1;
+
+        return -1;
+    }
+
     @Override
     public String toSQLString() {
+        return "[" + getSubtype().toString() + "] " + func + "(" + arg + ")";
+    }
+
+    @Override
+    public String toString() {
         return "[" + getSubtype().toString() + "] " + func + "(" + arg + ")";
     }
 
