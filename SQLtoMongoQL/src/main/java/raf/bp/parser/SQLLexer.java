@@ -108,7 +108,6 @@ public class SQLLexer {
         for(String token : tokensToBeSeparated){
             myquery = myquery.replace(token, " " + token + " ");
         }
-        myquery = myquery.replace("inner_join", "join");
         myquery = myquery.replace(";", "");
         myquery = myquery.replace("\n", " ");
         myquery = myquery.replace("\r", " ");
@@ -124,6 +123,7 @@ public class SQLLexer {
             String new_pattern = entry.getKey() + "_" + entry.getValue();
             myquery = myquery.replace(old_pattern, new_pattern);
         }
+        myquery = myquery.replace("inner_join", "join");
         myquery = myquery.strip();
         String[] tokens = myquery.split(" ");
         if(tokens.length == 1 && tokens[0].equals(""))
