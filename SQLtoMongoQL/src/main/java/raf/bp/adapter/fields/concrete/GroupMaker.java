@@ -3,6 +3,7 @@ package raf.bp.adapter.fields.concrete;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mongodb.client.model.Accumulators;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -11,9 +12,14 @@ import com.mongodb.client.model.BsonField;
 
 import raf.bp.adapter.fields.MongoQLMaker;
 import raf.bp.adapter.fields.util.TranslateAggregate;
+import raf.bp.adapter.util.FieldnameFixer;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.convertableSQL.datatypes.CSQLAggregateFunction;
+import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
+import raf.bp.model.convertableSQL.from.CSQLFromInfo;
+import raf.bp.model.convertableSQL.sort.CSQLSortField;
+import raf.bp.sqlextractor.concrete.FromExtractor;
 import raf.bp.sqlextractor.concrete.GroupByExtractor;
 import raf.bp.sqlextractor.concrete.OrderByExtractor;
 import raf.bp.sqlextractor.concrete.SelectExtractor;
@@ -24,10 +30,14 @@ public class GroupMaker extends MongoQLMaker{
     public Bson make(SQLQuery query) {
 
         Document id = new Document();
+        SQLClause fromClause = query.getClause("from");
         SQLClause groupByClause = query.getClause("group_by");
         SQLClause selectClause = query.getClause("select");
         SQLClause sortClause = query.getClause("order_by");
-        if(groupByClause == null && !selectClause.hasAggregation()) return null;
+
+        CSQLFromInfo fromInfo = (new FromExtractor(fromClause).extractFromInfo());
+
+        if(groupByClause == null && !selectClause.hasAggregation() && sortClause.hasAggregation()) return null;
 
         if (groupByClause != null) {
 
@@ -39,9 +49,16 @@ public class GroupMaker extends MongoQLMaker{
         }
 
         List<BsonField> fieldAccumulators = new ArrayList<>();
+        SelectExtractor selectExtractor = new SelectExtractor(selectClause);
+        if (selectClause != null) {
+            List<CSQLSimpleDatatype> fields = selectExtractor.extractSimpleFields();
+            for (CSQLSimpleDatatype field : fields) {
+                BsonField first = Accumulators.first(FieldnameFixer.fixLvalue(fromInfo, field.getValue()), "$" + FieldnameFixer.fixLvalue(fromInfo, field.getValue()));
+                fieldAccumulators.add(first);
+            }
+        }
         if (selectClause.hasAggregation()) {
 
-            SelectExtractor selectExtractor = new SelectExtractor(selectClause);
 
             for(CSQLAggregateFunction aggFunc : selectExtractor.extractAggregateFunctions()){
 
@@ -49,20 +66,20 @@ public class GroupMaker extends MongoQLMaker{
                 Bson mongoAgg = TranslateAggregate.makeGroupAggFunc(aggFunc);
                 BsonField bsonField = new BsonField(fieldname, mongoAgg);
                 fieldAccumulators.add(bsonField);
-
             }
 
         }
 
-        if (sortClause.hasAggregation()) {
+        if (sortClause != null && sortClause.hasAggregation()) {
 
             OrderByExtractor orderByExtractor = new OrderByExtractor(sortClause);
 
-            System.out.println("GROUP MAKER AGG FUNCS");
-            System.out.println(orderByExtractor.extractAggregateFunctions());
-            for (CSQLAggregateFunction aggFunc : orderByExtractor.extractAggregateFunctions()) {
-                System.out.println("GROUP MAKER!!!");
-                System.out.println(aggFunc);
+            for (CSQLSortField sortField : orderByExtractor.extractFieldsInOrder()) {
+
+                if (!(sortField.getField() instanceof CSQLAggregateFunction)) continue;
+                CSQLAggregateFunction aggFunc = (CSQLAggregateFunction) sortField.getField();
+
+                if (aggFunc.getArg() == null || aggFunc.getFunc() == null) continue;
 
                 String fieldname = TranslateAggregate.translateAggFuncName(aggFunc);
                 Bson mongoAgg = TranslateAggregate.makeGroupAggFunc(aggFunc);
@@ -76,10 +93,4 @@ public class GroupMaker extends MongoQLMaker{
         return Aggregates.group(id, fieldAccumulators);
     }
 
-    
-    public static void main(String[] args) {
-        GroupMaker gm = new GroupMaker();
-        Bson bson = gm.make(null);
-        System.out.println(bson.toString());
-    }
 }

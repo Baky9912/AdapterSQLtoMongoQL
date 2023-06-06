@@ -5,9 +5,11 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import raf.bp.adapter.fields.MongoQLMaker;
 import raf.bp.adapter.fields.util.TranslateAggregate;
+import raf.bp.adapter.util.FieldnameFixer;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.convertableSQL.datatypes.CSQLAggregateFunction;
+import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
 import raf.bp.model.convertableSQL.from.CSQLFromInfo;
 import raf.bp.model.convertableSQL.sort.CSQLSortField;
 import raf.bp.sqlextractor.concrete.FromExtractor;
@@ -25,21 +27,16 @@ public class SortMaker extends MongoQLMaker {
         OrderByExtractor orderByExtractor = new OrderByExtractor(clause);
         List<CSQLSortField> sortFields = orderByExtractor.extractFieldsInOrder();
 
-        /*
-        * TODO(marko): AFTER ICSQLSelectable gets implemented, merge these two fors in 1. This doesn't work right now.
-        * */
         Document sorts = new Document();
         for (CSQLSortField field : sortFields) {
-//            sorts.append(FieldnameFixer.fixRvalue(fromInfo, field.getField()), field.getSortOrder());
+            if (field.getField() instanceof CSQLSimpleDatatype simpleField)
+                sorts.append(FieldnameFixer.fixRvalue(fromInfo, simpleField.getValue()), field.getSortOrder());
+            else if (field.getField() instanceof CSQLAggregateFunction aggregateFunction) {
+                String fieldname = TranslateAggregate.translateAggFuncName(aggregateFunction);
+                sorts.append(fieldname, field.getSortOrder());
+
+            }
         }
-
-        for (CSQLAggregateFunction aggregateFunction : orderByExtractor.extractAggregateFunctions() ) {
-
-            String fieldname = TranslateAggregate.translateAggFuncName(aggregateFunction);
-            sorts.append(fieldname, aggregateFunction.getSort());
-
-        }
-
 
         return Aggregates.sort(sorts);
     }
