@@ -8,7 +8,6 @@ import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.TableRow;
 import raf.bp.packager.TablePackager;
 import raf.bp.parser.SQLParser;
-import raf.bp.parser.SQLPreProcessor;
 import raf.bp.validator.SQLValidator;
 
 import javax.swing.*;
@@ -20,7 +19,6 @@ public class RunAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
 
         String query = MainFrame.getInstance().textArea.getText();
-        SQLPreProcessor preProcessor = new SQLPreProcessor();
         SQLParser parser = new SQLParser();
         SQLValidator validator = new SQLValidator();
         MongoQLExecutor executor = new MongoQLExecutor();
