@@ -190,8 +190,8 @@ public class FindMaker extends MongoQLMaker {
 
     private String convertField(CSQLSimpleDatatype field, boolean lvalue){
         if(lvalue)
-            return FieldnameFixer.fix(this.fromInfo, field.getValue());
-        return "$" + FieldnameFixer.fix(this.fromInfo, field.getValue());
+            return FieldnameFixer.fixRvalue(this.fromInfo, field.getValue());
+        return "$" + FieldnameFixer.fixRvalue(this.fromInfo, field.getValue());
     }
 
     private String convertNumber(CSQLSimpleDatatype number){
