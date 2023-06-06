@@ -7,6 +7,8 @@ import raf.bp.executor.Executor;
 import raf.bp.executor.concrete.MongoQLExecutor;
 import raf.bp.gui.MessageHandler;
 import raf.bp.gui.table.TableModel;
+import raf.bp.model.MongoQL;
+import raf.bp.model.SQL.SQLQuery;
 import raf.bp.packager.Packager;
 import raf.bp.packager.TablePackager;
 import raf.bp.parser.Parser;
@@ -22,11 +24,11 @@ public class AppCore {
     private static AppCore instance;
     private MessageHandler messageHandler;
     private TableModel tableModel;
-    private Parser parser;
+    private Parser<SQLQuery, String> parser;
     private Validator validator;
-    private Executor executor;
-    private Executor sqlExecutor;
-    private Packager packager;
+    private Executor<MongoQL> mongoExecutor;
+    private Executor<SQLQuery> sqlExecutor;
+    private Packager<Void> guiPackager;
 
 
     private AppCore() {
@@ -34,9 +36,9 @@ public class AppCore {
         tableModel = new TableModel();
         parser = new SQLParser();
         validator = new SQLValidator();
-        executor = new MongoQLExecutor();
-        sqlExecutor = new AdapterSQLMongoQLExecutor(executor);
-        packager = new TablePackager();
+        mongoExecutor = new MongoQLExecutor();
+        sqlExecutor = new AdapterSQLMongoQLExecutor(mongoExecutor);
+        guiPackager = new TablePackager();
     }
 
     public static AppCore getInstance() {

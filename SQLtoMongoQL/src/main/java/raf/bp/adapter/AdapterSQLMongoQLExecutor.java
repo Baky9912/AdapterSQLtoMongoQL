@@ -9,9 +9,9 @@ import raf.bp.model.TableRow;
 import raf.bp.model.SQL.SQLQuery;
 
 public class AdapterSQLMongoQLExecutor extends SQLExecutor {
-    private Executor mongoExecutor;
+    private Executor<MongoQL> mongoExecutor;
 
-    public AdapterSQLMongoQLExecutor(Executor mongoExecutor){
+    public AdapterSQLMongoQLExecutor(Executor<MongoQL> mongoExecutor){
         this.mongoExecutor = mongoExecutor;
     }
 
