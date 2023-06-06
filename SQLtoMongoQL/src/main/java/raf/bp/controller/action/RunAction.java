@@ -18,7 +18,11 @@ public class RunAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        String query = MainFrame.getInstance().textArea.getText();
+        String selectedText = MainFrame.getInstance().getTextArea().getSelectedText();
+        String allText = MainFrame.getInstance().getTextArea().getText();
+
+        String query = (selectedText == null) ? allText : selectedText;
+
         SQLParser parser = new SQLParser();
         SQLValidator validator = new SQLValidator();
         MongoQLExecutor executor = new MongoQLExecutor();
