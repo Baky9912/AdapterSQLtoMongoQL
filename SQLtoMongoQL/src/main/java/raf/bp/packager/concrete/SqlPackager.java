@@ -1,11 +1,12 @@
-package raf.bp.packager;
+package raf.bp.packager.concrete;
 
 import java.util.Iterator;
 import java.util.List;
 
-import raf.bp.model.TableRow;
+import raf.bp.model.table.TableRow;
 import raf.bp.model.convertableSQL.datatypes.CSQLArray;
 import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
+import raf.bp.packager.Packager;
 
 public class SqlPackager implements Packager<CSQLArray> {
     public CSQLArray pack(List<TableRow> rows){

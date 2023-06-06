@@ -7,7 +7,7 @@ import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLToken;
 import raf.bp.model.convertableSQL.from.CSQLFromInfo;
 import raf.bp.model.convertableSQL.from.CSQLFromTable;
-import raf.bp.adapter.extractor.ArgumentIterator;
+import raf.bp.adapter.extractor.util.ArgumentIterator;
 import raf.bp.adapter.extractor.SQLExtractor;
 
 public class FromExtractor extends SQLExtractor{

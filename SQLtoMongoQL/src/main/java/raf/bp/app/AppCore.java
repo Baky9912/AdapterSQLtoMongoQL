@@ -6,14 +6,14 @@ import raf.bp.adapter.AdapterSQLMongoQLExecutor;
 import raf.bp.executor.Executor;
 import raf.bp.executor.concrete.MongoQLExecutor;
 import raf.bp.gui.MessageHandler;
-import raf.bp.gui.table.TableModel;
+import raf.bp.model.table.TableModel;
 import raf.bp.model.MongoQL;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.packager.Packager;
-import raf.bp.packager.TablePackager;
+import raf.bp.packager.concrete.TablePackager;
 import raf.bp.parser.Parser;
 import raf.bp.parser.concrete.SQLParser;
-import raf.bp.validator.SQLValidator;
+import raf.bp.validator.concrete.SQLValidator;
 import raf.bp.validator.Validator;
 
 @Getter

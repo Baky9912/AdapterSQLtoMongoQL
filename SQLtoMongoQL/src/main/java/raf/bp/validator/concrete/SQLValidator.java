@@ -1,6 +1,7 @@
-package raf.bp.validator;
+package raf.bp.validator.concrete;
 
 import raf.bp.model.SQL.SQLQuery;
+import raf.bp.validator.Validator;
 import raf.bp.validator.rules.*;
 
 public class SQLValidator implements Validator {

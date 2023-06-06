@@ -1,6 +1,6 @@
 package raf.bp.packager;
 
-import raf.bp.model.TableRow;
+import raf.bp.model.table.TableRow;
 
 import java.util.List;
 

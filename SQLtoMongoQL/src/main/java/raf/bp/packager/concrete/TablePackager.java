@@ -1,7 +1,9 @@
-package raf.bp.packager;
+package raf.bp.packager.concrete;
 
 import raf.bp.app.AppCore;
-import raf.bp.model.TableRow;
+import raf.bp.model.table.TableRow;
+import raf.bp.packager.Packager;
+
 import java.util.List;
 
 public class TablePackager implements Packager<Void> {

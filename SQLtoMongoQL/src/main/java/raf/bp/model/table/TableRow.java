@@ -1,4 +1,4 @@
-package raf.bp.model;
+package raf.bp.model.table;
 
 import lombok.Data;
 

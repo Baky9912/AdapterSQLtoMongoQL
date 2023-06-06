@@ -1,7 +1,7 @@
 package raf.bp.executor.concrete;
 
 import raf.bp.executor.Executor;
-import raf.bp.model.TableRow;
+import raf.bp.model.table.TableRow;
 import raf.bp.model.SQL.SQLQuery;
 
 import java.util.List;

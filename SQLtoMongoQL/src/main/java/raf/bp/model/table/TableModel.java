@@ -1,7 +1,7 @@
-package raf.bp.gui.table;
+package raf.bp.model.table;
 
 import raf.bp.app.AppCore;
-import raf.bp.model.TableRow;
+import raf.bp.model.table.TableRow;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.List;

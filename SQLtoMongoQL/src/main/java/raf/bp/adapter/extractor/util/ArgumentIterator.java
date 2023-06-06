@@ -1,4 +1,4 @@
-package raf.bp.adapter.extractor;
+package raf.bp.adapter.extractor.util;
 
 import java.util.Iterator;
 

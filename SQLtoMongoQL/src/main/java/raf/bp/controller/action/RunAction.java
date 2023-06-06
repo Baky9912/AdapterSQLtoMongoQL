@@ -5,10 +5,10 @@ import raf.bp.app.AppCore;
 import raf.bp.executor.concrete.MongoQLExecutor;
 import raf.bp.gui.MainFrame;
 import raf.bp.model.SQL.SQLQuery;
-import raf.bp.model.TableRow;
-import raf.bp.packager.TablePackager;
+import raf.bp.model.table.TableRow;
+import raf.bp.packager.concrete.TablePackager;
 import raf.bp.parser.concrete.SQLParser;
-import raf.bp.validator.SQLValidator;
+import raf.bp.validator.concrete.SQLValidator;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -23,25 +23,16 @@ public class RunAction extends AbstractAction {
 
         String query = (selectedText == null) ? allText : selectedText;
 
-        SQLParser parser = new SQLParser();
-        SQLValidator validator = new SQLValidator();
-        MongoQLExecutor executor = new MongoQLExecutor();
-        AdapterSQLMongoQLExecutor sqlExecutor = new AdapterSQLMongoQLExecutor(executor);
-        TablePackager packager = new TablePackager();
+        try {
 
-//        try {
+            SQLQuery sqlQuery = AppCore.getInstance().getSqlParser().parse(query);
+            AppCore.getInstance().getValidator().validate(sqlQuery);
+            List<TableRow> rows = AppCore.getInstance().getSqlExecutor().execute(sqlQuery);
+            AppCore.getInstance().getGuiPackager().pack(rows);
 
-//            query = preProcessor.process(query);
-            SQLQuery sqlQuery = parser.parse(query);
-            validator.validate(sqlQuery);
-            AppCore.getInstance().getMessageHandler().displayOK("query je validan!");
-            List<TableRow> rows = sqlExecutor.execute(sqlQuery);
-            packager.pack(rows);
-
-//        } catch (RuntimeException re) {
-//            AppCore.getInstace().getMessageHandler().displayError(re.getMessage());
-//        }
-
+        } catch (RuntimeException re) {
+            AppCore.getInstance().getMessageHandler().displayError(re.getMessage());
+        }
 
 
     }

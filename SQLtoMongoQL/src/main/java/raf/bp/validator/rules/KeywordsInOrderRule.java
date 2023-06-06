@@ -2,7 +2,7 @@ package raf.bp.validator.rules;
 
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
-import raf.bp.validator.SQLValidatorRule;
+import raf.bp.validator.concrete.SQLValidatorRule;
 
 import java.util.ArrayList;
 import java.util.List;

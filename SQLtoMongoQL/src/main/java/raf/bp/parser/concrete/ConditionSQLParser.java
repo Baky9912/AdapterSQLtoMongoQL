@@ -14,7 +14,7 @@ import raf.bp.model.convertableSQL.datatypes.CSQLArray;
 import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
 import raf.bp.model.convertableSQL.operator.CSQLBinaryOperator;
 import raf.bp.model.convertableSQL.operator.CSQLUnaryOperator;
-import raf.bp.packager.SqlPackager;
+import raf.bp.packager.concrete.SqlPackager;
 import raf.bp.parser.Parser;
 
 public class ConditionSQLParser implements Parser<CSQLOperator, SQLClause> {
