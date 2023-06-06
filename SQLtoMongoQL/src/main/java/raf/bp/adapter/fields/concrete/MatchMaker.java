@@ -9,7 +9,7 @@ import raf.bp.parser.SQLParser;
 public class MatchMaker extends MongoQLMaker {
     @Override
     public Bson make(SQLQuery query) {
-        FindMaker findMaker = new FindMaker();
+        FindMaker findMaker = new FindMaker(query);
 
         Bson find = findMaker.make(query);
 
