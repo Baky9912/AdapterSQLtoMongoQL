@@ -26,7 +26,7 @@ public class SortMaker extends MongoQLMaker {
 
         Document sorts = new Document();
         for (CSQLSortField field : sortFields) {
-            sorts.append(FieldnameFixer.fix(fromInfo, field.getField()), field.getSortOrder());
+            sorts.append(FieldnameFixer.fixRvalue(fromInfo, field.getField()), field.getSortOrder());
         }
 
 

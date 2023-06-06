@@ -63,7 +63,7 @@ public class ProjectMaker extends MongoQLMaker {
             if (field.getTableIfExists() != null && !mainTable.getTableName().equals(field.getTableIfExists()) && !field.getTableIfExists().equals(mainTable.getAlias())) {
                 /* this is a foreign field, table exists and isn't equal to main table name or it's alias */
                 /* this will put all foreign fields in the format -> tableAlias_fieldName = $tableName.fieldName */
-                d.append(FieldnameFixer.fix(fromInfo, field.getValue()), "$" + field.getValue());
+                d.append(FieldnameFixer.fixLvalue(fromInfo, field.getValue()), "$" + FieldnameFixer.fixRvalue(fromInfo, field.getValue()));
             }
 
             else if (field.getTableIfExists() != null && (mainTable.getTableName().equals(field.getTableIfExists()) || field.getTableIfExists().equals(mainTable.getAlias()) ) ) {
