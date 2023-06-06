@@ -43,18 +43,19 @@ public class OrderByExtractor extends SQLExtractor {
         List<CSQLSortField> sortFields = new ArrayList<>();
         List<List<String>> statements = findStatements(getClause());
         for(List<String> statement : statements){
-            if(statement.size()==5){
+            if(statement.size()>=4){  // agg func
                 CSQLAggregateFunction aggFunc = new CSQLAggregateFunction(statement.get(0), statement.get(2));
-                String order = statement.get(4);
+                String order = "asc";
+                if(statement.size()==5) 
+                    order = statement.get(4);
                 sortFields.add(new CSQLSortField(aggFunc, order));
             }
-            else if(statement.size()==2){
+            else { // simple field 
                 CSQLSimpleDatatype field = new CSQLSimpleDatatype(statement.get(0));
-                String order = statement.get(1);
+                String order = "asc";
+                if(statement.size()==2) 
+                    order = statement.get(1);
                 sortFields.add(new CSQLSortField(field, order));
-            }
-            else{
-                throw new RuntimeException("Field length problem!");
             }
         }
         return sortFields;       
