@@ -1,10 +1,11 @@
 package raf.bp.adapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import raf.bp.app.AppCore;
-import raf.bp.executor.MongoQLExecutor;
-import raf.bp.executor.SQLExecutor;
+import raf.bp.executor.concrete.MongoQLExecutor;
+import raf.bp.executor.concrete.SQLExecutor;
 import raf.bp.model.MongoQL;
 import raf.bp.model.TableRow;
 import raf.bp.model.SQL.SQLQuery;
@@ -19,7 +20,7 @@ public class AdapterSQLMongoQLExecutor extends SQLExecutor{
     }
 
     @Override
-    public ArrayList<TableRow> execute(String query) {
+    public List<TableRow> execute(String query) {
         SQLParser parser = new SQLParser();
         SQLValidator validator = new SQLValidator();
         SQLQuery sqlQuery = parser.parseQuery(query);
@@ -30,7 +31,7 @@ public class AdapterSQLMongoQLExecutor extends SQLExecutor{
     // Nisam bio siguran da li je pravilno sa String ili SQLQuery pa sam napravio oba
 
     @Override
-    public ArrayList<TableRow> execute(SQLQuery query) {
+    public List<TableRow> execute(SQLQuery query) {
         MongoQL mongoQL = new MongoQL(query);
         return mongoExecutor.execute(mongoQL);
     }

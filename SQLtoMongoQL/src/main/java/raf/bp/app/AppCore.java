@@ -3,7 +3,7 @@ package raf.bp.app;
 import lombok.Getter;
 import lombok.Setter;
 import raf.bp.adapter.AdapterSQLMongoQLExecutor;
-import raf.bp.executor.MongoQLExecutor;
+import raf.bp.executor.concrete.MongoQLExecutor;
 import raf.bp.gui.MessageHandler;
 import raf.bp.gui.table.TableModel;
 import raf.bp.packager.SqlPackager;

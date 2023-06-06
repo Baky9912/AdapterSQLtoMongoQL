@@ -1,18 +1,21 @@
-package raf.bp.executor;
+package raf.bp.executor.concrete;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.*;
 import org.bson.Document;
 import raf.bp.controller.MongoDBController;
+import raf.bp.executor.Executor;
 import raf.bp.model.MongoQL;
 import raf.bp.model.TableRow;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class MongoQLExecutor {
+public class MongoQLExecutor implements Executor<MongoQL>{
 
-    public ArrayList<TableRow> execute(MongoQL mongoQL) {
+    @Override
+    public List<TableRow> execute(MongoQL mongoQL) {
         MongoClient mongoClient = MongoDBController.getConnection();
 
         MongoDatabase database = mongoClient.getDatabase("bp_tim51");
@@ -30,7 +33,7 @@ public class MongoQLExecutor {
         result = mongoCollection.aggregate(mongoQL.getAggregate());
 
         MongoCursor<Document> cursor = result.iterator();
-        ArrayList<TableRow> rows = getRows(cursor, mongoQL.getMainTable().getTableName());
+        List<TableRow> rows = getRows(cursor, mongoQL.getMainTable().getTableName());
         mongoClient.close();
 
         return rows;
