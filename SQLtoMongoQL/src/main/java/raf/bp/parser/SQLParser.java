@@ -2,9 +2,7 @@ package raf.bp.parser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLExpression;
@@ -19,18 +17,18 @@ public class SQLParser {
         return l1Keywords;
     }
 
-    public class NoArgumentsException extends RuntimeException{
+    public static class NoArgumentsException extends RuntimeException{
         public NoArgumentsException(String errMsg){
             super(errMsg);
         }
     }
-    public class ArgumentsBeforeKeywordException extends RuntimeException{
+    public static class ArgumentsBeforeKeywordException extends RuntimeException{
         public ArgumentsBeforeKeywordException(String errMsg){
             super(errMsg);
         }
     }
 
-    public class ParserException extends RuntimeException{
+    public static class ParserException extends RuntimeException{
         public ParserException(String errMsg){
             super(errMsg);
         }
@@ -110,10 +108,10 @@ public class SQLParser {
     }
 
     public SQLQuery parseComplexExpressionUtil(ComplexExpression ce, String fakeKeyword){
-        List<SQLClause> clauses = new ArrayList<SQLClause>();
+        List<SQLClause> clauses = new ArrayList<>();
         //SQLClause clause = new SQLClause();
         String keyword = fakeKeyword;
-        List<SQLExpression> sqlExpressions = new ArrayList<SQLExpression>();
+        List<SQLExpression> sqlExpressions = new ArrayList<>();
         for(Expression e : ce.getExpressions()){
             if(e instanceof ComplexExpression inner_ce){
                 if(inner_ce.isNestedQuery()){
@@ -148,7 +146,7 @@ public class SQLParser {
                         clauses.add(new SQLClause(keyword, sqlExpressions));
                     }
                     keyword = se.getWord();
-                    sqlExpressions = new ArrayList<SQLExpression>();
+                    sqlExpressions = new ArrayList<>();
                 }
                 else{
                     SQLToken token = new SQLToken(se.getWord());
@@ -207,7 +205,7 @@ public class SQLParser {
                 SQLQuery.printAnyQuery(parsedQuery);
             }
             catch (RuntimeException e){
-                System.out.println(e.toString());
+                System.out.println(e);
             }
         }
     }

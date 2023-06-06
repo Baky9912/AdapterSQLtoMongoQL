@@ -1,16 +1,12 @@
 package raf.bp.converter.concrete;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BinaryOperator;
-import java.util.function.UnaryOperator;
 
 import raf.bp.converter.ClauseConverter;
-import raf.bp.converter.ClauseConverterManager;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.convertableSQL.CSQLDatatype;
 import raf.bp.model.convertableSQL.CSQLOperator;
@@ -18,8 +14,6 @@ import raf.bp.model.convertableSQL.CSQLType;
 import raf.bp.model.convertableSQL.CSQLDatatype.Subtype;
 import raf.bp.model.convertableSQL.datatypes.CSQLArray;
 import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
-import raf.bp.model.convertableSQL.operator.CSQLBinaryOperator;
-import raf.bp.model.convertableSQL.operator.CSQLUnaryOperator;
 import raf.bp.parser.ConditionSQLParser;
 import raf.bp.parser.SQLParser;
 

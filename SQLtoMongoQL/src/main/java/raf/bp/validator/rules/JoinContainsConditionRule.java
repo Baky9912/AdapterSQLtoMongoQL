@@ -11,7 +11,7 @@ import java.util.List;
 
 public class JoinContainsConditionRule extends SQLValidatorRule {
 
-    public class InvalidJoinException extends RuntimeException {
+    public static class InvalidJoinException extends RuntimeException {
         public InvalidJoinException(String message) {
             super(message);
         }
@@ -83,9 +83,10 @@ public class JoinContainsConditionRule extends SQLValidatorRule {
 
             SQLToken token = (SQLToken) ex;
 
-            if (token.getWord().equals("join")) counter++;
-            else if (token.getWord().equals("using")) counter--;
-            else if (token.getWord().equals("on")) counter--;
+            switch (token.getWord()) {
+                case "join" -> counter++;
+                case "using", "on" -> counter--;
+            }
 
             if (counter < 0) throw new InvalidJoinException("Invalid join!\nAfter every join you need to have 'on' or 'using' with a condition.");
 

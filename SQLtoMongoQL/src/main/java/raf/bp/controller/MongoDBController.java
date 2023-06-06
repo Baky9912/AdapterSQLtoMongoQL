@@ -1,6 +1,7 @@
 package raf.bp.controller;
 
 import java.util.Arrays;
+import java.util.List;
 
 import com.mongodb.*;
 
@@ -14,7 +15,7 @@ public class MongoDBController {
     public static MongoClient getConnection(){
 
         MongoCredential credential = MongoCredential.createCredential(user, database, password.toCharArray());
-        MongoClient mongoClient = new MongoClient(new ServerAddress("134.209.239.154", 27017), Arrays.asList(credential));
+        MongoClient mongoClient = new MongoClient(new ServerAddress("134.209.239.154", 27017), List.of(credential));
 
         System.out.println ("Mongo Database connection established");
 

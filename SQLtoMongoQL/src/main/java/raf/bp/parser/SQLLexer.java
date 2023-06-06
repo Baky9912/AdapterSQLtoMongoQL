@@ -1,31 +1,28 @@
 package raf.bp.parser;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class SQLLexer {
-    public class BadBracketsException extends RuntimeException{
+    public static class BadBracketsException extends RuntimeException{
         public BadBracketsException(String errMsg){
             super(errMsg);
         }
     }
 
-    public class BadQuotesException extends RuntimeException{
+    public static class BadQuotesException extends RuntimeException{
         public BadQuotesException(String errMsg){
             super(errMsg);
         }
     }
 
-    public class SpacedOperatorException extends RuntimeException{
+    public static class SpacedOperatorException extends RuntimeException{
         public SpacedOperatorException(String errMsg){
             super(errMsg);
         }
     }
 
-    Map<String, String> suffix = new HashMap<String, String>() {{
+    Map<String, String> suffix = new HashMap<>() {{
         put("inner", "join");
         put("left", "join");
         put("right", "join");
@@ -94,7 +91,7 @@ public class SQLLexer {
         String[] brokenQuery = splitForTokenizing(query);
         for(String partQuery : brokenQuery){
             String[] tokens = lexUtil(partQuery);
-            for(String token : tokens) allTokens.add(token);
+            allTokens.addAll(Arrays.asList(tokens));
         }
         return allTokens.toArray(new String[allTokens.size()]);
     }

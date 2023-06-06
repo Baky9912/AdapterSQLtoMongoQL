@@ -11,7 +11,7 @@ import java.util.List;
 
 public class GroupByRule extends SQLValidatorRule {
 
-    public class GroupByException extends RuntimeException {
+    public static class GroupByException extends RuntimeException {
         public GroupByException(String message) {
             super(message);
         }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import raf.bp.model.SQL.SQLClause;
-import raf.bp.model.SQL.SQLExpression;
 import raf.bp.model.SQL.SQLToken;
 import raf.bp.model.convertableSQL.from.CSQLFromInfo;
 import raf.bp.model.convertableSQL.from.CSQLFromTable;
@@ -77,7 +76,7 @@ public class FromExtractor extends SQLExtractor{
                 condition.add(arg);
         }
 
-        String tableName = null;
+        String tableName;
         String alias = null;
         String localField = null;
         String foreignField = null;
@@ -106,8 +105,8 @@ public class FromExtractor extends SQLExtractor{
         CSQLFromTable mainTable = extractMainTable();
         csqlFromInfo.setMainTable(mainTable);
         int n = tableArgs.size();
-        for(int i=0; i<n; ++i){
-            CSQLFromTable joinedTable = extractFromTable(tableArgs.get(i));
+        for (List<String> tableArg : tableArgs) {
+            CSQLFromTable joinedTable = extractFromTable(tableArg);
             csqlFromInfo.getJoinedTables().add(joinedTable);
         }
         return csqlFromInfo;

@@ -1,6 +1,5 @@
 package raf.bp.app;
 
-import raf.bp.executor.MongoQLExecutor;
 import raf.bp.gui.MainFrame;
 
 public class Main {

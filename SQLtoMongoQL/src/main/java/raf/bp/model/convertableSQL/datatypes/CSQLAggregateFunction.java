@@ -1,7 +1,6 @@
 package raf.bp.model.convertableSQL.datatypes;
 
 import lombok.Getter;
-import lombok.Setter;
 import raf.bp.model.convertableSQL.CSQLDatatype;
 
 @Getter

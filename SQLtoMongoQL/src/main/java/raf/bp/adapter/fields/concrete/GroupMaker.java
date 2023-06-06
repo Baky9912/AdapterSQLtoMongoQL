@@ -3,9 +3,6 @@ package raf.bp.adapter.fields.concrete;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mongodb.client.model.Accumulators;
-import org.bson.BsonDocument;
-import org.bson.BsonString;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 

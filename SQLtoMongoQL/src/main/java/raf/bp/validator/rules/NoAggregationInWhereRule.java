@@ -4,7 +4,6 @@ import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLExpression;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.SQL.SQLToken;
-import raf.bp.parser.SQLParser;
 import raf.bp.validator.SQLValidatorRule;
 
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import java.util.List;
 
 public class NoAggregationInWhereRule extends SQLValidatorRule {
 
-    public class AggregationInWhereException extends RuntimeException {
+    public static class AggregationInWhereException extends RuntimeException {
         public AggregationInWhereException(String message) {
             super(message);
         }

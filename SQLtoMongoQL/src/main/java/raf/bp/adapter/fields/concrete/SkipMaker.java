@@ -7,7 +7,6 @@ import raf.bp.adapter.fields.MongoQLMaker;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.sqlextractor.concrete.OffsetExtractor;
-import raf.bp.sqlextractor.concrete.SkipExtractor;
 
 public class SkipMaker extends MongoQLMaker {
     @Override

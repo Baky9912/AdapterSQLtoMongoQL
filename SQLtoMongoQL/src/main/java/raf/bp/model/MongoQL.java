@@ -9,7 +9,6 @@ import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.convertableSQL.from.CSQLFromTable;
 import raf.bp.sqlextractor.concrete.FromExtractor;
 
-import javax.print.Doc;
 import java.util.ArrayList;
 
 @Getter

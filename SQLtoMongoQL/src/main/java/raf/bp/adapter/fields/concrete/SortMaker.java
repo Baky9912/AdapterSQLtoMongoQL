@@ -5,12 +5,10 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import raf.bp.adapter.fields.MongoQLMaker;
 import raf.bp.adapter.fields.util.TranslateAggregate;
-import raf.bp.adapter.util.FieldnameFixer;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.convertableSQL.datatypes.CSQLAggregateFunction;
 import raf.bp.model.convertableSQL.from.CSQLFromInfo;
-import raf.bp.model.convertableSQL.from.CSQLFromTable;
 import raf.bp.model.convertableSQL.sort.CSQLSortField;
 import raf.bp.sqlextractor.concrete.FromExtractor;
 import raf.bp.sqlextractor.concrete.OrderByExtractor;
@@ -25,11 +23,14 @@ public class SortMaker extends MongoQLMaker {
         if (clause == null) return null;
 
         OrderByExtractor orderByExtractor = new OrderByExtractor(clause);
-        List<CSQLSortField> sortFields = orderByExtractor.extractSortFields();
+        List<CSQLSortField> sortFields = orderByExtractor.extractFieldsInOrder();
 
+        /*
+        * TODO(marko): AFTER ICSQLSelectable gets implemented, merge these two fors in 1. This doesn't work right now.
+        * */
         Document sorts = new Document();
         for (CSQLSortField field : sortFields) {
-            sorts.append(FieldnameFixer.fixRvalue(fromInfo, field.getField()), field.getSortOrder());
+//            sorts.append(FieldnameFixer.fixRvalue(fromInfo, field.getField()), field.getSortOrder());
         }
 
         for (CSQLAggregateFunction aggregateFunction : orderByExtractor.extractAggregateFunctions() ) {

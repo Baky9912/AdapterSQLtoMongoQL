@@ -1,11 +1,7 @@
 package raf.bp.sqlextractor;
 
-import raf.bp.executor.SQLExecutor;
 import raf.bp.model.SQL.SQLClause;
-import raf.bp.model.SQL.SQLExpression;
-import raf.bp.model.SQL.SQLToken;
-import raf.bp.model.convertableSQL.datatypes.CSQLAggregateFunction;
-import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
+
 import java.util.ArrayList;
 import java.util.List;
 

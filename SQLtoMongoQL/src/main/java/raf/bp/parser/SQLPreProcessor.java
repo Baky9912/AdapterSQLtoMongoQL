@@ -1,7 +1,6 @@
 package raf.bp.parser;
 
 import raf.bp.model.convertableSQL.from.CSQLFromTable;
-import raf.bp.sqlextractor.concrete.FromExtractor;
 
 import java.util.ArrayList;
 import java.util.List;

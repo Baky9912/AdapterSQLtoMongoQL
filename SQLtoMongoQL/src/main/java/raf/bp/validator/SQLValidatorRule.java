@@ -3,7 +3,6 @@ package raf.bp.validator;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLExpression;
 import raf.bp.model.SQL.SQLQuery;
-import raf.bp.model.SQL.SQLToken;
 import raf.bp.parser.SQLParser;
 
 import java.util.ArrayList;
@@ -31,7 +30,7 @@ public abstract class SQLValidatorRule {
                 results.add(check(parsedQuery));
             }
             catch (RuntimeException e){
-                System.out.println(e.toString());
+                System.out.println(e);
                 results.add(false);
             }
         }

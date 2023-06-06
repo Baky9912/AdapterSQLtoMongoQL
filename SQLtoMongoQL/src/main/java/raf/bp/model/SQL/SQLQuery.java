@@ -29,13 +29,11 @@ public class SQLQuery extends SQLExpression{
             System.out.print(" ");
             SQLExpression last=null;
             for(SQLExpression expr : clause.getSqlExpressions()){
-                if(expr instanceof SQLQuery){
-                    SQLQuery sq = (SQLQuery)expr;
+                if(expr instanceof SQLQuery sq){
                     System.out.println();
                     sq.printQuery(depth+1);
                 }
-                else if(expr instanceof SQLToken){
-                    SQLToken token = (SQLToken)expr;
+                else if(expr instanceof SQLToken token){
                     System.out.print(token.getWord());
                     System.out.print(" ");
                 }

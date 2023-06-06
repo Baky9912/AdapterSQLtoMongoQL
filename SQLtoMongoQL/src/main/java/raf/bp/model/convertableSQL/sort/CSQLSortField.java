@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import raf.bp.model.convertableSQL.CSQLDatatype;
 import raf.bp.model.convertableSQL.CSQLType;
-import raf.bp.model.convertableSQL.from.CSQLFromTable;
 
 @Getter
 @Setter

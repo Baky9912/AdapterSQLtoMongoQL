@@ -2,17 +2,15 @@ package raf.bp.validator.rules;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLExpression;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.SQL.SQLToken;
-import raf.bp.parser.SQLParser;
 import raf.bp.validator.SQLValidatorRule;
 
 public class ArrayDepthRule extends SQLValidatorRule{
-    public class OneArrayException extends RuntimeException {
+    public static class OneArrayException extends RuntimeException {
         public OneArrayException(String message) {
             super(message);
         }

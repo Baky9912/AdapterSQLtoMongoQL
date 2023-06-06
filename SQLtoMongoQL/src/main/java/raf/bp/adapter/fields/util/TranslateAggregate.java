@@ -3,7 +3,6 @@ package raf.bp.adapter.fields.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.mongodb.client.model.Accumulators;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 

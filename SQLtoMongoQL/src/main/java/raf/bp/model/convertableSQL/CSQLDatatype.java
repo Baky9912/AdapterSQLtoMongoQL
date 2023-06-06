@@ -22,5 +22,5 @@ abstract public class CSQLDatatype extends CSQLType {
         public String getSubtype(){
             return subtype;
         }
-    };
+    }
 }

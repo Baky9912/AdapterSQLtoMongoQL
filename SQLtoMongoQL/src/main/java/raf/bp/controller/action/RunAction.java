@@ -2,11 +2,8 @@ package raf.bp.controller.action;
 
 import raf.bp.adapter.AdapterSQLMongoQLExecutor;
 import raf.bp.app.AppCore;
-import raf.bp.converter.ClauseConverterManager;
 import raf.bp.executor.MongoQLExecutor;
 import raf.bp.gui.MainFrame;
-import raf.bp.model.MongoQL;
-import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.TableRow;
 import raf.bp.packager.TablePackager;

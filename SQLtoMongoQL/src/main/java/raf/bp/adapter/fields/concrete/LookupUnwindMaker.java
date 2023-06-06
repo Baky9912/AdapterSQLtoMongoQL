@@ -4,11 +4,9 @@ import com.mongodb.client.model.Aggregates;
 import org.bson.conversions.Bson;
 import raf.bp.adapter.fields.MongoQLMaker;
 import raf.bp.model.SQL.SQLClause;
-import raf.bp.model.SQL.SQLExpression;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.convertableSQL.from.CSQLFromInfo;
 import raf.bp.model.convertableSQL.from.CSQLFromTable;
-import raf.bp.sqlextractor.SQLExtractor;
 import raf.bp.sqlextractor.concrete.FromExtractor;
 
 import java.util.ArrayList;
@@ -16,8 +14,8 @@ import java.util.ArrayList;
 public class LookupUnwindMaker extends MongoQLMaker {
     @Override
     public ArrayList<Bson> make(SQLQuery query) {
-        Bson lookup = null;
-        Bson unwind = null;
+        Bson lookup;
+        Bson unwind;
 
         ArrayList<Bson> result = new ArrayList<>();
 

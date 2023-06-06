@@ -32,16 +32,16 @@ abstract public class CSQLOperator extends CSQLType {
     }
 
     public static List<String> arithemticOp = new ArrayList<>(
-        Arrays.asList(new String[]{"*", "/", "%", "+", "-", "&", "^", "|"}));
+        Arrays.asList("*", "/", "%", "+", "-", "&", "^", "|"));
 
     public static List<String> numberComparison = new ArrayList<>(
-        Arrays.asList(new String[]{"<", ">", "<=", ">=", "!=", "="}));
+        Arrays.asList("<", ">", "<=", ">=", "!=", "="));
 
     public static List<String> binOpLogical = new ArrayList<>(
-        Arrays.asList(new String[]{"and", "or"}));
+        Arrays.asList("and", "or"));
     
     public static List<String> unOpLogical = new ArrayList<>(
-        Arrays.asList(new String[]{"not"}));
+        Arrays.asList("not"));
 
     abstract public boolean attachedToOperands();
     // operations and operands should make a binary tree

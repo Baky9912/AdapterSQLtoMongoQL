@@ -1,12 +1,6 @@
 package raf.bp.parser;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 import raf.bp.adapter.AdapterSQLMongoQLExecutor;
 import raf.bp.executor.MongoQLExecutor;
@@ -25,7 +19,7 @@ import raf.bp.packager.SqlPackager;
 public class ConditionSQLParser {
 
     public int findClosingArray(List<SQLToken> tokens, int start){
-        int i=start;
+        int i;
         for(i=start; !tokens.get(i).getWord().equals("]"); ++i);
         return i;
     }
@@ -144,11 +138,11 @@ public class ConditionSQLParser {
         int level=0;
         int startBracket=-1;
         for(int i=n-1; i>=0; --i){
-            if(convertables.get(i) instanceof CSQLSimpleDatatype data && data.getValue()==")"){
+            if(convertables.get(i) instanceof CSQLSimpleDatatype data && Objects.equals(data.getValue(), ")")){
                 if(level==0) startBracket = i;
                 level++;
             }
-            if(convertables.get(i) instanceof CSQLSimpleDatatype data && data.getValue()=="("){
+            if(convertables.get(i) instanceof CSQLSimpleDatatype data && Objects.equals(data.getValue(), "(")){
                 level--;
                 if(level==0){
                     if(startBracket==-1) throw new RuntimeException("Bracket missmatch in condition");

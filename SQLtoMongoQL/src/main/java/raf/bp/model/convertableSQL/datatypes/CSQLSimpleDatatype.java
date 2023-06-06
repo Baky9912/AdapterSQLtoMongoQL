@@ -1,7 +1,5 @@
 package raf.bp.model.convertableSQL.datatypes;
 
-import java.io.ObjectInputStream.GetField;
-
 import lombok.Getter;
 import lombok.Setter;
 import raf.bp.model.convertableSQL.CSQLDatatype;

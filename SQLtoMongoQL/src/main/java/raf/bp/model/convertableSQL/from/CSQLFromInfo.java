@@ -5,7 +5,6 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import raf.bp.model.convertableSQL.CSQLType;
 
 @Getter
 @Setter

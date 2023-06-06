@@ -3,7 +3,6 @@ package raf.bp.validator.rules;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLExpression;
 import raf.bp.model.SQL.SQLQuery;
-import raf.bp.parser.SQLParser;
 import raf.bp.validator.SQLValidatorRule;
 
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ import java.util.List;
 
 public class EssentialKeywordsRule extends SQLValidatorRule {
 
-    public class MissingEssentialKeywordException extends RuntimeException {
+    public static class MissingEssentialKeywordException extends RuntimeException {
         public MissingEssentialKeywordException(String message) {
             super(message);
         }

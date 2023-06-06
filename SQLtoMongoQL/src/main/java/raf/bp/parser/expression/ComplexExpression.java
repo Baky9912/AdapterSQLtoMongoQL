@@ -28,10 +28,9 @@ public class ComplexExpression extends Expression {
             if(ce.expressions.size()==0) return false;
             expr = ce.expressions.get(0);
         }
-        if(!(expr instanceof SymbolExpression)){
+        if(!(expr instanceof SymbolExpression se)){
             return false;
         }
-        SymbolExpression se = (SymbolExpression)expr;
         return se.getWord().equals("select");
     }
 

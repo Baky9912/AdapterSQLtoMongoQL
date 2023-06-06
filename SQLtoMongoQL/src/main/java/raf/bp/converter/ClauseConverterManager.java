@@ -49,7 +49,7 @@ public class ClauseConverterManager extends ClauseConverter {
                 System.out.println("*********************");
             }
             catch (RuntimeException e){
-                System.out.println(e.toString());
+                System.out.println(e);
             }
         }
     }
