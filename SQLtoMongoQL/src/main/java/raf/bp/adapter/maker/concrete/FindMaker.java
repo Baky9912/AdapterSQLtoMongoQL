@@ -8,6 +8,7 @@ import org.bson.conversions.Bson;
 
 import raf.bp.adapter.maker.Maker;
 import raf.bp.adapter.maker.util.FieldnameFixer;
+import raf.bp.app.AppCore;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.convertableSQL.CSQLDatatype;
 import raf.bp.model.convertableSQL.CSQLOperator;
@@ -257,14 +258,4 @@ public class FindMaker implements Maker {
         if(potentialField.contains("{") || potentialField.contains("}")) return false;
         return true;
     }    
-
-    public static void main(String[] args) {
-        // String q = "select first_name, last_name, salary from employees where salary > 10000 order by salary desc";
-        // String q = "select first_name from employees where first_name like \"S%\"";
-        String q = "select first_name, last_name from employees where first_name in (select first_name from employees where first_name=\"Steven\")";
-        SQLParser p = new SQLParser();
-        FindMaker fm = new FindMaker(p.parse(q));
-        Bson bson = fm.make(p.parse(q));
-        System.out.println(bson.toString());
-    }
 }

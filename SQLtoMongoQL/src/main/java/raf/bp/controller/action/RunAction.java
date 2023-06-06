@@ -12,30 +12,22 @@ import java.util.List;
 public class RunAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
-
         String selectedText = MainFrame.getInstance().getTextArea().getSelectedText();
         String allText = MainFrame.getInstance().getTextArea().getText();
-
         String query = (selectedText == null) ? allText : selectedText;
-
         AppCore.getInstance().getTableModel().clearTableModel();
-
         try {
-
             SQLQuery sqlQuery = AppCore.getInstance().getSqlParser().parse(query);
             AppCore.getInstance().getValidator().validate(sqlQuery);
             List<TableRow> rows = AppCore.getInstance().getSqlExecutor().execute(sqlQuery);
-
             if (rows.isEmpty()) {
                 AppCore.getInstance().getMessageHandler().displayOK("No records found.");
             }
-
             AppCore.getInstance().getGuiPackager().pack(rows);
 
         } catch (RuntimeException re) {
+            re.printStackTrace();
             AppCore.getInstance().getMessageHandler().displayError(re.getMessage());
         }
-
-
     }
 }

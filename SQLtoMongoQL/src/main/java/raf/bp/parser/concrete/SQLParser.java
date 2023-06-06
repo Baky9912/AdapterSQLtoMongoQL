@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import raf.bp.app.AppCore;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLExpression;
 import raf.bp.model.SQL.SQLQuery;
@@ -196,7 +197,7 @@ public class SQLParser implements Parser<SQLQuery, String> {
         List<String> queries2 = new ArrayList<>(Arrays.asList(new String[]{q10, q11, q12, q13, q14}));
         List<String> queries3 = new ArrayList<>(Arrays.asList(new String[]{q12}));
 
-        SQLParser p = new SQLParser();
+        SQLParser p = (SQLParser)AppCore.getInstance().getSqlParser();
         
         for(String query : queries3){
             try{

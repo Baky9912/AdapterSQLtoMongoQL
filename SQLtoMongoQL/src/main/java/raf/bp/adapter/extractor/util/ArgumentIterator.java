@@ -2,10 +2,12 @@ package raf.bp.adapter.extractor.util;
 
 import java.util.Iterator;
 
+import raf.bp.app.AppCore;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLExpression;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.SQL.SQLToken;
+import raf.bp.parser.Parser;
 import raf.bp.parser.concrete.SQLParser;
 
 public class ArgumentIterator implements Iterator<String>{
@@ -29,9 +31,9 @@ public class ArgumentIterator implements Iterator<String>{
         return token.getWord();
     }
 
-    public static void main(String[] args){
+    public static void test(String[] args){
         // test
-        SQLParser p = new SQLParser();
+        Parser<SQLQuery, String> p = AppCore.getInstance().getSqlParser();
         String q7 = "select department_name, department_id, location_id from hr.departments where department_id in\n";
         SQLQuery query = p.parse(q7);
         ArgumentIterator argIter = new ArgumentIterator(query.getClause("select"));

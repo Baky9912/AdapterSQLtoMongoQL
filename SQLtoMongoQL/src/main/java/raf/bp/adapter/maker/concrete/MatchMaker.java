@@ -4,29 +4,15 @@ import com.mongodb.client.model.Aggregates;
 import org.bson.conversions.Bson;
 import raf.bp.adapter.maker.Maker;
 import raf.bp.model.SQL.SQLQuery;
-import raf.bp.parser.concrete.SQLParser;
 
 public class MatchMaker implements Maker {
     @Override
     public Bson make(SQLQuery query) {
         FindMaker findMaker = new FindMaker(query);
-
         Bson find = findMaker.make(query);
-
         if (find == null) return null;
 
         Bson match = Aggregates.match(find);
-
         return match;
-
-
-    }
-
-    public static void main(String[] args) {
-        String q = "select first_name, last_name, salary from employees where salary > 10000 order by salary desc";
-        SQLParser p = new SQLParser();
-        MatchMaker mm = new MatchMaker();
-        Bson bson = mm.make(p.parse(q));
-        System.out.println(bson.toString());
     }
 }

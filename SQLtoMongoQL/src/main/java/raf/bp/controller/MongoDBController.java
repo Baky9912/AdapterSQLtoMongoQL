@@ -12,13 +12,9 @@ public class MongoDBController {
 
 
     public static MongoClient getConnection(){
-
         MongoCredential credential = MongoCredential.createCredential(user, database, password.toCharArray());
         MongoClient mongoClient = new MongoClient(new ServerAddress("134.209.239.154", 27017), List.of(credential));
-
-        System.out.println ("Mongo Database connection established");
-
+        System.out.println("Mongo Database connection established");
         return mongoClient;
-
     }
 }

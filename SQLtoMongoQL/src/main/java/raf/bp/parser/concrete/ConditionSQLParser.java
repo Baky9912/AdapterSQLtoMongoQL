@@ -3,6 +3,7 @@ package raf.bp.parser.concrete;
 import java.util.*;
 
 import raf.bp.adapter.AdapterSQLMongoQLExecutor;
+import raf.bp.app.AppCore;
 import raf.bp.executor.concrete.MongoQLExecutor;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLExpression;
@@ -14,6 +15,7 @@ import raf.bp.model.convertableSQL.datatypes.CSQLArray;
 import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
 import raf.bp.model.convertableSQL.operator.CSQLBinaryOperator;
 import raf.bp.model.convertableSQL.operator.CSQLUnaryOperator;
+import raf.bp.model.table.TableRow;
 import raf.bp.packager.concrete.SqlPackager;
 import raf.bp.parser.Parser;
 
@@ -31,10 +33,8 @@ public class ConditionSQLParser implements Parser<CSQLOperator, SQLClause> {
         for(SQLExpression sqlExpr : clause.getSqlExpressions()){
             if(sqlExpr instanceof SQLQuery query){
                 // inserts the return of a query as SQLTokens that represent the same data
-                MongoQLExecutor  executor = new MongoQLExecutor();
-                AdapterSQLMongoQLExecutor adaptedExecutor = new AdapterSQLMongoQLExecutor(executor);
-                SqlPackager packager = new SqlPackager();
-                CSQLArray array = packager.pack(adaptedExecutor.execute(query));
+                List<TableRow> rows = AppCore.getInstance().getSqlExecutor().execute(query);
+                CSQLArray array = AppCore.getInstance().getSqlPackager().pack(rows);
                 if(prevExpr==null || !(prevExpr instanceof SQLToken tok) || !tok.getWord().equals("in")){
                     System.out.println("SCALAR");
                     if(array.getEntries().size()==0){
@@ -214,13 +214,4 @@ public class ConditionSQLParser implements Parser<CSQLOperator, SQLClause> {
         return convertables.get(0);
     }
 
-    public static void main(String[] args){
-        ConditionSQLParser cqp = new ConditionSQLParser();
-        SQLParser p = new SQLParser();
-        //String q1 = "select a from b where not a<=5";
-        //String q1 = "select a from b where not (( a<=5 or b>3) and c=((( (2) ))+2*9)/2) and (a in [\"hello   world\", 2, 4.534])";
-        String q1 = "select a from b where salary>(10000/((4+2)-1)) and salary<1000000000";
-        SQLClause clause = p.parse(q1).getClauses().get(2);
-        CSQLOperator.preOrderPrint(cqp.parse(clause), 0);
-    }
 }
