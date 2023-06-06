@@ -30,9 +30,6 @@ public class LookupUnwindMaker extends MongoQLMaker {
 
         for (CSQLFromTable table : fromTable.getJoinedTables()) {
             lookup = Aggregates.lookup(table.getTableName(), table.getLocalFieldName(), table.getForeignFieldName(), table.getAlias());
-//            lookup = Aggregates.lookup(table.getTableName(), table.getLocalFieldName(), table.getForeignFieldName(), "e");
-//            unwind = Aggregates.unwind("$e");
-//            unwind = Aggregates.unwind("$departments");
             unwind = Aggregates.unwind("$" + table.getAlias());
             result.add(lookup);
             result.add(unwind);

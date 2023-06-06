@@ -48,7 +48,6 @@ public class GroupMaker extends MongoQLMaker{
 
                 String fieldname = TranslateAggregate.translateAggFuncName(aggFunc);
                 Bson mongoAgg = TranslateAggregate.makeGroupAggFunc(aggFunc);
-                System.out.println("HERE " + fieldname);
                 BsonField bsonField = new BsonField(fieldname, mongoAgg);
                 fieldAccumulators.add(bsonField);
 
