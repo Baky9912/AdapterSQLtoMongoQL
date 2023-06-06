@@ -10,6 +10,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import raf.bp.adapter.fields.MongoQLMaker;
+import raf.bp.adapter.util.FieldnameFixer;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.convertableSQL.CSQLDatatype;
 import raf.bp.model.convertableSQL.CSQLOperator;
@@ -17,13 +18,15 @@ import raf.bp.model.convertableSQL.CSQLType;
 import raf.bp.model.convertableSQL.CSQLDatatype.Subtype;
 import raf.bp.model.convertableSQL.datatypes.CSQLArray;
 import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
+import raf.bp.model.convertableSQL.from.CSQLFromInfo;
 import raf.bp.parser.ConditionSQLParser;
 import raf.bp.parser.SQLParser;
+import raf.bp.sqlextractor.concrete.FromExtractor;
 import raf.bp.sqlextractor.concrete.WhereExtractor;
 import raf.bp.model.SQL.SQLQuery;
 
 public class FindMaker extends MongoQLMaker {
-        private static Map<String, String> sqlToMongoOp = new HashMap<>() {{
+    private static Map<String, String> sqlToMongoOp = new HashMap<>() {{
         put("*", "$multiply");
         put("/", "$divide");
         put("+", "$add");
@@ -66,6 +69,13 @@ public class FindMaker extends MongoQLMaker {
             }
         }
     }};
+
+    private CSQLFromInfo fromInfo;
+
+    public FindMaker(SQLQuery query){
+        FromExtractor fromExtractor = new FromExtractor(query.getClause("from"));
+        fromInfo = fromExtractor.extractFromInfo();
+    }
 
     private String makeMongo(CSQLType type){
         // TODO MOVE JOINS TO TEMPLATE
@@ -180,8 +190,8 @@ public class FindMaker extends MongoQLMaker {
 
     private String convertField(CSQLSimpleDatatype field, boolean lvalue){
         if(lvalue)
-            return field.getValue();
-        return "$" + field.getValue();
+            return FieldnameFixer.fixRvalue(this.fromInfo, field.getValue());
+        return "$" + FieldnameFixer.fixRvalue(this.fromInfo, field.getValue());
     }
 
     private String convertNumber(CSQLSimpleDatatype number){
@@ -269,7 +279,7 @@ public class FindMaker extends MongoQLMaker {
         // String q = "select first_name from employees where first_name like \"S%\"";
         String q = "select first_name, last_name from employees where first_name in (select first_name from employees where first_name=\"Steven\")";
         SQLParser p = new SQLParser();
-        FindMaker fm = new FindMaker();
+        FindMaker fm = new FindMaker(p.parseQuery(q));
         Bson bson = fm.make(p.parseQuery(q));
         System.out.println(bson.toString());
     }

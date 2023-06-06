@@ -26,6 +26,7 @@ public class SqlPackager {
             }
             if(strRow==null)
                 throw new RuntimeException("row type undetermined");
+            // TODO NULL!
             array.getEntries().add(new CSQLSimpleDatatype(strRow));
         }
         return array;
