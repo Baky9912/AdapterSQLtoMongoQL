@@ -36,6 +36,9 @@ abstract public class SQLExtractor {
             }
         }
         statements.add(currStatement);
+
+        System.out.println("FIND STATEMENTS");
+        System.out.println(statements);
         return statements;
     }
 

@@ -6,6 +6,7 @@ import org.bson.conversions.Bson;
 
 import raf.bp.adapter.fields.MongoQLMaker;
 import raf.bp.adapter.fields.util.TranslateAggregate;
+import raf.bp.adapter.util.FieldnameFixer;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.SQL.SQLToken;
@@ -61,8 +62,8 @@ public class ProjectMaker extends MongoQLMaker {
 
             if (field.getTableIfExists() != null && !mainTable.getTableName().equals(field.getTableIfExists()) && !field.getTableIfExists().equals(mainTable.getAlias())) {
                 /* this is a foreign field, table exists and isn't equal to main table name or it's alias */
-                /* this will put all foreign fields in the format -> field_name = $table_name.field_name */
-                d.append(field.getTableAndField(), "$" + field.getValue());
+                /* this will put all foreign fields in the format -> tableAlias_fieldName = $tableName.fieldName */
+                d.append(FieldnameFixer.fixLvalue(fromInfo, field.getValue()), "$" + FieldnameFixer.fixRvalue(fromInfo, field.getValue()));
             }
 
             else if (field.getTableIfExists() != null && (mainTable.getTableName().equals(field.getTableIfExists()) || field.getTableIfExists().equals(mainTable.getAlias()) ) ) {

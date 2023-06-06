@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import raf.bp.model.SQL.SQLClause;
-import raf.bp.model.convertableSQL.CSQLDatatype;
 import raf.bp.model.convertableSQL.datatypes.CSQLAggregateFunction;
 import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
 import raf.bp.model.convertableSQL.sort.CSQLSortField;
 import raf.bp.sqlextractor.SQLExtractor;
 
 public class OrderByExtractor extends SQLExtractor {
+
+    List<String> aggFuncs = new ArrayList<>(List.of("sum", "avg", "count", "min", "max"));
 
     public OrderByExtractor(SQLClause clause) {
         super(clause);
@@ -41,7 +42,7 @@ public class OrderByExtractor extends SQLExtractor {
         for(List<String> statement : statements){
             if(statement.size()==5){
                 CSQLAggregateFunction aggFunc = new CSQLAggregateFunction(statement.get(0), statement.get(2));
-                String order = statement.get(5);
+                String order = statement.get(4);
                 sortFields.add(new CSQLSortField(aggFunc, order));
             }
             else if(statement.size()==2){
@@ -55,6 +56,4 @@ public class OrderByExtractor extends SQLExtractor {
         }
         return sortFields;       
     }
-    
-
 }
