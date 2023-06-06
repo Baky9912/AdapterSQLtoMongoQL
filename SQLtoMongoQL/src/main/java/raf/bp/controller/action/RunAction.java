@@ -7,7 +7,7 @@ import raf.bp.gui.MainFrame;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.TableRow;
 import raf.bp.packager.TablePackager;
-import raf.bp.parser.SQLParser;
+import raf.bp.parser.concrete.SQLParser;
 import raf.bp.validator.SQLValidator;
 
 import javax.swing.*;

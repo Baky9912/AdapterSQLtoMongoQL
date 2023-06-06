@@ -9,7 +9,7 @@ import raf.bp.executor.concrete.SQLExecutor;
 import raf.bp.model.MongoQL;
 import raf.bp.model.TableRow;
 import raf.bp.model.SQL.SQLQuery;
-import raf.bp.parser.SQLParser;
+import raf.bp.parser.concrete.SQLParser;
 import raf.bp.validator.SQLValidator;
 
 public class AdapterSQLMongoQLExecutor extends SQLExecutor{

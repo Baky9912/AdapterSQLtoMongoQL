@@ -1,7 +1,9 @@
-package raf.bp.parser;
+package raf.bp.parser.concrete;
 
 import java.util.*;
 import java.util.regex.Pattern;
+
+import raf.bp.parser.Lexer;
 
 public class SQLLexer implements Lexer {
     public static class BadBracketsException extends RuntimeException{

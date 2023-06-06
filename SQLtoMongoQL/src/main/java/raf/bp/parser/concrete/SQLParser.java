@@ -1,4 +1,4 @@
-package raf.bp.parser;
+package raf.bp.parser.concrete;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +8,7 @@ import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLExpression;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.SQL.SQLToken;
+import raf.bp.parser.Parser;
 import raf.bp.parser.expression.ComplexExpression;
 import raf.bp.parser.expression.Expression;
 import raf.bp.parser.expression.SymbolExpression;

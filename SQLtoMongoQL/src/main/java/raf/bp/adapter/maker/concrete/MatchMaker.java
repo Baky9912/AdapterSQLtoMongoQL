@@ -4,7 +4,7 @@ import com.mongodb.client.model.Aggregates;
 import org.bson.conversions.Bson;
 import raf.bp.adapter.maker.Maker;
 import raf.bp.model.SQL.SQLQuery;
-import raf.bp.parser.SQLParser;
+import raf.bp.parser.concrete.SQLParser;
 
 public class MatchMaker implements Maker {
     @Override

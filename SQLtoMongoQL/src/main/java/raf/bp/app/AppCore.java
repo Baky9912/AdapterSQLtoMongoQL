@@ -8,7 +8,7 @@ import raf.bp.gui.MessageHandler;
 import raf.bp.gui.table.TableModel;
 import raf.bp.packager.SqlPackager;
 import raf.bp.packager.TablePackager;
-import raf.bp.parser.SQLParser;
+import raf.bp.parser.concrete.SQLParser;
 import raf.bp.validator.SQLValidator;
 
 @Getter
