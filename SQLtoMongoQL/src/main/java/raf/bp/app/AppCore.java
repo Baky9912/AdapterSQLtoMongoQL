@@ -3,13 +3,16 @@ package raf.bp.app;
 import lombok.Getter;
 import lombok.Setter;
 import raf.bp.adapter.AdapterSQLMongoQLExecutor;
+import raf.bp.executor.Executor;
 import raf.bp.executor.concrete.MongoQLExecutor;
 import raf.bp.gui.MessageHandler;
 import raf.bp.gui.table.TableModel;
-import raf.bp.packager.SqlPackager;
+import raf.bp.packager.Packager;
 import raf.bp.packager.TablePackager;
+import raf.bp.parser.Parser;
 import raf.bp.parser.concrete.SQLParser;
 import raf.bp.validator.SQLValidator;
+import raf.bp.validator.Validator;
 
 @Getter
 @Setter
@@ -19,11 +22,11 @@ public class AppCore {
     private static AppCore instance;
     private MessageHandler messageHandler;
     private TableModel tableModel;
-    private SQLParser parser;
-    private SQLValidator validator;
-    private MongoQLExecutor executor;
-    private AdapterSQLMongoQLExecutor sqlExecutor;
-    private TablePackager packager;
+    private Parser parser;
+    private Validator validator;
+    private Executor executor;
+    private Executor sqlExecutor;
+    private Packager packager;
 
 
     private AppCore() {

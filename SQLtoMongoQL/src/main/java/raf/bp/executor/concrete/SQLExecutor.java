@@ -4,7 +4,6 @@ import raf.bp.executor.Executor;
 import raf.bp.model.TableRow;
 import raf.bp.model.SQL.SQLQuery;
 
-import java.util.ArrayList;
 import java.util.List;
 
 abstract public class SQLExecutor implements Executor<SQLQuery>{

@@ -3,7 +3,7 @@ package raf.bp.validator;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.validator.rules.*;
 
-public class SQLValidator {
+public class SQLValidator implements Validator {
     private SQLValidatorRule[] rules = {
             new EssentialKeywordsRule(),
             new NoAggregationInWhereRule(),
