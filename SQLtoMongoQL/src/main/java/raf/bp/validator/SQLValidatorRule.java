@@ -1,5 +1,6 @@
 package raf.bp.validator;
 
+import raf.bp.app.AppCore;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLExpression;
 import raf.bp.model.SQL.SQLQuery;
@@ -23,7 +24,7 @@ public abstract class SQLValidatorRule {
     public void performTests() {
         ArrayList<Boolean> results = new ArrayList<>();
 
-        SQLParser p = new SQLParser();
+        SQLParser p = (SQLParser)AppCore.getInstance().getSqlParser();
         for(String query : testingQueries){
             try{
                 SQLQuery parsedQuery = p.parse(query);

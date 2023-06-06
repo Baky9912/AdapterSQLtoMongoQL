@@ -9,7 +9,9 @@ import raf.bp.gui.MessageHandler;
 import raf.bp.model.table.TableModel;
 import raf.bp.model.MongoQL;
 import raf.bp.model.SQL.SQLQuery;
+import raf.bp.model.convertableSQL.datatypes.CSQLArray;
 import raf.bp.packager.Packager;
+import raf.bp.packager.concrete.SqlPackager;
 import raf.bp.packager.concrete.TablePackager;
 import raf.bp.parser.Parser;
 import raf.bp.parser.concrete.SQLParser;
@@ -20,7 +22,6 @@ import raf.bp.validator.Validator;
 @Setter
 public class AppCore {
     /* contains instance of all components */
-
     private static AppCore instance;
     private MessageHandler messageHandler;
     private TableModel tableModel;
@@ -29,7 +30,7 @@ public class AppCore {
     private Executor<MongoQL> mongoExecutor;
     private Executor<SQLQuery> sqlExecutor;
     private Packager<Void> guiPackager;
-
+    private Packager<CSQLArray> sqlPackager;
 
     private AppCore() {
         messageHandler = new MessageHandler();
@@ -39,6 +40,7 @@ public class AppCore {
         mongoExecutor = new MongoQLExecutor();
         sqlExecutor = new AdapterSQLMongoQLExecutor(mongoExecutor);
         guiPackager = new TablePackager();
+        sqlPackager = new SqlPackager();
     }
 
     public static AppCore getInstance() {
