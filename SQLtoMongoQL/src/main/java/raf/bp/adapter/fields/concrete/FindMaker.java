@@ -61,15 +61,6 @@ public class FindMaker extends MongoQLMaker {
         put("$eq", "$eq");
     }};
 
-    private static Set<String> argArray = new HashSet<>(Arrays.asList("$and", "$or"));
-    private static Set<String> argElement = new HashSet<>() {{
-        for(String op : sqlToMongoOp.values()){
-            if(!argArray.contains(op)){
-                add(op);
-            }
-        }
-    }};
-
     private CSQLFromInfo fromInfo;
 
     public FindMaker(SQLQuery query){
@@ -78,10 +69,7 @@ public class FindMaker extends MongoQLMaker {
     }
 
     private String makeMongo(CSQLType type){
-        // TODO MOVE JOINS TO TEMPLATE
-        // System.out.println(type.toSQLString());
         if(type instanceof CSQLOperator operator){
-            // if concat get rvalue (add $)
             String lArg = makeMongo(operator.getLeftOperand());
             String rArg = null;
             if(operator.getRightOperand()!=null)
@@ -152,7 +140,6 @@ public class FindMaker extends MongoQLMaker {
     }
 
     private String joinArithmeticOp(String op, String lArg, String rArg){
-        // TODO should accept fields!!!!
         return "{ " + op + ": [" + modifyExprArg(lArg) + "," + modifyExprArg(rArg) + "]}";
     }
 

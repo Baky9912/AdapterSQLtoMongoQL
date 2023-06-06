@@ -18,7 +18,6 @@ import raf.bp.parser.ConditionSQLParser;
 import raf.bp.parser.SQLParser;
 
 public class WhereConverter extends ClauseConverter{
-    // TODO UNTESTED
     private static Map<String, String> sqlToMongoOp = new HashMap<>() {{
         put("*", "$multiply");
         put("/", "$divide");
@@ -54,20 +53,8 @@ public class WhereConverter extends ClauseConverter{
         put("$eq", "$eq");
     }};
 
-    private static Set<String> argArray = new HashSet<>(Arrays.asList("$and", "$or"));
-    private static Set<String> argElement = new HashSet<>() {{
-        for(String op : sqlToMongoOp.values()){
-            if(!argArray.contains(op)){
-                add(op);
-            }
-        }
-    }};
-
     private String makeMongo(CSQLType type){
-        // TODO MOVE JOINS TO TEMPLATE
-        // System.out.println(type.toSQLString());
         if(type instanceof CSQLOperator operator){
-            // if concat get rvalue (add $)
             String lArg = makeMongo(operator.getLeftOperand());
             String rArg = null;
             if(operator.getRightOperand()!=null)

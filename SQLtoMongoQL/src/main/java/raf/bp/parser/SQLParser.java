@@ -190,16 +190,13 @@ public class SQLParser {
         String q12 = "select a where > = <   = < a = b >= b > = from x";
         String q13 = ">= x <=   ";
         String q14 = "select * from table1 join table2 using ( ) ";
-        //List<String> queries = new ArrayList<>(Arrays.asList(new String[]{q1, q2, q3, q4, q5, q6, q7, q8, q9}));
-//        List<String> queries = new ArrayList<>(Arrays.asList(new String[]{q10, q11, q12, q13, q14}));
-        List<String> queries = new ArrayList<>(Arrays.asList(new String[]{q12}));
+        List<String> queries1 = new ArrayList<>(Arrays.asList(new String[]{q1, q2, q3, q4, q5, q6, q7, q8, q9}));
+        List<String> queries2 = new ArrayList<>(Arrays.asList(new String[]{q10, q11, q12, q13, q14}));
+        List<String> queries3 = new ArrayList<>(Arrays.asList(new String[]{q12}));
 
         SQLParser p = new SQLParser();
         
-        for(String query : queries){
-
-//            SQLQuery parsedQuery = p.parseQuery(query);
-//            SQLQuery.printAnyQuery(parsedQuery);
+        for(String query : queries3){
             try{
                 SQLQuery parsedQuery = p.parseQuery(query);
                 SQLQuery.printAnyQuery(parsedQuery);

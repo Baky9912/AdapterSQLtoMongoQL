@@ -8,5 +8,4 @@ import java.util.ArrayList;
 abstract public class SQLExecutor {
     abstract public ArrayList<TableRow> execute(String query);
     abstract public ArrayList<TableRow> execute(SQLQuery query);
-    // TODO moze da se zameni sa SQLQuery
 }

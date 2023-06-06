@@ -104,7 +104,6 @@ public class FromExtractor extends SQLExtractor{
         CSQLFromInfo csqlFromInfo = new CSQLFromInfo();
         CSQLFromTable mainTable = extractMainTable();
         csqlFromInfo.setMainTable(mainTable);
-        int n = tableArgs.size();
         for (List<String> tableArg : tableArgs) {
             CSQLFromTable joinedTable = extractFromTable(tableArg);
             csqlFromInfo.getJoinedTables().add(joinedTable);
