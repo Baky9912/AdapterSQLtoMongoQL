@@ -1,4 +1,4 @@
-package raf.bp.validator.concrete;
+package raf.bp.validator;
 
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLExpression;
