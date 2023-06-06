@@ -33,6 +33,7 @@ public class FromExtractor extends SQLExtractor{
         while(argIter.hasNext()) {
             String arg = argIter.next();
             if(arg.equals("join")){
+                tableArgs.add(currTableArgs);
                 currTableArgs = new ArrayList<>();
             }
             else{
@@ -50,7 +51,7 @@ public class FromExtractor extends SQLExtractor{
 
         tableName = ((SQLToken) getClause().getSqlExpressions().get(0)).getWord();
 
-        if (getClause().getSqlExpressions().size() < 2) return new CSQLFromTable(tableName, "");
+        if (getClause().getSqlExpressions().size() < 2) return new CSQLFromTable(tableName, null);
         if (!wordsIndicatingMainTableIsDeclared.contains(((SQLToken) getClause().getSqlExpressions().get(1)).getWord())) {
             alias = (((SQLToken) getClause().getSqlExpressions().get(1)).getWord());
         }
@@ -88,12 +89,12 @@ public class FromExtractor extends SQLExtractor{
 
         if(condition.size()==0){}
         else if(condition.size()==1){
-            localField = condition.get(0);
-            foreignField = condition.get(0);
+            localField = stripAlias(condition.get(0));
+            foreignField = stripAlias(condition.get(0));
         }
         else{
-            localField = condition.get(0);
-            foreignField = condition.get(2);
+            localField = stripAlias(condition.get(0));
+            foreignField = stripAlias(condition.get(2));
         }
         if (alias == null) alias = tableName;
         return new CSQLFromTable(tableName, alias, localField, foreignField);
@@ -104,12 +105,26 @@ public class FromExtractor extends SQLExtractor{
         CSQLFromInfo csqlFromInfo = new CSQLFromInfo();
         CSQLFromTable mainTable = extractMainTable();
         csqlFromInfo.setMainTable(mainTable);
+        boolean first = true;
         for (List<String> tableArg : tableArgs) {
-            CSQLFromTable joinedTable = extractFromTable(tableArg);
-            csqlFromInfo.getJoinedTables().add(joinedTable);
+            if(first)
+                first=false;
+            else{
+                CSQLFromTable joinedTable = extractFromTable(tableArg);
+                csqlFromInfo.getJoinedTables().add(joinedTable);
+            }
         }
+        System.out.println("EXTRACT FROM INFO RETURNING");
+        System.out.println(mainTable);
+        for(CSQLFromTable table : csqlFromInfo.getJoinedTables())
+            System.out.println(table);
         return csqlFromInfo;
     }
 
+    private static String stripAlias(String fieldname){
+        String[] parts = fieldname.split("\\.");
+        int n = parts.length;
+        return parts[n-1];
+    }
 
 }
