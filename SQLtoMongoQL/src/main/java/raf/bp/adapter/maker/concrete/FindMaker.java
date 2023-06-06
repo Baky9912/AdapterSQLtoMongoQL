@@ -6,7 +6,7 @@ import java.util.Map;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import raf.bp.adapter.maker.MongoQLMaker;
+import raf.bp.adapter.maker.Maker;
 import raf.bp.adapter.maker.util.FieldnameFixer;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.convertableSQL.CSQLDatatype;
@@ -22,7 +22,7 @@ import raf.bp.adapter.extractor.concrete.FromExtractor;
 import raf.bp.adapter.extractor.concrete.WhereExtractor;
 import raf.bp.model.SQL.SQLQuery;
 
-public class FindMaker extends MongoQLMaker {
+public class FindMaker implements Maker {
     private static Map<String, String> sqlToMongoOp = new HashMap<>() {{
         put("*", "$multiply");
         put("/", "$divide");

@@ -2,7 +2,7 @@ package raf.bp.adapter.maker.concrete;
 
 import com.mongodb.client.model.Aggregates;
 import org.bson.conversions.Bson;
-import raf.bp.adapter.maker.MongoQLMaker;
+import raf.bp.adapter.maker.Maker;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.convertableSQL.from.CSQLFromInfo;
@@ -12,7 +12,7 @@ import raf.bp.adapter.extractor.concrete.FromExtractor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LookupUnwindMaker extends MongoQLMaker {
+public class LookupUnwindMaker implements Maker {
     @Override
     public ArrayList<Bson> make(SQLQuery query) {
         Bson lookup;

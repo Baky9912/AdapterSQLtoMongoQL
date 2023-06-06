@@ -3,7 +3,7 @@ package raf.bp.adapter.maker.concrete;
 import com.mongodb.client.model.Aggregates;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import raf.bp.adapter.maker.MongoQLMaker;
+import raf.bp.adapter.maker.Maker;
 import raf.bp.adapter.maker.util.TranslateAggregate;
 import raf.bp.adapter.maker.util.FieldnameFixer;
 import raf.bp.model.SQL.SQLClause;
@@ -17,7 +17,7 @@ import raf.bp.adapter.extractor.concrete.OrderByExtractor;
 
 import java.util.List;
 
-public class SortMaker extends MongoQLMaker {
+public class SortMaker implements Maker {
     @Override
     public Bson make(SQLQuery query) {
         SQLClause clause = query.getClause("order_by");

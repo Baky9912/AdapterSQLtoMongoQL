@@ -4,7 +4,7 @@ import com.mongodb.client.model.Aggregates;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import raf.bp.adapter.maker.MongoQLMaker;
+import raf.bp.adapter.maker.Maker;
 import raf.bp.adapter.maker.util.TranslateAggregate;
 import raf.bp.adapter.maker.util.FieldnameFixer;
 import raf.bp.model.SQL.SQLClause;
@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ProjectMaker extends MongoQLMaker {
+public class ProjectMaker implements Maker {
 
     Map<String, String> aggMapping = new HashMap<>() {{
         put("count", "size");

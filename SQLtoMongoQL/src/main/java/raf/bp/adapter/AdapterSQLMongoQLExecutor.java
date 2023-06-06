@@ -32,7 +32,7 @@ public class AdapterSQLMongoQLExecutor extends SQLExecutor{
     @Override
     public ArrayList<TableRow> execute(SQLQuery query) {
         MongoQL mongoQL = new MongoQL(query);
-        return mongoExecutor.executeAggregate(mongoQL);
+        return mongoExecutor.execute(mongoQL);
     }
     
 }
