@@ -9,9 +9,12 @@ public class FieldnameFixer {
         if(parts.length > 2) throw new RuntimeException("fieldname has 2+ dots");
         if(parts.length == 1) return origFieldname;
         String tableAlias = parts[0], field = parts[1];
+        System.out.println("FieldNameFixer: ");
+        System.out.println(info.getMainTable());
         if(info.getMainTable().aliasRepresentsTable(tableAlias))
             return field;
         for(CSQLFromTable table : info.getJoinedTables()){
+            System.out.println(table);
             if(table.aliasRepresentsTable(tableAlias)){
                 return table.getAlias() + delim + field;
             }

@@ -37,7 +37,7 @@ public class GroupMaker extends MongoQLMaker{
 
         CSQLFromInfo fromInfo = (new FromExtractor(fromClause).extractFromInfo());
 
-        if(groupByClause == null && !selectClause.hasAggregation() && sortClause.hasAggregation()) return null;
+        if(groupByClause == null && !selectClause.hasAggregation()) return null;
 
         if (groupByClause != null) {
 
