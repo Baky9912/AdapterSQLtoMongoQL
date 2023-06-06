@@ -26,7 +26,7 @@ public abstract class SQLValidatorRule {
         SQLParser p = new SQLParser();
         for(String query : testingQueries){
             try{
-                SQLQuery parsedQuery = p.parseQuery(query);
+                SQLQuery parsedQuery = p.parse(query);
                 results.add(check(parsedQuery));
             }
             catch (RuntimeException e){

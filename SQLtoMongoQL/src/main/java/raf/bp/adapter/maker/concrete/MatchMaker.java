@@ -26,7 +26,7 @@ public class MatchMaker implements Maker {
         String q = "select first_name, last_name, salary from employees where salary > 10000 order by salary desc";
         SQLParser p = new SQLParser();
         MatchMaker mm = new MatchMaker();
-        Bson bson = mm.make(p.parseQuery(q));
+        Bson bson = mm.make(p.parse(q));
         System.out.println(bson.toString());
     }
 }

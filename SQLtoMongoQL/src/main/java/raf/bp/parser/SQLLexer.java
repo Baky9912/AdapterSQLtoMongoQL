@@ -3,7 +3,7 @@ package raf.bp.parser;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class SQLLexer {
+public class SQLLexer implements Lexer {
     public static class BadBracketsException extends RuntimeException{
         public BadBracketsException(String errMsg){
             super(errMsg);

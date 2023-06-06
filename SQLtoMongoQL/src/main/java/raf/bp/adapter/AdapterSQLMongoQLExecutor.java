@@ -22,7 +22,7 @@ public class AdapterSQLMongoQLExecutor extends SQLExecutor{
     public ArrayList<TableRow> execute(String query) {
         SQLParser parser = new SQLParser();
         SQLValidator validator = new SQLValidator();
-        SQLQuery sqlQuery = parser.parseQuery(query);
+        SQLQuery sqlQuery = parser.parse(query);
         validator.validate(sqlQuery);
         AppCore.getInstance().getMessageHandler().displayOK("query je validan!");
         return execute(sqlQuery);

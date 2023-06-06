@@ -7,7 +7,7 @@ import raf.bp.model.TableRow;
 import raf.bp.model.convertableSQL.datatypes.CSQLArray;
 import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
 
-public class SqlPackager {
+public class SqlPackager implements Packager<CSQLArray> {
     public CSQLArray pack(List<TableRow> rows){
         // for subqueries, guaranteed to return only one column
         CSQLArray array = new CSQLArray();

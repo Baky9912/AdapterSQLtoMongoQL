@@ -263,8 +263,8 @@ public class FindMaker implements Maker {
         // String q = "select first_name from employees where first_name like \"S%\"";
         String q = "select first_name, last_name from employees where first_name in (select first_name from employees where first_name=\"Steven\")";
         SQLParser p = new SQLParser();
-        FindMaker fm = new FindMaker(p.parseQuery(q));
-        Bson bson = fm.make(p.parseQuery(q));
+        FindMaker fm = new FindMaker(p.parse(q));
+        Bson bson = fm.make(p.parse(q));
         System.out.println(bson.toString());
     }
 }

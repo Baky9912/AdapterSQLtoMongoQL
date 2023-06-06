@@ -12,7 +12,7 @@ import raf.bp.parser.expression.ComplexExpression;
 import raf.bp.parser.expression.Expression;
 import raf.bp.parser.expression.SymbolExpression;
 
-public class SQLParser {
+public class SQLParser implements Parser<SQLQuery, String> {
     public List<String> getKeywords(){
         return l1Keywords;
     }
@@ -97,7 +97,8 @@ public class SQLParser {
         System.out.println();
     }
 
-    public SQLQuery parseQuery(String query){
+    @Override
+    public SQLQuery parse(String query){
         Expression expr = makeExpression(query);
         if(expr instanceof ComplexExpression){
             return parseComplexExpressionUtil((ComplexExpression)expr, null);
@@ -198,7 +199,7 @@ public class SQLParser {
         
         for(String query : queries3){
             try{
-                SQLQuery parsedQuery = p.parseQuery(query);
+                SQLQuery parsedQuery = p.parse(query);
                 SQLQuery.printAnyQuery(parsedQuery);
             }
             catch (RuntimeException e){
