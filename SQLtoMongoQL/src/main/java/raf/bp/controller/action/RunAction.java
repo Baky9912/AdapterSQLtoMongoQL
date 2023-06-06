@@ -1,14 +1,9 @@
 package raf.bp.controller.action;
 
-import raf.bp.adapter.AdapterSQLMongoQLExecutor;
 import raf.bp.app.AppCore;
-import raf.bp.executor.concrete.MongoQLExecutor;
 import raf.bp.gui.MainFrame;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.table.TableRow;
-import raf.bp.packager.concrete.TablePackager;
-import raf.bp.parser.concrete.SQLParser;
-import raf.bp.validator.concrete.SQLValidator;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -23,11 +18,18 @@ public class RunAction extends AbstractAction {
 
         String query = (selectedText == null) ? allText : selectedText;
 
+        AppCore.getInstance().getTableModel().clearTableModel();
+
         try {
 
             SQLQuery sqlQuery = AppCore.getInstance().getSqlParser().parse(query);
             AppCore.getInstance().getValidator().validate(sqlQuery);
             List<TableRow> rows = AppCore.getInstance().getSqlExecutor().execute(sqlQuery);
+
+            if (rows.isEmpty()) {
+                AppCore.getInstance().getMessageHandler().displayOK("No records found.");
+            }
+
             AppCore.getInstance().getGuiPackager().pack(rows);
 
         } catch (RuntimeException re) {
