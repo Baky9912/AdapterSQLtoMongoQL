@@ -129,6 +129,8 @@ public class SQLLexer {
         }
         myquery = myquery.strip();
         String[] tokens = myquery.split(" ");
+        if(tokens.length == 1 && tokens[0].equals(""))
+            return new String[0];
         return tokens;
     }
 
