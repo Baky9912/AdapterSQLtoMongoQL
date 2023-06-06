@@ -1,9 +1,11 @@
 package raf.bp.model.convertableSQL.datatypes;
 
 import lombok.Getter;
+import lombok.Setter;
 import raf.bp.model.convertableSQL.CSQLDatatype;
 
 @Getter
+@Setter
 public class CSQLAggregateFunction extends CSQLDatatype {
     private String func;
     private String arg;

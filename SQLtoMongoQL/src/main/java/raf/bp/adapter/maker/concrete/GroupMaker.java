@@ -43,7 +43,7 @@ public class GroupMaker implements Maker {
 
             GroupByExtractor extractor = new GroupByExtractor(groupByClause);
             for(String field : extractor.extractFields()){
-                id.append(field, "$" + field);
+                id.append(FieldnameFixer.fixLvalue(fromInfo, field), "$" + field);
             }
 
         }
@@ -62,6 +62,7 @@ public class GroupMaker implements Maker {
 
             for(CSQLAggregateFunction aggFunc : selectExtractor.extractAggregateFunctions()){
 
+                aggFunc.setArg(FieldnameFixer.fixRvalue(fromInfo, aggFunc.getArg()));
                 String fieldname = TranslateAggregate.translateAggFuncName(aggFunc);
                 Bson mongoAgg = TranslateAggregate.makeGroupAggFunc(aggFunc);
                 BsonField bsonField = new BsonField(fieldname, mongoAgg);
@@ -80,6 +81,8 @@ public class GroupMaker implements Maker {
                 CSQLAggregateFunction aggFunc = (CSQLAggregateFunction) sortField.getField();
 
                 if (aggFunc.getArg() == null || aggFunc.getFunc() == null) continue;
+
+                aggFunc.setArg(FieldnameFixer.fixRvalue(fromInfo, aggFunc.getArg()));
 
                 String fieldname = TranslateAggregate.translateAggFuncName(aggFunc);
                 Bson mongoAgg = TranslateAggregate.makeGroupAggFunc(aggFunc);

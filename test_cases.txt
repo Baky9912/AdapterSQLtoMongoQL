@@ -46,6 +46,23 @@ SELECT department_id, department_name, count(employees.employee_id) from departm
 SELECT department_id, department_name, count(*) from departments join employees on departments.department_id=employees.department_id group by department_name, department_id
 SELECT department_id, department_name, sum(employees.salary) from departments join employees on departments.department_id=employees.department_id group by department_name, department_id
 
+------------------------------ join 2 tables with aggregation and group by ------------------------------
+SELECT d.department_name, AVG(e.salary) AS average_salary
+FROM employees e
+JOIN departments d ON e.department_id = d.department_id
+GROUP BY d.department_name;
+
+SELECT l.location_id, MAX(e.salary)
+FROM employees e
+JOIN departments d ON e.department_id = d.department_id
+JOIN locations l ON d.location_id = l.location_id
+GROUP BY l.location_id;
+
+SELECT d.department_name, MIN(e.salary), MAX(e.salary)
+FROM employees e
+JOIN departments d ON e.department_id = d.department_id
+GROUP BY d.department_name;
+
 ------------------------------ join 2 tables with sort by aggregation and field name ------------------------------
 SELECT department_id, department_name, count(*) from departments join employees on departments.department_id=employees.department_id group by department_name, department_id order by count(employees.employee_id) asc, department_name asc
 SELECT department_id, department_name, count(*) from departments join employees on departments.department_id=employees.department_id group by department_name, department_id order by department_name asc, count(employees.employee_id) asc
@@ -68,6 +85,17 @@ JOIN locations l USING (location_id);
 
 
 ------------------------------ join 3 tables with aggregation ------------------------------
+SELECT d.department_name, l.street_address, COUNT(employee_id)
+FROM employees e
+JOIN departments d ON e.department_id = d.department_id
+JOIN locations l ON d.location_id = l.location_id
+GROUP BY d.department_name, l.street_address;
+
+SELECT l.location_id, AVG(e.salary), COUNT(e.employee_id)
+FROM employees e
+JOIN departments d ON e.department_id = d.department_id
+JOIN locations l ON d.location_id = l.location_id
+GROUP BY l.location_id;
 
 
 ------------------------------ subqueries ------------------------------

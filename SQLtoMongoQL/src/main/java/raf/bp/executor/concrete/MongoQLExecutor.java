@@ -3,6 +3,7 @@ package raf.bp.executor.concrete;
 import com.mongodb.MongoClient;
 import com.mongodb.client.*;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import raf.bp.controller.MongoDBController;
 import raf.bp.executor.Executor;
 import raf.bp.model.MongoQL;
@@ -25,10 +26,10 @@ public class MongoQLExecutor implements Executor<MongoQL>{
         AggregateIterable<Document> result;
 
         /* delete these lines when everything is done, left for debugging purposes */
-//        for (Bson b : mongoQL.getAggregate()) {
-//            System.out.println("EXECUTOR!!!!");
-//            System.out.println(b.toString());
-//        }
+        for (Bson b : mongoQL.getAggregate()) {
+            System.out.println("EXECUTOR!!!!");
+            System.out.println(b.toString());
+        }
 
         result = mongoCollection.aggregate(mongoQL.getAggregate());
 

@@ -50,12 +50,13 @@ public class ProjectMaker implements Maker {
 
             if (query.getClause("group_by") != null) {
                 /* if group by exists, we need to handle fields differently */
+                String fieldName = FieldnameFixer.fixLvalue(fromInfo, field.getValue());
                 if (!d.containsKey(field.getFieldOnly()))
-                    d.append(field.getFieldOnly(), "$_id." + field.getFieldOnly());
+                    d.append(field.getFieldOnly(), "$_id." + fieldName);
                 else if (field.getTableIfExists() == null)
-                    d.append(mainTable.getTableName() + "_" + field.getFieldOnly(), "$_id." + field.getFieldOnly());
+                    d.append(mainTable.getTableName() + "_" + field.getFieldOnly(), "$_id." + fieldName);
                 else
-                    d.append(field.getTableAndField(), "$_id." + field.getFieldOnly());
+                    d.append(field.getTableAndField(), "$_id." + fieldName);
                 continue;
 
             }
@@ -89,11 +90,6 @@ public class ProjectMaker implements Maker {
         project = Aggregates.project(d);
         return project;
     }
-
-//    public Document appendToDocument(Document document, CSQLSimpleDatatype field,Object value) {
-//        /* this function will avoid name conflicts while appending */
-//        if (field.getTableIfExists() == null || field.getTableIfExists().equals(mainTable.getTableName()) || field.getTableIfExists().equals(mainTable.getAlias()))
-//    }
 
     public boolean isSelectStar(SQLClause clause) {
 
