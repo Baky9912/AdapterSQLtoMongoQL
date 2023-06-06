@@ -28,12 +28,15 @@ public class ArrayDepthRule extends SQLValidatorRule{
                         level--;
                 }
                 else if(expr instanceof SQLQuery nestedQuery){
-                    if(level>0) return false;
-                    if(!check(nestedQuery)) return false;
+                    if(level>0)
+                        throw new RuntimeException("Bad array brackets (])");
+                    if(!check(nestedQuery))
+                        throw new RuntimeException("Bad array brackets (])");
                 }
-                if(level<0 || level>1) return false;
+                if(level<0 || level>1)
+                    throw new RuntimeException("Bad array brackets (])");
             }
-            if(level!=0) return false;
+            if(level!=0) throw new RuntimeException("Bad array brackets (])");
         }
         return true;
     }
@@ -56,7 +59,5 @@ public class ArrayDepthRule extends SQLValidatorRule{
         this.testingQueries.add(q6);
 
         this.expectedResults = new ArrayList<>(Arrays.asList(true, false, false, false, true, true));
-
     }
-
 }
