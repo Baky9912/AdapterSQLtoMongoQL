@@ -43,7 +43,7 @@ public class GroupMaker implements Maker {
 
             GroupByExtractor extractor = new GroupByExtractor(groupByClause);
             for(String field : extractor.extractFields()){
-                id.append(FieldnameFixer.fixLvalue(fromInfo, field), "$" + field);
+                id.append(FieldnameFixer.fixLvalue(fromInfo, field), "$" + FieldnameFixer.fixRvalue(fromInfo, field));
             }
 
         }
