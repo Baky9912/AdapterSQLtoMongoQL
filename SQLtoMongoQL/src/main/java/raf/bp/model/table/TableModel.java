@@ -11,6 +11,8 @@ public class TableModel extends DefaultTableModel {
 
     private void updateModel(){
 
+        if (rows.isEmpty()) return;
+
         int columnCount = rows.get(0).getFields().keySet().size();
 
         Vector columnVector = DefaultTableModel.convertToVector(rows.get(0).getFields().keySet().toArray());

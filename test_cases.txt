@@ -63,6 +63,12 @@ FROM employees e
 JOIN departments d ON e.department_id = d.department_id
 GROUP BY d.department_name;
 
+SELECT d.department_name, COUNT(e.employee_id), AVG(e.salary)
+FROM employees e
+JOIN departments d ON e.department_id = d.department_id
+GROUP BY d.department_name;
+
+
 ------------------------------ join 2 tables with sort by aggregation and field name ------------------------------
 SELECT department_id, department_name, count(*) from departments join employees on departments.department_id=employees.department_id group by department_name, department_id order by count(employees.employee_id) asc, department_name asc
 SELECT department_id, department_name, count(*) from departments join employees on departments.department_id=employees.department_id group by department_name, department_id order by department_name asc, count(employees.employee_id) asc
@@ -97,6 +103,34 @@ JOIN departments d ON e.department_id = d.department_id
 JOIN locations l ON d.location_id = l.location_id
 GROUP BY l.location_id;
 
+SELECT l.street_address, COUNT(e.employee_id)
+FROM employees e
+JOIN departments d ON e.department_id = d.department_id
+JOIN locations l ON d.location_id = l.location_id
+GROUP BY l.street_address;
+
+SELECT d.department_name, COUNT(e.employee_id), SUM(e.salary)
+FROM employees e
+JOIN departments d ON e.department_id = d.department_id
+GROUP BY d.department_name
+ORDER BY total_employees DESC
+LIMIT 1;
+
+
+------------------------------ join 4 tables with aggregation ------------------------------
+SELECT d.department_name, c.country_name, l.location_id, COUNT(e.employee_id)
+FROM employees e
+JOIN departments d ON e.department_id = d.department_id
+JOIN locations l ON d.location_id = l.location_id
+JOIN countries c ON l.country_id = c.country_id
+GROUP BY d.department_name, c.country_name, l.location_id;
+
+SELECT departments.department_name, countries.country_name, locations.location_id, AVG(employees.salary)
+FROM employees
+JOIN departments ON employees.department_id = departments.department_id
+JOIN locations ON departments.location_id = locations.location_id
+JOIN countries ON locations.country_id = countries.country_id
+GROUP BY departments.department_name, countries.country_name, locations.location_id;
 
 ------------------------------ subqueries ------------------------------
 SELECT first_name, last_name, salary, department_id
