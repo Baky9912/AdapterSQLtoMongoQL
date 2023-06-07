@@ -1,0 +1,12 @@
+SELECT employees.*, departments.*, locations.*
+FROM employees
+JOIN departments ON employees.department_id = departments.department_id
+JOIN locations ON departments.location_id = locations.location_id;
+
+SELECT COUNT(*) FROM employees;
+SELECT COUNT(manager_id) FROM employees;
+SELECT MIN(salary) FROM employees;
+SELECT MAX(salary) FROM employees;
+SELECT AVG(salary) FROM employees;
+SELECT SUM(salary) FROM employees;
+
