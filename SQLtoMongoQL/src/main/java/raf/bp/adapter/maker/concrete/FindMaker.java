@@ -8,7 +8,6 @@ import org.bson.conversions.Bson;
 
 import raf.bp.adapter.maker.Maker;
 import raf.bp.adapter.maker.util.FieldnameFixer;
-import raf.bp.app.AppCore;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.convertableSQL.CSQLDatatype;
 import raf.bp.model.convertableSQL.CSQLOperator;
@@ -18,7 +17,6 @@ import raf.bp.model.convertableSQL.datatypes.CSQLArray;
 import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
 import raf.bp.model.convertableSQL.from.CSQLFromInfo;
 import raf.bp.parser.concrete.ConditionSQLParser;
-import raf.bp.parser.concrete.SQLParser;
 import raf.bp.adapter.extractor.concrete.FromExtractor;
 import raf.bp.adapter.extractor.concrete.WhereExtractor;
 import raf.bp.model.SQL.SQLQuery;

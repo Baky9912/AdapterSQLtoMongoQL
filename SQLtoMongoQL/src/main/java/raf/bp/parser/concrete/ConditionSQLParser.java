@@ -2,9 +2,7 @@ package raf.bp.parser.concrete;
 
 import java.util.*;
 
-import raf.bp.adapter.AdapterSQLMongoQLExecutor;
 import raf.bp.app.AppCore;
-import raf.bp.executor.concrete.MongoQLExecutor;
 import raf.bp.model.SQL.SQLClause;
 import raf.bp.model.SQL.SQLExpression;
 import raf.bp.model.SQL.SQLQuery;
@@ -16,7 +14,6 @@ import raf.bp.model.convertableSQL.datatypes.CSQLSimpleDatatype;
 import raf.bp.model.convertableSQL.operator.CSQLBinaryOperator;
 import raf.bp.model.convertableSQL.operator.CSQLUnaryOperator;
 import raf.bp.model.table.TableRow;
-import raf.bp.packager.concrete.SqlPackager;
 import raf.bp.parser.Parser;
 
 public class ConditionSQLParser implements Parser<CSQLOperator, SQLClause> {

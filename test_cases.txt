@@ -26,6 +26,10 @@ select first_name, last_name, departments.department_name from employees join de
 ------------------------------ join 2 tables recursively ------------------------------
 select first_name, last_name, m.first_name, m.last_name from employees e join employees m on e.manager_id=m.employee_id
 select m.first_name, m.last_name, first_name, last_name from employees e join employees m on e.manager_id=m.employee_id
+select e.first_name, e.last_name, e.salary, m.first_name, m.last_name, m.salary
+from employees e
+join employees m on e.manager_id = m.employee_id
+order by m.salary, e.salary
 
 ------------------------------ join 2 tables with condition ------------------------------
 select first_name, last_name, departments.department_name from employees join departments on employees.department_id=departments.department_id where departments.department_name = "IT"
@@ -47,7 +51,7 @@ SELECT department_id, department_name, count(*) from departments join employees 
 SELECT department_id, department_name, sum(employees.salary) from departments join employees on departments.department_id=employees.department_id group by department_name, department_id
 
 ------------------------------ join 2 tables with aggregation and group by ------------------------------
-SELECT d.department_name, AVG(e.salary) AS average_salary
+SELECT d.department_name, AVG(e.salary)
 FROM employees e
 JOIN departments d ON e.department_id = d.department_id
 GROUP BY d.department_name;
@@ -113,7 +117,7 @@ SELECT d.department_name, COUNT(e.employee_id), SUM(e.salary)
 FROM employees e
 JOIN departments d ON e.department_id = d.department_id
 GROUP BY d.department_name
-ORDER BY total_employees DESC
+ORDER BY count(e.employee_id) DESC
 LIMIT 1;
 
 

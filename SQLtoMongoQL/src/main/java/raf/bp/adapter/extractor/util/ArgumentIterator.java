@@ -8,7 +8,6 @@ import raf.bp.model.SQL.SQLExpression;
 import raf.bp.model.SQL.SQLQuery;
 import raf.bp.model.SQL.SQLToken;
 import raf.bp.parser.Parser;
-import raf.bp.parser.concrete.SQLParser;
 
 public class ArgumentIterator implements Iterator<String>{
     private int i;
