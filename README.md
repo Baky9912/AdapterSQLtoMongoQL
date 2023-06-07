@@ -14,3 +14,7 @@ Hteo sam promenim NULL default (ne mandatory) vezu izmedju smestaja i korisnika,
 
 
 bp_tim_51	writer	BjAE7QAgnIOvOcBG
+
+
+NOTE:
+Slucajno sam commit sve preko Baky9912 (Milutin Baclija RN 19/21). VSCode gleda default account u browseru, ja sam imao oba ulogovana i izabran akademski u terminalu (nebitno za vscode).
